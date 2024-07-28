@@ -12,11 +12,14 @@ app.use(cookieParser());
 const user = require("./src/routes/userRoutes");
 const lotteryprice = require("./src/routes/lotteryprice");
 const userpayment = require("./src/routes/payment");
+const lottery = require("./src/routes/lottery");
+
 
 
 app.use("/api/v1", user);
-app.use("/api/v1/admin",lotteryprice );
 app.use("/api/v1/payment", userpayment);
+app.use("/api/v1/admin", lotteryprice, lottery);
+
 
 
 //Middeware for Error 
