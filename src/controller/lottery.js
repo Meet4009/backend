@@ -6,7 +6,7 @@ const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 
 exports.setlottery = catchAsyncErrors(async (req, res) => {
 
-    const { name, price, totalDraw } = req.body;
+    const { name, price, totalDraw } = req.body;  // hello
 
     const lottery = new Lottery({
         user_id: req.user.id,
