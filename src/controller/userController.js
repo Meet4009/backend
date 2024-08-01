@@ -205,22 +205,7 @@ exports.resetpassword = catchAsyncErrors(async (req, res, next) => {
     sendToken(user, 200, res);
 
 });
-// ------------------------------------------------ Deshbord
 
-exports.dashboard = catchAsyncErrors(async (req, res, next) => {
-
-    const totalUsers = await User.countDocuments({ role: "user" });
-
-    const activeUser = await User.countDocuments({ role: "user", loggedIn: true });
-    
-    const totalDepositAmount = await userO
-
-    res.status(200).json({
-        success: true,
-        totalUsers,
-        activeUser
-    });
-});
 
 
 // ------------------------------------------------ Update Profile

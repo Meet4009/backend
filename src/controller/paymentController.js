@@ -1,9 +1,10 @@
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHander = require("../utils/errorhander");
-const jwt = require("jsonwebtoken");
 
 const User = require("../models/userModel");
 const userPayment = require("../models/userPayment");
+
+const jwt = require("jsonwebtoken");
 const { paymentApprove, paymentReject } = require("../utils/paymentDecision");
 
 
@@ -213,3 +214,4 @@ exports.setRejectwithdraw = catchAsyncErrors(async (req, res) => {
     paymentReject(payment, 200, res);
 
 });
+

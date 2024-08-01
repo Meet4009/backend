@@ -1,6 +1,6 @@
+const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const User = require("../models/userModel");
 const ErrorHander = require("./errorhander");
-const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 
 
 // -----------------------------------------------//
@@ -64,7 +64,6 @@ exports.paymentApprove = catchAsyncErrors(async (payment, statusCode, res) => {
 })
 
 
-
 // -----------------------------------------------//
 // --------------- payment Approve -------------- // 
 // -----------------------------------------------//
@@ -109,5 +108,15 @@ exports.paymentReject = catchAsyncErrors(async (payment, statusCode, res) => {
             "user": user
         });
     }
-})
+});
 
+
+// -----------------------------------------------------//
+// --------------- Total Deposite Amount -------------- // 
+// -----------------------------------------------------//
+function calculateAmount (dipositeData)  {
+    return dipositeData.reduce((total, dipositeData) => total + (dipositeData.amount || 0), 0);
+
+};
+
+module.exports = calculateAmount;

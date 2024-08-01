@@ -38,7 +38,6 @@ router.route("/admin/user/:id")
     .put(isAuthenticatedUser, authorizeRoles("admin"), updateUserRole)
     .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);
 
-router.route("/admin/dashboard").get(isAuthenticatedUser, authorizeRoles("admin"), dashboard);
 
 // router.route("/password/forgot").post(forgotPassword);
 
