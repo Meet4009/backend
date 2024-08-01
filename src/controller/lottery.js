@@ -75,8 +75,8 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
 
         const lottery_draw = new LotteryDraw({
             lottery_id: lottery.id,
-            startDate: startDate.toISOString(),
-            drawDate: drawDate.toISOString(),
+            startDate: startDate.toISOString().split('T')[0],
+            drawDate: drawDate.toISOString().split('T')[0],
         });
         console.log("lottery_draw", lottery_draw);
 
