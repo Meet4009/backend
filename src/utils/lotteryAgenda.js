@@ -3,7 +3,6 @@ const { drawLottery } = require("../controller/lotteryschedule");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 
 
-
 const nextLotteryDraw = async (drawDate) => {
     try {
         const mongoConnectionString = process.env.DB_URL;
@@ -18,7 +17,6 @@ const nextLotteryDraw = async (drawDate) => {
     } catch (error) {
         console.log(error);
     }
-
 };
 
 module.exports = {
