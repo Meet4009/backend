@@ -67,18 +67,14 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
         await lottery.save();
 
         let startDate = new Date();
-        console.log("startDate", startDate);
-
         let drawDate = new Date(startDate);
-        drawDate.setMinutes(drawDate.getMinutes() + lottery.repeatDraw);
-        console.log("drawDate", drawDate);
+        drawDate.setDate(drawDate.getDate() + lottery.repeatDraw);
 
         const lottery_draw = new LotteryDraw({
             lottery_id: lottery.id,
             startDate: startDate.toISOString().split('T')[0],
             drawDate: drawDate.toISOString().split('T')[0],
         });
-        console.log("lottery_draw", lottery_draw);
 
         await lottery_draw.save();
 

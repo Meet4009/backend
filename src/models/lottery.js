@@ -18,7 +18,7 @@ const lottery = new mongoose.Schema({
     },
     repeatDraw: {
         type: Number,
-        default: 1             //per 8 day lootery shulde be repeat draw
+        default: 8             //per 8 day lootery shulde be repeat draw
     }
 });
 

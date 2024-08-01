@@ -20,7 +20,7 @@ const scheduleLotteryDraw = async (drawDate) => {
                 let startDate = new Date();
                 let nextDrawDate = new Date(startDate);
                 const repeatInterval = lottery[0].lottery_id.repeatDraw;
-                nextDrawDate.setMinutes(nextDrawDate.getMinutes() + repeatInterval);
+                nextDrawDate.setDate(nextDrawDate.setDate() + repeatInterval);
 
                 const newLotteryDraw = new LotteryDraw({
                     lottery_id: lottery[0].lottery_id._id,
