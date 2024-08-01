@@ -1,13 +1,13 @@
 const Lottery = require("../models/lottery");
 const LotteryDraw = require("../models/lotteryDraw");
-const { nextLotteryDraw } = require("./lotteryAgenda");
+const { nextLotteryDraw } = require("../utils/lotteryAgenda");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 
 
 exports.setlottery = catchAsyncErrors(async (req, res) => {
 
     try {
-        const { name, price, totalDraw } = req.body;  // hello
+        const { name, price, totalDraw } = req.body;
 
         const lottery = new Lottery({
             user_id: req.user.id,
@@ -16,15 +16,19 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
         await lottery.save();
 
         let startDate = new Date();
+        console.log("startDate", startDate);            // -------------
 
         let drawDate = new Date(startDate);
-        drawDate.setMinutes(drawDate.getMinutes() + lottery.repeatDraw)
+        drawDate.setMinutes(drawDate.getMinutes() + lottery.repeatDraw);
+        console.log("drawDate", drawDate);             // -------------
+
         const lottery_draw = new LotteryDraw({
             lottery_id: lottery.id,
-            startDate: startDate.toDateString(),
-            drawDate: drawDate.toDateString(),
+            startDate: startDate.toISOString(),
+            drawDate: drawDate.toISOString(),
 
         });
+        console.log("lottery_draw", lottery_draw);     // -------------
 
         await lottery_draw.save();
 
@@ -33,7 +37,7 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
         // setRenewlottreyDate.setMinutes(0)
         // setRenewlottreyDate.setSeconds(1);
 
-        nextLotteryDraw(drawDate)
+        nextLotteryDraw(drawDate);
 
         res.status(200).json({
             success: true,

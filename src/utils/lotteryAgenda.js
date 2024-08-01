@@ -1,10 +1,10 @@
 const Agenda = require('agenda');
-const { drawLottery } = require("./lotteryschedule");
+const { drawLottery } = require("../controller/lotteryschedule");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 
 
 
-exports.nextLotteryDraw = async (drawDate) => {
+const nextLotteryDraw = async (drawDate) => {
     try {
         const mongoConnectionString = process.env.DB_URL;
 
@@ -20,3 +20,7 @@ exports.nextLotteryDraw = async (drawDate) => {
     }
 
 };
+
+module.exports = {
+    nextLotteryDraw
+}
