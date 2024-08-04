@@ -1,5 +1,6 @@
 const cron = require('node-cron');
 const LotteryDraw = require('../models/lotteryDraw');
+const LotteryBuyer = require('../models/lotteryBuyer')
 const ErrorHander = require('../utils/errorhander');
 
 const scheduleLotteryDraw = async (drawDate) => {
@@ -21,6 +22,29 @@ const scheduleLotteryDraw = async (drawDate) => {
                 let nextDrawDate = new Date(startDate);
                 const repeatInterval = lottery[0].lottery_id.repeatDraw;
                 nextDrawDate.setDate(nextDrawDate.setDate() + repeatInterval);
+
+                // change status
+                const AllActiveLottery = await LotteryDraw.find({ status: 'active' })
+
+                AllActiveLottery.map(async (curr) => {
+                    let drawDate = new Date(curr.drawDate);
+
+                    let currentDate = new Date();
+
+                    if (drawDate <= currentDate) {
+                        let currentloteryDraw = await LotteryDraw.findById(curr.id)
+                        currentloteryDraw.status = 'done';
+                        await currentloteryDraw.save();
+
+                        let allPendingLotteryBuyers = await LotteryBuyer.find({ status: 'pending', lottery_draw_id: curr.id })
+
+                        allPendingLotteryBuyers.map(async (currentData) => {
+                            let currentloteryBuyer = await LotteryBuyer.findById(currentData.id)
+                            currentloteryBuyer.status = 'loss';
+                            await currentloteryBuyer.save();
+                        })
+                    }
+                })
 
                 const newLotteryDraw = new LotteryDraw({
                     lottery_id: lottery[0].lottery_id._id,
