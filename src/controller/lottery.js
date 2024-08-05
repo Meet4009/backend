@@ -34,11 +34,15 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
 
         res.status(200).json({
             success: true,
-            "lottery": lottery,
+            data: lottery,
+            message: 'Lottery creatw Successfully'
         });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ success: false, message: "Internal Server Error" });
+
+        res.status(500).json({
+            success: false,
+            message: `Internal Server Error -- ${error}`
+        });
     }
 });
 
@@ -47,7 +51,6 @@ exports.getLottery = async (req, res, next) => {
         const lottery = await Lottery.findById(req.params.id);
 
         if (!lottery) {
-
             return res.status(200).json({
                 status: false,
                 data: {},
@@ -89,12 +92,10 @@ exports.getLottery = async (req, res, next) => {
         });
     } catch (error) {
         return res.status(500).json({
-            status: false,
-            data: {},
-            message: "Server error"
+            success: false,
+            message: `Internal Server Error -- ${error}`
         });
     }
-
 };
 
 
@@ -169,13 +170,12 @@ exports.buylottery = async (req, res, next) => {
             message: `You have successfully purchased ${ticket_number.length} Tickets`
         });
     } catch (error) {
+
         return res.status(500).json({
-            status: false,
-            data: {},
-            message: "Server error"
+            success: false,
+            message: `Internal Server Error -- ${error}`
         });
     }
-
 };
 
 async function generateRandom12DigitNumber() {
@@ -207,11 +207,9 @@ exports.genarateTicketNumber = async (req, res, next) => {
         });
     } catch (error) {
         return res.status(500).json({
-            status: false,
-            data: {},
-            message: "Server error"
+            success: false,
+            message: `Internal Server Error -- ${error}`
         });
     }
-
 };
 
