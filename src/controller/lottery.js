@@ -167,7 +167,10 @@ exports.buylottery = async (req, res, next) => {
             });
 
             await ticket.save();
+            
         })
+        getUser.balance -= (lottery.price * ticket_number.length)
+            await getUser.save();
 
         res.status(200).json({
             status: true,
@@ -264,6 +267,51 @@ exports.getAllPendingTickets = async (req, res, next) => {
             status: true,
             data: allTicket,
             message: "Pending tickets fetched successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+};
+
+
+exports.lossbuyer = async (req, res, next) => {
+    try {
+        const ticket = await LotteryBuyer.findById(req.params.id);
+
+        ticket.status = 'loss'
+
+        await ticket.save();
+        res.status(200).json({
+            status: true,
+            data: {},
+            message: "Ticket status change successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+};
+
+
+
+exports.winbuyer = async (req, res, next) => {
+    try {
+        const ticket = await LotteryBuyer.findById(req.params.id);
+
+        ticket.status = 'win'
+
+        ticket.lottery_price_id = req.body.lottery_price_id
+
+        await ticket.save();
+        res.status(200).json({
+            status: true,
+            data: {},
+            message: "Ticket status change successfully"
         });
     } catch (error) {
         res.status(500).json({
