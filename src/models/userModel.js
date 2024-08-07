@@ -26,13 +26,13 @@ const userSchema = new mongoose.Schema({
     country: {
         type: String,
         required: [true, "please select Your country"],
-        enum: ['Cambodia', 'Japan', 'Malaysia', 'Vietnam', 'Singapore', 'Indonesia', 'Hong Kong', 'Thailand', 'India']
+        enum: ['Cambodia', 'Japan', 'Malaysia', 'Vietnam', 'Singapore', 'Indonesia', 'Hong Kong', 'Thailand', 'India'],
     },
 
     password: {
         type: String,
         required: [true, "please Enter Your Password"],
-        // minLength: [8, "Password should be greater than 8 character"],`
+        minLength: [8, "Password should be greater than 8 character"],
         select: false,
     },
 
@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "please Enter Your language"],
         enum: ['english', 'thai', 'russian', 'chinese', 'hindi', 'francais'],
-        default: "english",
+        default: 'english',
     },
 
     balance: {
@@ -55,11 +55,11 @@ const userSchema = new mongoose.Schema({
 
     loggedIn: {
         type: Boolean,
-        default: false
+        default: false,
     },
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
     },
 
 

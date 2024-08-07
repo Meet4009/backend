@@ -8,6 +8,9 @@ const LotteryBuyer = require("../models/lotteryBuyer");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const lottery = require("../models/lottery");
 
+
+// ------ ------ create new lottery by admin ----- ----- // 
+
 exports.setlottery = catchAsyncErrors(async (req, res) => {
     try {
         const { name, price, totalDraw } = req.body;
@@ -33,18 +36,20 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
         scheduleLotteryDraw(drawDate);
 
         res.status(200).json({
-            success: true,
+            status: true,
             data: lottery,
             message: 'Lottery creatw Successfully'
         });
     } catch (error) {
 
         res.status(500).json({
-            success: false,
+            status: false,
             message: `Internal Server Error -- ${error}`
         });
     }
 });
+
+// ----- ----- show lottery (user) -----  ----- //
 
 exports.getLottery = async (req, res, next) => {
     try {
@@ -92,7 +97,7 @@ exports.getLottery = async (req, res, next) => {
         });
     } catch (error) {
         return res.status(500).json({
-            success: false,
+            status: false,
             message: `Internal Server Error -- ${error}`
         });
     }
@@ -172,7 +177,7 @@ exports.buylottery = async (req, res, next) => {
     } catch (error) {
 
         return res.status(500).json({
-            success: false,
+            status: false,
             message: `Internal Server Error -- ${error}`
         });
     }
@@ -207,9 +212,63 @@ exports.genarateTicketNumber = async (req, res, next) => {
         });
     } catch (error) {
         return res.status(500).json({
-            success: false,
+            status: false,
             message: `Internal Server Error -- ${error}`
         });
     }
 };
 
+exports.pendingTickets = async (req, res, next) => {
+    try {
+        const pendingTicket = await LotteryBuyer.find({ user_id: req.user.id, status: 'pending' }).populate('lottery_id').sort('createdAt');
+
+
+        res.status(200).json({
+            status: true,
+            data: pendingTicket,
+            message: "Ticket number fetch successfully"
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+}
+
+
+exports.ticketHistory = async (req, res, next) => {
+    try {
+        const allTicket = await LotteryBuyer.find({ user_id: req.user.id, status: { $ne: 'pending' } }).populate('lottery_id').sort('createdAt');
+
+        res.status(200).json({
+            status: true,
+            data: allTicket,
+            message: "Ticket number fetch successfully"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+}
+
+
+exports.getAllPendingTickets = async (req, res, next) => {
+    try {
+        const allTicket = await LotteryBuyer.find({ status: 'pending' }).populate('user_id').populate('lottery_id').sort('createdAt');
+        
+        res.status(200).json({
+            status: true,
+            data: allTicket,
+            message: "Pending tickets fetched successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+};

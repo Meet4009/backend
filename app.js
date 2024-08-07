@@ -17,8 +17,8 @@ const dashboard = require("./src/routes/dashboard")
 
 
 
-app.use("/api/v1", user);
-app.use("/api/v1/payment", userpayment);
+app.use("/thailottery/api/user", user);
+app.use("/thailottery/api/payment", userpayment);
 app.use("/api/v1/admin", lotteryprice, lottery, dashboard);
 
 

@@ -9,7 +9,9 @@ const { paymentApprove, paymentReject } = require("../utils/paymentDecision");
 
 
 
-exports.deposit = catchAsyncErrors(async (req, res) => {
+
+
+exports.deposit = catchAsyncErrors(async (req, res, next) => {
     const { token } = req.cookies;
 
     if (!token) {
@@ -77,7 +79,7 @@ exports.withdraw = catchAsyncErrors(async (req, res, next) => {
 
 
 
-exports.depositsHistory = catchAsyncErrors(async (req, res) => {
+exports.depositsHistory = catchAsyncErrors(async (req, res, next) => {
 
     const { token } = req.cookies;
 
@@ -98,7 +100,7 @@ exports.depositsHistory = catchAsyncErrors(async (req, res) => {
 
 });
 
-exports.withdrawHistory = catchAsyncErrors(async (req, res) => {
+exports.withdrawHistory = catchAsyncErrors(async (req, res, next) => {
 
     const { token } = req.cookies;
 
@@ -169,7 +171,7 @@ exports.getRequestDeposits = catchAsyncErrors(async (req, res) => {
 });
 
 
-exports.setApproveDeposit = catchAsyncErrors(async (req, res) => {
+exports.setApproveDeposit = catchAsyncErrors(async (req, res, next) => {
 
     const payment = await userPayment.findOne({ payment_type: "diposit", status: "pending", action_status: "pending", _id: req.params.id });
 
@@ -177,41 +179,41 @@ exports.setApproveDeposit = catchAsyncErrors(async (req, res) => {
         return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
     }
 
-    paymentApprove(payment, 200, res);
+     paymentApprove(payment, 200, res);
 
 });
 
 
 
-exports.setRejectDeposit = catchAsyncErrors(async (req, res) => {
+exports.setRejectDeposit = catchAsyncErrors(async (req, res, next) => {
     const payment = await userPayment.findOne({ payment_type: "diposit", status: "pending", action_status: "pending", _id: req.params.id });
 
     if (!payment) {
         return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
     }
 
-    paymentReject(payment, statusCode, res);
+     paymentReject(payment, 200, res);
 
 });
 
-exports.setApprovewithdraw = catchAsyncErrors(async (req, res) => {
+exports.setApprovewithdraw = catchAsyncErrors(async (req, res, next) => {
     const payment = await userPayment.findOne({ payment_type: "withdraw", status: "pending", action_status: "pending", _id: req.params.id });
 
     if (!payment) {
         return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
     }
 
-    paymentApprove(payment, 200, res);
+     paymentApprove(payment, 200, res);
 
 });
-exports.setRejectwithdraw = catchAsyncErrors(async (req, res) => {
+exports.setRejectwithdraw = catchAsyncErrors(async (req, res, next) => {
     const payment = await userPayment.findOne({ payment_type: "withdraw", status: "pending", action_status: "pending", _id: req.params.id });
 
     if (!payment) {
         return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
     }
 
-    paymentReject(payment, 200, res);
+     paymentReject(payment, 200, res);
 
 });
 

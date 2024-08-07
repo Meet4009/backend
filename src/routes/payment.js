@@ -8,12 +8,12 @@ const router = express.Router();
 
 
 // -------  user Routes ------- //
+// -->  http://localhost:8002/thailottery/api/payment
+router.route("/user/deposit").post(isAuthenticatedUser, deposit);
+router.route("/user/withdraw").post(isAuthenticatedUser, withdraw);
 
-router.route("/deposit").post(isAuthenticatedUser, deposit);
-router.route("/withdraw").post(isAuthenticatedUser, withdraw);
-
-router.route("/withdraw/history").get(isAuthenticatedUser, withdrawHistory);
-router.route("/deposite/history").get(isAuthenticatedUser, depositsHistory);
+router.route("/user/deposite/history").get(isAuthenticatedUser, depositsHistory);
+router.route("/user/withdraw/history").get(isAuthenticatedUser, withdrawHistory);
 
 
 

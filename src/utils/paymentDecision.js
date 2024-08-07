@@ -7,7 +7,7 @@ const ErrorHander = require("./errorhander");
 // --------------- payment Approve -------------- // 
 // -----------------------------------------------//
 
-exports.paymentApprove = catchAsyncErrors(async (payment, statusCode, res) => {
+const paymentApprove = catchAsyncErrors(async (payment, statusCode, res) => {
 
     const amount = payment.amount;
 
@@ -15,7 +15,7 @@ exports.paymentApprove = catchAsyncErrors(async (payment, statusCode, res) => {
 
     const user = await User.findById(userid);
     if (!user) {
-        return next(new ErrorHander(`user doen not exist Id: ${userid}`, 400));
+        return new ErrorHander(`user doen not exist Id: ${userid}`, 400);
     }
     const userBalance = user.balance;
 
@@ -32,8 +32,8 @@ exports.paymentApprove = catchAsyncErrors(async (payment, statusCode, res) => {
 
         await payment.save();
 
-        res.status(statusCode).json({
-            success: true,
+        return res.status(statusCode).json({
+            status: true,
             messaage: "diposit sucessfully",
             "Deposit": payment,
             "user": user
@@ -54,8 +54,8 @@ exports.paymentApprove = catchAsyncErrors(async (payment, statusCode, res) => {
 
         await payment.save();
 
-        res.status(statusCode).json({
-            success: true,
+        return res.status(statusCode).json({
+            status: true,
             messaage: "withdraw sucessfully",
             "withdraw": payment,
             "user": user
@@ -68,7 +68,7 @@ exports.paymentApprove = catchAsyncErrors(async (payment, statusCode, res) => {
 // --------------- payment Approve -------------- // 
 // -----------------------------------------------//
 
-exports.paymentReject = catchAsyncErrors(async (payment, statusCode, res) => {
+const paymentReject = catchAsyncErrors(async (payment, statusCode, res) => {
 
     const userid = payment.user_id;
 
@@ -85,8 +85,8 @@ exports.paymentReject = catchAsyncErrors(async (payment, statusCode, res) => {
 
         await payment.save();
 
-        res.status(statusCode).json({
-            success: true,
+        return res.status(statusCode).json({
+            status: true,
             messaage: "diposit rejected sucessfully",
             "Deposit": payment,
             "user": user
@@ -101,8 +101,8 @@ exports.paymentReject = catchAsyncErrors(async (payment, statusCode, res) => {
 
         await payment.save();
 
-        res.status(statusCode).json({
-            success: true,
+        return res.status(statusCode).json({
+            status: true,
             messaage: "withdraw rejected sucessfully",
             "withdraw": payment,
             "user": user
@@ -114,9 +114,9 @@ exports.paymentReject = catchAsyncErrors(async (payment, statusCode, res) => {
 // -----------------------------------------------------//
 // --------------- Total Deposite Amount -------------- // 
 // -----------------------------------------------------//
-function calculateAmount (dipositeData)  {
+function calculateAmount(dipositeData) {
     return dipositeData.reduce((total, dipositeData) => total + (dipositeData.amount || 0), 0);
 
 };
 
-module.exports = calculateAmount;
+module.exports = { calculateAmount, paymentReject, paymentApprove };

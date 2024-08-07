@@ -65,8 +65,8 @@ exports.getUserDatails = catchAsyncErrors(async (req, res, next) => {
     const user = await User.findById(req.user.id);
 
     res.status(200).json({
-        sucess: true,
-        user,
+        status: true,
+        data:user,
     })
 
 });
@@ -91,7 +91,7 @@ exports.logout = catchAsyncErrors(async (req, res, next) => {
     })
 
     res.status(200).json({
-        success: true,
+        status: true,
         message: "logged out"
     });
 });
@@ -130,7 +130,7 @@ exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
     const users = await User.find();
 
     res.status(200).json({
-        success: true,
+        status: true,
         users,
     });
 });
@@ -163,7 +163,7 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
             message,
         });
         res.status(200).json({
-            success: true,
+            status: true,
             message: `Email sent to ${user.email} sucesssfully`,
         })
 
