@@ -18,10 +18,16 @@ const dashboard = require("./src/routes/dashboard")
 
 
 app.use("/thailottery/api/user", user);
+app.use("/thailottery/api/admin", user);
+
+app.use("/thailottery/api/user/payment", userpayment);
+app.use("/thailottery/api/admin/payment", userpayment);
+
 app.use("/thailottery/api/payment", userpayment);
-app.use("/api/v1/admin", lotteryprice, lottery, dashboard);
-
-
+app.use("/thailottery/api", dashboard);
+app.use("/thailottery/api/lottery", lottery,);
+app.use("/thailottery/api/lottery", lotteryprice,);
+git 
 
 //Middeware for Error 
 

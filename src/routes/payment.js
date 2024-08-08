@@ -1,34 +1,56 @@
 const express = require("express");
 
-const { deposit, withdraw, getWithdraws, getRequestWithdraws, getDeposits, getRequestDeposits, setRejectDeposit, setRejectwithdraw, setApprovewithdraw, setApproveDeposit, depositsHistory, withdrawHistory } = require("../controller/paymentController");
+const {
+    deposit,
+    withdraw,
+    getWithdraws,
+    getRequestWithdraws,
+    getDeposits,
+    getRequestDeposits,
+    setRejectDeposit,
+    setRejectwithdraw,
+    setApprovewithdraw,
+    setApproveDeposit,
+    depositsHistory,
+    withdrawHistory
+} = require("../controller/paymentController");
+
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 const { paymentvalidStatus } = require("../middleware/paymentStatus");
 const router = express.Router();
 
 
+// -----------------------------------------------//
+// ------------------ User side ----------------- // 
+// -----------------------------------------------//
 
-// -------  user Routes ------- //
-// -->  http://localhost:8002/thailottery/api/payment
-router.route("/user/deposit").post(isAuthenticatedUser, deposit);
-router.route("/user/withdraw").post(isAuthenticatedUser, withdraw);
+// -->  http://localhost:8002/thailottery/api/user/payment
 
-router.route("/user/deposite/history").get(isAuthenticatedUser, depositsHistory);
-router.route("/user/withdraw/history").get(isAuthenticatedUser, withdrawHistory);
+router.route("/deposit").post(isAuthenticatedUser, deposit);                                                                    // OK 
+router.route("/withdraw").post(isAuthenticatedUser, withdraw);                                                                  // OK
+
+router.route("/deposite/history").get(isAuthenticatedUser, depositsHistory);                                                    // OK 
+router.route("/withdraw/history").get(isAuthenticatedUser, withdrawHistory);                                                    // OK
 
 
 
-// -------  admin Routes ------- //
+// -----------------------------------------------//
+// ------------------ Admin side ---------------- // 
+// -----------------------------------------------//
 
-router.route("/withdraws").get(isAuthenticatedUser, authorizeRoles("admin"), getWithdraws);
-router.route("/withdraws/:status").get(isAuthenticatedUser, authorizeRoles("admin"), paymentvalidStatus, getRequestWithdraws);
+// -->  http://localhost:8002/thailottery/api/admin/payment
 
-router.route("/deposites").get(isAuthenticatedUser, authorizeRoles("admin"), getDeposits);
-router.route("/deposites/:status").get(isAuthenticatedUser, authorizeRoles("admin"), paymentvalidStatus, getRequestDeposits);
+router.route("/deposites").get(isAuthenticatedUser, authorizeRoles("admin"), getDeposits);                                      // OK
+router.route("/:status/deposites").get(isAuthenticatedUser, authorizeRoles("admin"), paymentvalidStatus, getRequestDeposits);   // OK
 
-router.route("/deposite/approve/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setApproveDeposit);
-router.route("/deposite/reject/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setRejectDeposit);
+router.route("/withdraws").get(isAuthenticatedUser, authorizeRoles("admin"), getWithdraws);                                     // OK
+router.route("/:status/withdraws").get(isAuthenticatedUser, authorizeRoles("admin"), paymentvalidStatus, getRequestWithdraws);   // OK
 
-router.route("/withdraw/approve/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setApprovewithdraw);
-router.route("/withdraw/reject/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setRejectwithdraw);
+
+router.route("/deposite/approve/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setApproveDeposit);                     // Ok
+router.route("/deposite/reject/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setRejectDeposit);                       // OK  
+
+router.route("/withdraw/approve/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setApprovewithdraw);                    // Ok
+router.route("/withdraw/reject/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setRejectwithdraw);                      // OK
 
 module.exports = router;

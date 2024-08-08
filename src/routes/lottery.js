@@ -7,7 +7,9 @@ const { setlottery, getLottery, buylottery, genarateTicketNumber, pendingTickets
 
 const router = express.Router();
 
-router.route("/lottery").post(isAuthenticatedUser, authorizeRoles("admin"), setlottery);    // admin
+router.route("/newlottery").post(isAuthenticatedUser, authorizeRoles("admin"), setlottery);    // admin
+
+
 router.route("/lottery/:id").get(isAuthenticatedUser, getLottery);                          // user
 router.route("/buylottery").post(isAuthenticatedUser, buylottery);                          // user 
 router.route("/ticket-number").get(isAuthenticatedUser, genarateTicketNumber);              //user 

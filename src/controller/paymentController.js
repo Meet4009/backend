@@ -9,7 +9,9 @@ const { paymentApprove, paymentReject } = require("../utils/paymentDecision");
 
 
 
-
+// ----------------------------------------------------------//
+// ---------------- deposit request -- User ---------------- // 
+// ----------------------------------------------------------//
 
 exports.deposit = catchAsyncErrors(async (req, res, next) => {
     const { token } = req.cookies;
@@ -23,8 +25,6 @@ exports.deposit = catchAsyncErrors(async (req, res, next) => {
     const user = await User.findById(decodeData.id);
 
     const { amount, UTR } = req.body;
-
-
 
     const payment = await userPayment.create({
         user_id: user.id,
@@ -41,6 +41,12 @@ exports.deposit = catchAsyncErrors(async (req, res, next) => {
     });
 
 });
+
+
+
+// ----------------------------------------------------------//
+// ---------------- Withdraw request -- User --------------- // 
+// ----------------------------------------------------------//
 
 exports.withdraw = catchAsyncErrors(async (req, res, next) => {
     const { token } = req.cookies;
@@ -79,6 +85,10 @@ exports.withdraw = catchAsyncErrors(async (req, res, next) => {
 
 
 
+// ----------------------------------------------------------//
+// --------------- Deposits History -- User ---------------- // 
+// ----------------------------------------------------------//
+
 exports.depositsHistory = catchAsyncErrors(async (req, res, next) => {
 
     const { token } = req.cookies;
@@ -99,6 +109,12 @@ exports.depositsHistory = catchAsyncErrors(async (req, res, next) => {
     });
 
 });
+
+
+
+// ----------------------------------------------------------//
+// ---------------- Withdraw History -- User --------------- // 
+// ----------------------------------------------------------//
 
 exports.withdrawHistory = catchAsyncErrors(async (req, res, next) => {
 
@@ -121,30 +137,11 @@ exports.withdrawHistory = catchAsyncErrors(async (req, res, next) => {
 
 });
 
-exports.getWithdraws = catchAsyncErrors(async (req, res) => {
 
-    const payment = await userPayment.find({ payment_type: "withdraw" })
-        .populate('user_id');
 
-    res.status(200).json({
-        success: true,
-        "withdraw": payment,
-    });
-
-});
-
-exports.getRequestWithdraws = catchAsyncErrors(async (req, res) => {
-
-    const payment = await userPayment.find({ payment_type: "withdraw", action_status: req.params.status })
-        .populate('user_id');
-
-    res.status(200).json({
-        success: true,
-        "withdraw": payment,
-    });
-
-});
-
+// ----------------------------------------------------------//
+// ---------------- Deposit History -- admin --------------- // 
+// ----------------------------------------------------------//
 
 exports.getDeposits = catchAsyncErrors(async (req, res) => {
 
@@ -157,6 +154,12 @@ exports.getDeposits = catchAsyncErrors(async (req, res) => {
     });
 
 });
+
+
+
+// ----------------------------------------------------------//
+// --- Pending, Approve, Reject Deposit History -- admin --- // 
+// ----------------------------------------------------------//
 
 exports.getRequestDeposits = catchAsyncErrors(async (req, res) => {
 
@@ -171,6 +174,47 @@ exports.getRequestDeposits = catchAsyncErrors(async (req, res) => {
 });
 
 
+
+// ----------------------------------------------------------//
+// ---------------- Withdraw History -- admin -------------- // 
+// ----------------------------------------------------------//
+
+exports.getWithdraws = catchAsyncErrors(async (req, res) => {
+
+    const payment = await userPayment.find({ payment_type: "withdraw" })
+        .populate('user_id');
+
+    res.status(200).json({
+        success: true,
+        "withdraw": payment,
+    });
+
+});
+
+
+
+// -----------------------------------------------------------//
+// --- Pending, Approve, Reject withdraw History -- admin --- // 
+// -----------------------------------------------------------//
+
+exports.getRequestWithdraws = catchAsyncErrors(async (req, res) => {
+
+    const payment = await userPayment.find({ payment_type: "withdraw", action_status: req.params.status })
+        .populate('user_id');
+
+    res.status(200).json({
+        success: true,
+        "withdraw": payment,
+    });
+
+});
+
+
+
+// ----------------------------------------------------------//
+// --------------- Approve Deposit -- admin ---------------- // 
+// ----------------------------------------------------------//
+
 exports.setApproveDeposit = catchAsyncErrors(async (req, res, next) => {
 
     const payment = await userPayment.findOne({ payment_type: "diposit", status: "pending", action_status: "pending", _id: req.params.id });
@@ -179,11 +223,15 @@ exports.setApproveDeposit = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
     }
 
-     paymentApprove(payment, 200, res);
+    paymentApprove(payment, 200, res);
 
 });
 
 
+
+// ----------------------------------------------------------//
+// ---------------- Reject Deposit -- admin ---------------- // 
+// ----------------------------------------------------------//
 
 exports.setRejectDeposit = catchAsyncErrors(async (req, res, next) => {
     const payment = await userPayment.findOne({ payment_type: "diposit", status: "pending", action_status: "pending", _id: req.params.id });
@@ -192,9 +240,15 @@ exports.setRejectDeposit = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
     }
 
-     paymentReject(payment, 200, res);
+    paymentReject(payment, 200, res);
 
 });
+
+
+
+// ----------------------------------------------------------//
+// --------------- Approve Withdraw -- admin --------------- // 
+// ----------------------------------------------------------//
 
 exports.setApprovewithdraw = catchAsyncErrors(async (req, res, next) => {
     const payment = await userPayment.findOne({ payment_type: "withdraw", status: "pending", action_status: "pending", _id: req.params.id });
@@ -203,9 +257,16 @@ exports.setApprovewithdraw = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
     }
 
-     paymentApprove(payment, 200, res);
+    paymentApprove(payment, 200, res);
 
 });
+
+
+
+// ----------------------------------------------------------//
+// --------------- Reject Withdraw -- admin ---------------- // 
+// ----------------------------------------------------------//
+
 exports.setRejectwithdraw = catchAsyncErrors(async (req, res, next) => {
     const payment = await userPayment.findOne({ payment_type: "withdraw", status: "pending", action_status: "pending", _id: req.params.id });
 
@@ -213,7 +274,7 @@ exports.setRejectwithdraw = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
     }
 
-     paymentReject(payment, 200, res);
+    paymentReject(payment, 200, res);
 
 });
 
