@@ -15,7 +15,7 @@ const { log } = require("console");
 
 exports.registerUser = catchAsyncErrors(async (req, res) => {
     const { name, email, password, mobile_No, country } = req.body;
-    
+
     const user = await User.create({
         name,
         email,
@@ -23,9 +23,9 @@ exports.registerUser = catchAsyncErrors(async (req, res) => {
         country,
         password,
     });
-    
+
     const token = user.getJWTToken();
-    
+
     sendToken(user, 200, res);
 });
 

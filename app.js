@@ -17,19 +17,24 @@ const dashboard = require("./src/routes/dashboard")
 
 
 
-app.use("/thailottery/api/user", user);
-app.use("/thailottery/api/admin", user);
+app.use("/thailottery/api/user", user);                                       // OK
+app.use("/thailottery/api/admin", user);                                      // OK
 
-app.use("/thailottery/api/user/payment", userpayment);
-app.use("/thailottery/api/admin/payment", userpayment);
+app.use("/thailottery/api/user/payment", userpayment);                        // OK
+app.use("/thailottery/api/admin/payment", userpayment);                       // OK
 
-app.use("/thailottery/api/payment", userpayment);
-app.use("/thailottery/api", dashboard);
-app.use("/thailottery/api/lottery", lottery,);
-app.use("/thailottery/api/lottery", lotteryprice,);
-git 
+
+app.use("/thailottery/api/admin", dashboard);                                 // OK 
+
+app.use("/thailottery/api", lotteryprice,);                                   // OK 
+
+app.use("/thailottery/api/admin/lottery", lottery,);
+
+app.use("/thailottery/api/user/lottery", lottery,);
+
 
 //Middeware for Error 
 
 app.use(errorMiddleware);
-module.exports = app;                                                 // server.js     
+
+module.exports = app;                                                

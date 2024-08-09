@@ -36,8 +36,9 @@ exports.deposit = catchAsyncErrors(async (req, res, next) => {
     await payment.save();
 
     res.status(200).json({
-        success: true,
-        payment,
+        status: true,
+        data: payment,
+        message: 'Deposit request has been sent'
     });
 
 });
@@ -77,8 +78,9 @@ exports.withdraw = catchAsyncErrors(async (req, res, next) => {
     await payment.save();
 
     res.status(200).json({
-        success: true,
-        payment,
+        status: true,
+        data: payment,
+        message: 'withdraw request has been sent'
     });
 
 });
@@ -104,8 +106,9 @@ exports.depositsHistory = catchAsyncErrors(async (req, res, next) => {
     const History = await userPayment.find({ payment_type: "diposit", user_id: { _id: user.id } });
 
     res.status(200).json({
-        success: true,
-        "Deposits History": History,
+        status: true,
+        Data: History,
+        message: 'The deposit history has been loaded'
     });
 
 });
@@ -131,8 +134,9 @@ exports.withdrawHistory = catchAsyncErrors(async (req, res, next) => {
     const History = await userPayment.find({ payment_type: "withdraw", user_id: { _id: user.id } });
 
     res.status(200).json({
-        success: true,
-        "withdraw History": History,
+        status: true,
+        Data: History,
+        message: 'The deposit withdraw has been loaded'
     });
 
 });
@@ -149,8 +153,9 @@ exports.getDeposits = catchAsyncErrors(async (req, res) => {
         .populate('user_id');
 
     res.status(200).json({
-        success: true,
-        "diposit": payment,
+        status: true,
+        data: payment,
+        message: 'diposit data '
     });
 
 });
@@ -163,12 +168,13 @@ exports.getDeposits = catchAsyncErrors(async (req, res) => {
 
 exports.getRequestDeposits = catchAsyncErrors(async (req, res) => {
 
-    const payment = await userPayment.find({ payment_type: "diposit", action_status: req.params.status })
-        .populate('user_id');
+    const payment = await userPayment.find({ payment_type: "diposit", action_status: req.params.status }).populate('user_id');
+    const request = req.params.status;
 
     res.status(200).json({
-        success: true,
-        "diposit": payment,
+        status: true,
+        data: payment,
+        message: `${request} deposite has been loaded`,
     });
 
 });
@@ -185,8 +191,9 @@ exports.getWithdraws = catchAsyncErrors(async (req, res) => {
         .populate('user_id');
 
     res.status(200).json({
-        success: true,
-        "withdraw": payment,
+        status: true,
+        data: payment,
+        message: 'Withdraw data '
     });
 
 });
@@ -201,10 +208,12 @@ exports.getRequestWithdraws = catchAsyncErrors(async (req, res) => {
 
     const payment = await userPayment.find({ payment_type: "withdraw", action_status: req.params.status })
         .populate('user_id');
+    const request = req.params.status;
 
     res.status(200).json({
-        success: true,
-        "withdraw": payment,
+        status: true,
+        data: payment,
+        message: `${request} withdraw has been loaded`,
     });
 
 });

@@ -3,7 +3,7 @@ const ErrorHander = require("../utils/errorhander");
 
 const User = require("../models/userModel");
 const userPayment = require("../models/userPayment");
-const calculateAmount = require("../utils/paymentDecision");
+const { calculateAmount } = require("../utils/paymentDecision");
 
 
 

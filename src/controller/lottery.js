@@ -1,15 +1,17 @@
+const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+
 const Lottery = require("../models/lottery");
 const LotteryDraw = require("../models/lotteryDraw");
 const User = require("../models/userModel");
 const { scheduleLotteryDraw } = require("../utils/lotteryCron");
-const ErrorHander = require("../utils/errorhander");
 const LotteryBuyer = require("../models/lotteryBuyer");
 
-const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-const lottery = require("../models/lottery");
+const { generateRandom12DigitNumber } = require("../utils/genarateTicketNumber");
 
 
-// ------ ------ create new lottery by admin ----- ----- // 
+// ----------------------------------------------------------//
+// -------------- Create new lottery by admin -------------- // 
+// ----------------------------------------------------------//
 
 exports.setlottery = catchAsyncErrors(async (req, res) => {
     try {
@@ -19,6 +21,7 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
             user_id: req.user.id,
             name, price, totalDraw
         });
+                
         await lottery.save();
 
         let startDate = new Date();
@@ -38,7 +41,7 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
         res.status(200).json({
             status: true,
             data: lottery,
-            message: 'Lottery creatw Successfully'
+            message: 'Lottery create Successfully'
         });
     } catch (error) {
 
@@ -49,7 +52,45 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
     }
 });
 
-// ----- ----- show lottery (user) -----  ----- //
+
+// ----------------------------------------------------------//
+// ---------------- Get All lottery -- admin --------------- // 
+// ----------------------------------------------------------//
+
+exports.getLotterys = catchAsyncErrors(async (req, res) => {
+    try {
+
+        const lottery = await Lottery.find();
+
+        if (!lottery) {
+            return res.status(200).json({
+                status: false,
+                data: {},
+                message: "Lottery not found"
+            });
+        }
+
+        let lotteryDraw = await LotteryDraw.find();
+
+        res.status(200).json({
+            status: true,
+            data: { lottery, lotteryDraw },
+            message: 'All Lottery get Successfully'
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+});
+
+
+// ----------------------------------------------------------//
+// ----------------- Get Lottery ---  User ----------------- // 
+// ----------------------------------------------------------//
 
 exports.getLottery = async (req, res, next) => {
     try {
@@ -84,7 +125,7 @@ exports.getLottery = async (req, res, next) => {
         }
 
         let lotteryObj = {
-            winning_price: 0, // Assuming you will calculate this value elsewhere
+            winning_price: 0,                   // Assuming you will calculate this value elsewhere
             total_draw: lottery.totalDraw,
             price: lottery.price,
             draw_date: lotteryDrawObj[0].drawDate
@@ -93,7 +134,7 @@ exports.getLottery = async (req, res, next) => {
         res.status(200).json({
             status: true,
             data: lotteryObj,
-            message: "Lottery found successfully "
+            message: "Lottery found successfully"
         });
     } catch (error) {
         return res.status(500).json({
@@ -103,6 +144,10 @@ exports.getLottery = async (req, res, next) => {
     }
 };
 
+
+// ----------------------------------------------------------//
+// ----------------- Buy Lottery ---  User ----------------- // 
+// ----------------------------------------------------------//
 
 exports.buylottery = async (req, res, next) => {
     try {
@@ -167,10 +212,10 @@ exports.buylottery = async (req, res, next) => {
             });
 
             await ticket.save();
-            
+
         })
         getUser.balance -= (lottery.price * ticket_number.length)
-            await getUser.save();
+        await getUser.save();
 
         res.status(200).json({
             status: true,
@@ -186,20 +231,10 @@ exports.buylottery = async (req, res, next) => {
     }
 };
 
-async function generateRandom12DigitNumber() {
-    let number = '';
-    for (let i = 0; i < 12; i++) {
-        number += Math.floor(Math.random() * 10);
-    }
 
-    const ticketBuyer = await LotteryBuyer.find({ ticketNumber: number })
-
-    if (ticketBuyer.length != 0) {
-        number = generateRandom12DigitNumber()
-    }
-
-    return number;
-}
+// ----------------------------------------------------------//
+// ------------ Genarate Lottery Ticket -- User ------------ // 
+// ----------------------------------------------------------//
 
 
 exports.genarateTicketNumber = async (req, res, next) => {
@@ -221,10 +256,14 @@ exports.genarateTicketNumber = async (req, res, next) => {
     }
 };
 
+// ----------------------------------------------------------//
+// ------------- bought Lottery Ticket -- User ------------- // 
+// ----------------------------------------------------------//
+
+
 exports.pendingTickets = async (req, res, next) => {
     try {
         const pendingTicket = await LotteryBuyer.find({ user_id: req.user.id, status: 'pending' }).populate('lottery_id').sort('createdAt');
-
 
         res.status(200).json({
             status: true,
@@ -238,6 +277,10 @@ exports.pendingTickets = async (req, res, next) => {
         });
     }
 }
+
+// ----------------------------------------------------------//
+// ------------  Lottery Ticket History -- User ------------ // 
+// ----------------------------------------------------------//
 
 
 exports.ticketHistory = async (req, res, next) => {
@@ -259,10 +302,14 @@ exports.ticketHistory = async (req, res, next) => {
 }
 
 
+// ----------------------------------------------------------//
+// ----------------  choose Winner -- Admin ---------------- // 
+// ----------------------------------------------------------//
+
 exports.getAllPendingTickets = async (req, res, next) => {
     try {
         const allTicket = await LotteryBuyer.find({ status: 'pending' }).populate('user_id').populate('lottery_id').sort('createdAt');
-        
+
         res.status(200).json({
             status: true,
             data: allTicket,
@@ -276,6 +323,10 @@ exports.getAllPendingTickets = async (req, res, next) => {
     }
 };
 
+
+// ----------------------------------------------------------//
+// -----------------  loss buyer --- Admin ----------------- // 
+// ----------------------------------------------------------//
 
 exports.lossbuyer = async (req, res, next) => {
     try {
@@ -297,7 +348,9 @@ exports.lossbuyer = async (req, res, next) => {
     }
 };
 
-
+// ----------------------------------------------------------//
+// ------------------  win buyer -- Admin ------------------ // 
+// ----------------------------------------------------------//
 
 exports.winbuyer = async (req, res, next) => {
     try {

@@ -34,9 +34,8 @@ const paymentApprove = catchAsyncErrors(async (payment, statusCode, res) => {
 
         return res.status(statusCode).json({
             status: true,
-            messaage: "diposit sucessfully",
-            "Deposit": payment,
-            "user": user
+            data: { payment, user },
+            messaage: "Diposit sucessfully",
         });
     }
 
@@ -56,9 +55,8 @@ const paymentApprove = catchAsyncErrors(async (payment, statusCode, res) => {
 
         return res.status(statusCode).json({
             status: true,
-            messaage: "withdraw sucessfully",
-            "withdraw": payment,
-            "user": user
+            data: { payment, user },
+            messaage: "Withdraw sucessfully",
         });
     }
 })
@@ -87,9 +85,8 @@ const paymentReject = catchAsyncErrors(async (payment, statusCode, res) => {
 
         return res.status(statusCode).json({
             status: true,
-            messaage: "diposit rejected sucessfully",
-            "Deposit": payment,
-            "user": user
+            data: { payment, user },
+            messaage: "diposit rejected sucessfully"
         });
     }
 
@@ -103,9 +100,8 @@ const paymentReject = catchAsyncErrors(async (payment, statusCode, res) => {
 
         return res.status(statusCode).json({
             status: true,
-            messaage: "withdraw rejected sucessfully",
-            "withdraw": payment,
-            "user": user
+            data: {payment,user},
+            messaage: "withdraw rejected sucessfully"
         });
     }
 });

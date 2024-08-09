@@ -15,13 +15,14 @@ exports.setlotteryPrice = async (req, res) => {
             data: lottery_price,
             message: `lottery Price create successfully`
         });
+
     } catch (error) {
         return res.status(500).json({
             status: false,
+            data: {},
             message: `Internal Server Error -- ${error}`
         });
     }
-
 };
 
 
