@@ -2,7 +2,8 @@ const express = require("express");
 
 
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
-const { setlottery, getLottery, buylottery, genarateTicketNumber, pendingTickets, ticketHistory, getAllPendingTickets, lossbuyer, winbuyer, getLotterys } = require("../controller/lottery");
+const { setlottery, getLottery, buylottery, genarateTicketNumber, pendingTickets, ticketHistory, getAllPendingTickets, lossbuyer, winbuyer, getLotterys, getWinnerSpace } = require("../controller/lottery");
+const { route } = require("./userRoutes");
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ router.route("/choose-winner").get(isAuthenticatedUser, authorizeRoles("admin"),
 
 router.route("/loss-buyer/:id").get(isAuthenticatedUser, authorizeRoles("admin"), lossbuyer);                    // OK
 router.route("/win-buyer/:id").post(isAuthenticatedUser, authorizeRoles("admin"), winbuyer);  // admin
-
+router.route("/winner-space/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getWinnerSpace);  // admin
 
 
 // -----------------------------------------------//
@@ -30,6 +31,8 @@ router.route("/ticket-number").get(isAuthenticatedUser, genarateTicketNumber);  
 router.route("/buylottery").post(isAuthenticatedUser, buylottery);                          // OK 
 router.route("/pending-ticket").get(isAuthenticatedUser, pendingTickets);                   // OK
 router.route("/all-ticket").get(isAuthenticatedUser, ticketHistory);                        // OK
+
+
 
 
 

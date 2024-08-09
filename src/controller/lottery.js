@@ -1,5 +1,5 @@
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-
+const lotteryPrice = require("../models/lotteryPrice");
 const Lottery = require("../models/lottery");
 const LotteryDraw = require("../models/lotteryDraw");
 const User = require("../models/userModel");
@@ -7,6 +7,7 @@ const { scheduleLotteryDraw } = require("../utils/lotteryCron");
 const LotteryBuyer = require("../models/lotteryBuyer");
 
 const { generateRandom12DigitNumber } = require("../utils/genarateTicketNumber");
+
 
 
 // ----------------------------------------------------------//
@@ -21,7 +22,7 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
             user_id: req.user.id,
             name, price, totalDraw
         });
-                
+
         await lottery.save();
 
         let startDate = new Date();
@@ -51,6 +52,7 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
         });
     }
 });
+
 
 
 // ----------------------------------------------------------//
@@ -86,6 +88,7 @@ exports.getLotterys = catchAsyncErrors(async (req, res) => {
         });
     }
 });
+
 
 
 // ----------------------------------------------------------//
@@ -143,6 +146,7 @@ exports.getLottery = async (req, res, next) => {
         });
     }
 };
+
 
 
 // ----------------------------------------------------------//
@@ -232,10 +236,10 @@ exports.buylottery = async (req, res, next) => {
 };
 
 
+
 // ----------------------------------------------------------//
 // ------------ Genarate Lottery Ticket -- User ------------ // 
 // ----------------------------------------------------------//
-
 
 exports.genarateTicketNumber = async (req, res, next) => {
     try {
@@ -256,10 +260,11 @@ exports.genarateTicketNumber = async (req, res, next) => {
     }
 };
 
+
+
 // ----------------------------------------------------------//
 // ------------- bought Lottery Ticket -- User ------------- // 
 // ----------------------------------------------------------//
-
 
 exports.pendingTickets = async (req, res, next) => {
     try {
@@ -278,10 +283,11 @@ exports.pendingTickets = async (req, res, next) => {
     }
 }
 
+
+
 // ----------------------------------------------------------//
 // ------------  Lottery Ticket History -- User ------------ // 
 // ----------------------------------------------------------//
-
 
 exports.ticketHistory = async (req, res, next) => {
     try {
@@ -300,6 +306,7 @@ exports.ticketHistory = async (req, res, next) => {
         });
     }
 }
+
 
 
 // ----------------------------------------------------------//
@@ -322,6 +329,7 @@ exports.getAllPendingTickets = async (req, res, next) => {
         });
     }
 };
+
 
 
 // ----------------------------------------------------------//
@@ -348,6 +356,8 @@ exports.lossbuyer = async (req, res, next) => {
     }
 };
 
+
+
 // ----------------------------------------------------------//
 // ------------------  win buyer -- Admin ------------------ // 
 // ----------------------------------------------------------//
@@ -370,6 +380,49 @@ exports.winbuyer = async (req, res, next) => {
         res.status(500).json({
             status: false,
             message: `Internal Server Error -- ${error}`
+        });
+    }
+};
+
+
+
+// ----------------------------------------------------------//
+// -----------  winner price selection --- Admin ----------- // 
+// ----------------------------------------------------------//
+
+exports.getWinnerSpace = async (req, res, next) => {
+    try {
+        // Find winning tickets for the given lottery draw ID
+        const winningTickets = await LotteryBuyer.find({
+            lottery_draw_id: req.params.id,
+            status: 'win'
+        }).lean();
+
+        // Get all lottery prices
+        const prices = await lotteryPrice.find().lean();
+
+        // Count occurrences of each lottery_price_id in winning tickets
+        const ticketCounts = winningTickets.reduce((acc, ticket) => {
+            const priceId = ticket.lottery_price_id;
+            acc[priceId] = (acc[priceId] || 0) + 1;
+            return acc;
+        }, {});
+
+        // Map over the prices and attach the count of winning tickets for each price
+        const spaces = prices.map(price => ({
+            ...price,
+            fill_space: ticketCounts[price._id.toString()] || 0
+        }));
+
+        res.status(200).json({
+            status: true,
+            data: spaces,
+            message: "Ticket status fetched successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error.message}`
         });
     }
 };
