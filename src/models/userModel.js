@@ -17,10 +17,26 @@ const userSchema = new mongoose.Schema({
         unique: true,
         validate: [validator.isEmail, "please Enter a valid Email"],
     },
+    balance: {
+        type: Number,
+        default: 0,
+    },
+
+    role: {
+        type: String,
+        default: "user",
+    },
+
+    loggedIn: {
+        type: Boolean,
+        default: false,
+    },
+
     mobile_No: {
         type: Number,
+        unique: true,
         required: [true, "please Enter Your mobile number"],
-        minLength: [10, "Mobile Number should be greater than 10 character"],
+        match: [/^\d{10}$/, 'Please enter a valid 10-digit mobile number'],
     },
 
     country: {
@@ -39,24 +55,10 @@ const userSchema = new mongoose.Schema({
     language: {
         type: String,
         required: [true, "please Enter Your language"],
-        enum: ['english', 'thai', 'russian', 'chinese', 'hindi', 'francais'],
+        enum: ['english', 'thai', 'russian', 'chinese', ],
         default: 'english',
     },
 
-    balance: {
-        type: Number,
-        default: 0,
-    },
-
-    role: {
-        type: String,
-        default: "user",
-    },
-
-    loggedIn: {
-        type: Boolean,
-        default: false,
-    },
     createdAt: {
         type: Date,
         default: Date.now,
@@ -110,3 +112,4 @@ userSchema.methods.getResetPasswordToken = function () {
 
 
 module.exports = mongoose.model("User", userSchema);
+

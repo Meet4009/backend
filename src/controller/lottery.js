@@ -72,11 +72,11 @@ exports.getLotterys = catchAsyncErrors(async (req, res) => {
             });
         }
 
-        let lotteryDraw = await LotteryDraw.find();
+        // let lotteryDraw = await LotteryDraw.find();
 
         res.status(200).json({
             status: true,
-            data: { lottery, lotteryDraw },
+            data: { lottery },
             message: 'All Lottery get Successfully'
         });
 
@@ -158,7 +158,7 @@ exports.buylottery = async (req, res, next) => {
 
         const { ticket_number, lottery_id } = req.body;
 
-        if (!Array.isArray(ticket_number)) {
+        if (!Array.isArray(ticket_number) || ticket_number == null) {
             return res.status(200).json({
                 status: false,
                 data: {},
@@ -361,25 +361,49 @@ exports.lossbuyer = async (req, res, next) => {
 // ----------------------------------------------------------//
 // ------------------  win buyer -- Admin ------------------ // 
 // ----------------------------------------------------------//
-
 exports.winbuyer = async (req, res, next) => {
     try {
         const ticket = await LotteryBuyer.findById(req.params.id);
 
-        ticket.status = 'win'
+        if (!ticket) {
+            return res.status(404).json({
+                status: false,
+                message: "Ticket not found"
+            });
+        }
 
-        ticket.lottery_price_id = req.body.lottery_price_id
+        const spaces = await helperWinnerSpace(ticket.lottery_draw_id);
 
-        await ticket.save();
-        res.status(200).json({
-            status: true,
-            data: {},
-            message: "Ticket status change successfully"
-        });
+        const priceObj = spaces.find(currentObj => currentObj._id == req.body.lottery_price_id);
+
+        if (!priceObj) {
+            return res.status(400).json({
+                status: false,
+                message: "Invalid lottery price ID"
+            });
+        }
+
+        if (priceObj.fill_space < priceObj.totalPerson) {
+            ticket.status = 'win';
+            ticket.lottery_price_id = req.body.lottery_price_id;
+            await ticket.save();
+            
+            return res.status(200).json({
+                status: true,
+                data: {},
+                message: "Ticket status changed successfully"
+            });
+        } else {
+            return res.status(400).json({
+                status: false,
+                data: {},
+                message: "Prize slot not available"
+            });
+        }
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             status: false,
-            message: `Internal Server Error -- ${error}`
+            message: `Internal Server Error -- ${error.message}`
         });
     }
 };
@@ -390,11 +414,12 @@ exports.winbuyer = async (req, res, next) => {
 // -----------  winner price selection --- Admin ----------- // 
 // ----------------------------------------------------------//
 
-exports.getWinnerSpace = async (req, res, next) => {
+const helperWinnerSpace = async (id) => {
     try {
+
         // Find winning tickets for the given lottery draw ID
         const winningTickets = await LotteryBuyer.find({
-            lottery_draw_id: req.params.id,
+            lottery_draw_id: id,
             status: 'win'
         }).lean();
 
@@ -414,6 +439,19 @@ exports.getWinnerSpace = async (req, res, next) => {
             fill_space: ticketCounts[price._id.toString()] || 0
         }));
 
+
+        return spaces
+
+    } catch (error) {
+        return error;
+    }
+}
+
+
+exports.getWinnerSpace = async (req, res, next) => {
+    try {
+        const spaces = await helperWinnerSpace(req.params.id);
+
         res.status(200).json({
             status: true,
             data: spaces,
@@ -426,3 +464,4 @@ exports.getWinnerSpace = async (req, res, next) => {
         });
     }
 };
+
