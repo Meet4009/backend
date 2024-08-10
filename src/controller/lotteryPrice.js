@@ -25,4 +25,24 @@ exports.setlotteryPrice = async (req, res) => {
     }
 };
 
+exports.lotteryPrice = async (req, res) => {
+    try {
+        const lortteryPrice = await LotteryPrice.find().sort();
+
+        res.status(200).json({
+            status: true,
+            data: lortteryPrice,
+            message: `All lottery Price`
+        });
+
+
+    } catch (error) {
+        return res.status(500).json({
+            status: false,
+            data: {},
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+}
+
 

@@ -1,16 +1,25 @@
 const express = require("express");
 
-
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
-const { setlottery, getLottery, buylottery, genarateTicketNumber, pendingTickets, ticketHistory, getAllPendingTickets, lossbuyer, winbuyer, getLotterys, getWinnerSpace } = require("../controller/lottery");
-const { route } = require("./userRoutes");
-
+const { setlottery,
+    getLottery,
+    buylottery,
+    genarateTicketNumber,
+    pendingTickets,
+    ticketHistory,
+    getAllPendingTickets,
+    lossbuyer,
+    winbuyer,
+    getLotterys,
+    getWinnerSpace } = require("../controller/lottery");
 const router = express.Router();
 
 
 // -----------------------------------------------//
 // ------------------ Admin side ---------------- // 
 // -----------------------------------------------//
+
+// --> http://localhost:8002/thailottery/api/admin/lottery
 
 router.route("/newlottery").post(isAuthenticatedUser, authorizeRoles("admin"), setlottery);                      // OK
 router.route("/all-lottery").get(isAuthenticatedUser, authorizeRoles("admin"), getLotterys);                     // OK
@@ -25,6 +34,8 @@ router.route("/winner-space/:id").get(isAuthenticatedUser, authorizeRoles("admin
 // -----------------------------------------------//
 // ------------------ User side ----------------- // 
 // -----------------------------------------------//
+
+// --> http://localhost:8002/thailottery/api/user/lottery
 
 router.route("/details/:id").get(isAuthenticatedUser, getLottery);                          // OK
 router.route("/ticket-number").get(isAuthenticatedUser, genarateTicketNumber);              // Ok
