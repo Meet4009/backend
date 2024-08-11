@@ -55,8 +55,14 @@ const userSchema = new mongoose.Schema({
     language: {
         type: String,
         required: [true, "please Enter Your language"],
-        enum: ['english', 'thai', 'russian', 'chinese', ],
+        enum: ['english', 'thai', 'russian', 'chinese',],
         default: 'english',
+    },
+
+    currrency_code: {                          //  INR = 356 & THB = 764
+        type: Number,
+        default: 764,
+        enum: [764, 356]
     },
 
     createdAt: {
