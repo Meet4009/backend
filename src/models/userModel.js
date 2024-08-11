@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
         validate: [validator.isEmail, "please Enter a valid Email"],
     },
     balance: {
-        type: Number,
+        type: Number, // store as USD
         default: 0,
     },
 
@@ -65,6 +65,7 @@ const userSchema = new mongoose.Schema({
         enum: [764, 356]
     },
 
+    
     createdAt: {
         type: Date,
         default: Date.now,

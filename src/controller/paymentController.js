@@ -6,6 +6,7 @@ const userPayment = require("../models/userPayment");
 
 const jwt = require("jsonwebtoken");
 const { paymentApprove, paymentReject } = require("../utils/paymentDecision");
+const { currencyConveraterToTHB, currencyConveraterToUSD } = require("../utils/currencyConverater");
 
 
 
@@ -30,6 +31,7 @@ exports.deposit = catchAsyncErrors(async (req, res, next) => {
         user_id: user.id,
         amount,
         UTR,
+        currrency_code: user.currrency_code,
         payment_type: "diposit"
     })
 
@@ -72,7 +74,8 @@ exports.withdraw = catchAsyncErrors(async (req, res, next) => {
         user_id: user.id,
         amount,
         upi_id,
-        payment_type: "withdraw"
+        payment_type: "withdraw",
+        currrency_code: user.currrency_code,
     })
 
     await payment.save();
@@ -152,9 +155,15 @@ exports.getDeposits = catchAsyncErrors(async (req, res) => {
     const payment = await userPayment.find({ payment_type: "diposit" })
         .populate('user_id');
 
+    let data = [];
+    for (let currentPayment of payment) {
+        const convertedAmount = await currencyConveraterToTHB(currentPayment.currency_code, currentPayment.amount);
+        data.push({ ...currentPayment.toObject(), amount: convertedAmount });
+    }
+
     res.status(200).json({
         status: true,
-        data: payment,
+        data: data,
         message: 'diposit data '
     });
 
@@ -171,9 +180,15 @@ exports.getRequestDeposits = catchAsyncErrors(async (req, res) => {
     const payment = await userPayment.find({ payment_type: "diposit", action_status: req.params.status }).populate('user_id');
     const request = req.params.status;
 
+    let data = [];
+    for (let currentPayment of payment) {
+        const convertedAmount = await currencyConveraterToTHB(currentPayment.currency_code, currentPayment.amount);
+        data.push({ ...currentPayment.toObject(), amount: convertedAmount });
+    }
+
     res.status(200).json({
         status: true,
-        data: payment,
+        data: data,
         message: `${request} deposite has been loaded`,
     });
 
@@ -190,9 +205,15 @@ exports.getWithdraws = catchAsyncErrors(async (req, res) => {
     const payment = await userPayment.find({ payment_type: "withdraw" })
         .populate('user_id');
 
+    let data = [];
+    for (let currentPayment of payment) {
+        const convertedAmount = await currencyConveraterToTHB(currentPayment.currency_code, currentPayment.amount);
+        data.push({ ...currentPayment.toObject(), amount: convertedAmount });
+    }
+
     res.status(200).json({
         status: true,
-        data: payment,
+        data: data,
         message: 'Withdraw data '
     });
 
@@ -210,9 +231,15 @@ exports.getRequestWithdraws = catchAsyncErrors(async (req, res) => {
         .populate('user_id');
     const request = req.params.status;
 
+    let data = [];
+    for (let currentPayment of payment) {
+        const convertedAmount = await currencyConveraterToTHB(currentPayment.currency_code, currentPayment.amount);
+        data.push({ ...currentPayment.toObject(), amount: convertedAmount });
+    }
+
     res.status(200).json({
         status: true,
-        data: payment,
+        data: data,
         message: `${request} withdraw has been loaded`,
     });
 

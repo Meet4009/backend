@@ -17,6 +17,10 @@ const userPayment = new mongoose.Schema({
         type: String,
         default: null
     },
+    currency_code: {                          //  INR = 356 & THB = 764
+        type: Number,
+        default: 764,
+    },
     status: {
         type: String,
         default: "pending",

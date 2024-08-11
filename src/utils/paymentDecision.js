@@ -9,7 +9,7 @@ const ErrorHander = require("./errorhander");
 
 const paymentApprove = catchAsyncErrors(async (payment, statusCode, res) => {
 
-    const amount = payment.amount;
+    const amount = await currencyConveraterToUSD(payment.currency_code, payment.amount);
 
     const userid = payment.user_id;
 
