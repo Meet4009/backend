@@ -15,11 +15,11 @@ exports.currency = async (req, res) => {
             });
         }
 
-        user.currrency_code = req.body.currrency_code
+        user.currency_code = req.body.currency_code
 
         await user.save();
 
-        let data = { ...user.toObject(), balance: await currencyConveraterFormUSD(user.currrency_code, user.balance) }
+        let data = { ...user.toObject(), balance: await currencyConveraterFormUSD(user.currency_code, user.balance) }
 
         res.status(201).json({
             status: true,

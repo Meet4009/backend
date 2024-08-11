@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema({
         default: 'english',
     },
 
-    currrency_code: {                          //  INR = 356 & THB = 764
+    currency_code: {                          //  INR = 356 & THB = 764
         type: Number,
         default: 764,
         enum: [764, 356]

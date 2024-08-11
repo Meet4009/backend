@@ -27,7 +27,7 @@ const currencyConveraterFormUSD = async (currency_code, currency) => {
 
 const currencyConveraterToTHB = async (currency_code, currency) => {
     try {
-        
+
         if (!currency_code || currency_code == 764) {
             return currency; // THB conversion not needed
         }
@@ -36,7 +36,7 @@ const currencyConveraterToTHB = async (currency_code, currency) => {
         const endPoint = `https://api.frankfurter.app/latest?amount=${currency}&from=${fromCurrency}&to=THB`;
 
         const rates = await fetchCurrencyConversion(endPoint);
-        
+
         return rates ? rates.THB : currency;
     } catch (error) {
         return currency; // Return the original currency in case of error
@@ -46,6 +46,7 @@ const currencyConveraterToTHB = async (currency_code, currency) => {
 const currencyConveraterToUSD = async (currency_code, currency) => {
     try {
         
+
         if (!currency_code) {
             return currency; // THB conversion not needed
         }
@@ -54,8 +55,8 @@ const currencyConveraterToUSD = async (currency_code, currency) => {
         const endPoint = `https://api.frankfurter.app/latest?amount=${currency}&from=${fromCurrency}&to=USD`;
 
         const rates = await fetchCurrencyConversion(endPoint);
-        
-        return rates ? rates.THB : currency;
+
+        return rates ? rates.USD : currency;
     } catch (error) {
         return currency; // Return the original currency in case of error
     }

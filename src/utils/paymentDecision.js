@@ -1,6 +1,7 @@
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const User = require("../models/userModel");
 const ErrorHander = require("./errorhander");
+const { currencyConveraterToUSD } = require("../utils/currencyConverater");
 
 
 // -----------------------------------------------//
@@ -10,6 +11,8 @@ const ErrorHander = require("./errorhander");
 const paymentApprove = catchAsyncErrors(async (payment, statusCode, res) => {
 
     const amount = await currencyConveraterToUSD(payment.currency_code, payment.amount);
+    console.log(amount);
+    
 
     const userid = payment.user_id;
 

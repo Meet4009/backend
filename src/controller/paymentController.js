@@ -6,7 +6,7 @@ const userPayment = require("../models/userPayment");
 
 const jwt = require("jsonwebtoken");
 const { paymentApprove, paymentReject } = require("../utils/paymentDecision");
-const { currencyConveraterToTHB, currencyConveraterToUSD } = require("../utils/currencyConverater");
+const { currencyConveraterToTHB } = require("../utils/currencyConverater");
 
 
 
@@ -31,7 +31,7 @@ exports.deposit = catchAsyncErrors(async (req, res, next) => {
         user_id: user.id,
         amount,
         UTR,
-        currrency_code: user.currrency_code,
+        currency_code: user.currency_code,
         payment_type: "diposit"
     })
 
@@ -75,7 +75,7 @@ exports.withdraw = catchAsyncErrors(async (req, res, next) => {
         amount,
         upi_id,
         payment_type: "withdraw",
-        currrency_code: user.currrency_code,
+        currency_code: user.currency_code,
     })
 
     await payment.save();
