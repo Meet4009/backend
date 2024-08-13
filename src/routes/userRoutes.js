@@ -14,6 +14,7 @@ const { registerUser,                       // To register the user
 } = require("../controller/userController");
 
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
+const { currency } = require("../controller/updateCurrency");
 
 const router = express.Router();
 
@@ -23,6 +24,7 @@ const router = express.Router();
 // -----------------------------------------------//
 
 // -->  http://localhost:8002/thailottery/api/user
+
 
 router.route("/register").post(registerUser);                                                   // OK
 
@@ -36,12 +38,13 @@ router.route("/profile").get(isAuthenticatedUser, getUserDatails);              
 
 router.route("/profile/update").put(isAuthenticatedUser, updateProfile);                        // OK
 
+router.route("/change-currency").post(isAuthenticatedUser, currency);                             // OK
 
 // -----------------------------------------------//
-// ------------------ Admin side ---------------- // 
+// ------------------ Admin side ---------------- //
 // -----------------------------------------------//
 
-// -->  http://localhost:8002/thailottery/api/admin
+// -->  http://localhost:8002/thailottery/api/Admin
 
 router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);           // OK
 

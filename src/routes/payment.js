@@ -54,6 +54,6 @@ router.route("/deposite/reject/:id").get(isAuthenticatedUser, authorizeRoles("ad
 router.route("/withdraw/approve/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setApprovewithdraw);                    // Ok
 router.route("/withdraw/reject/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setRejectwithdraw);                      // OK
 
-router.route("/change-currency").post(isAuthenticatedUser, currency)
+
 
 module.exports = router;

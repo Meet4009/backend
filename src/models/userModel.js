@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
         validate: [validator.isEmail, "please Enter a valid Email"],
     },
     balance: {
-        type: Number, // store as USD
+        type: Number,                   // store as USD
         default: 0,
     },
 

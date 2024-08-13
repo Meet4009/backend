@@ -15,15 +15,8 @@ const { currencyConveraterToTHB } = require("../utils/currencyConverater");
 // ----------------------------------------------------------//
 
 exports.deposit = catchAsyncErrors(async (req, res, next) => {
-    const { token } = req.cookies;
 
-    if (!token) {
-        return next(new ErrorHander("pleses login to access this resource", 401))
-    }
-
-    const decodeData = jwt.verify(token, process.env.JWT_SECRET);
-
-    const user = await User.findById(decodeData.id);
+    const user = await User.findById(req.user.id);
 
     const { amount, UTR } = req.body;
 
@@ -42,7 +35,6 @@ exports.deposit = catchAsyncErrors(async (req, res, next) => {
         data: payment,
         message: 'Deposit request has been sent'
     });
-
 });
 
 
@@ -52,15 +44,8 @@ exports.deposit = catchAsyncErrors(async (req, res, next) => {
 // ----------------------------------------------------------//
 
 exports.withdraw = catchAsyncErrors(async (req, res, next) => {
-    const { token } = req.cookies;
-
-    if (!token) {
-        return next(new ErrorHander("pleses login to access this resource", 401));
-    }
-
-    const decodeData = jwt.verify(token, process.env.JWT_SECRET);
-
-    const user = await User.findById(decodeData.id);
+    
+    const user = await User.findById(req.user.id);
 
     const userBalance = user.balance;
 
@@ -96,15 +81,7 @@ exports.withdraw = catchAsyncErrors(async (req, res, next) => {
 
 exports.depositsHistory = catchAsyncErrors(async (req, res, next) => {
 
-    const { token } = req.cookies;
-
-    if (!token) {
-        return next(new ErrorHander("pleses login to access this resource", 401));
-    }
-
-    const decodeData = jwt.verify(token, process.env.JWT_SECRET);
-
-    const user = await User.findById(decodeData.id);
+    const user = await User.findById(req.user.id);
 
     const History = await userPayment.find({ payment_type: "diposit", user_id: { _id: user.id } });
 
@@ -124,26 +101,17 @@ exports.depositsHistory = catchAsyncErrors(async (req, res, next) => {
 
 exports.withdrawHistory = catchAsyncErrors(async (req, res, next) => {
 
-    const { token } = req.cookies;
-
-    if (!token) {
-        return next(new ErrorHander("pleses login to access this resource", 401));
-    }
-
-    const decodeData = jwt.verify(token, process.env.JWT_SECRET);
-
-    const user = await User.findById(decodeData.id);
+    const user = await User.findById(req.user.id);
 
     const History = await userPayment.find({ payment_type: "withdraw", user_id: { _id: user.id } });
 
     res.status(200).json({
         status: true,
         Data: History,
-        message: 'The deposit withdraw has been loaded'
+        message: 'The withdraw history has been loaded'
     });
 
 });
-
 
 
 // ----------------------------------------------------------//
@@ -152,8 +120,7 @@ exports.withdrawHistory = catchAsyncErrors(async (req, res, next) => {
 
 exports.getDeposits = catchAsyncErrors(async (req, res) => {
 
-    const payment = await userPayment.find({ payment_type: "diposit" })
-        .populate('user_id');
+    const payment = await userPayment.find({ payment_type: "diposit" }).populate('user_id');
 
     let data = [];
     for (let currentPayment of payment) {
@@ -164,7 +131,7 @@ exports.getDeposits = catchAsyncErrors(async (req, res) => {
     res.status(200).json({
         status: true,
         data: data,
-        message: 'diposit data '
+        message: 'All Diposit data'
     });
 
 });
@@ -214,7 +181,7 @@ exports.getWithdraws = catchAsyncErrors(async (req, res) => {
     res.status(200).json({
         status: true,
         data: data,
-        message: 'Withdraw data '
+        message: 'All withdraw data'
     });
 
 });

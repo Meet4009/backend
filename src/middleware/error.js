@@ -13,7 +13,7 @@ module.exports = (err, req, res, next) => {
 
     // MongoDB duplicate Key Error
     if (err.code === 11000) {
-        const message = `Duplicate ${Object.keys(err.keyValue)} Entered`;
+        const message = `${Object.keys(err.keyValue)} already registered`;
         err = new ErrorHandler(message, 400);
     }
 

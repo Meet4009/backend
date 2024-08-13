@@ -9,7 +9,7 @@ const fetchCurrencyConversion = async (endPoint) => {
         }
         return null;
     } catch (error) {
-        return null; // Return null in case of error
+        return null;                                                // Return null in case of error
     }
 };
 
@@ -21,7 +21,7 @@ const currencyConveraterFormUSD = async (currency_code, currency) => {
         const rates = await fetchCurrencyConversion(endPoint);
         return rates ? rates[toCurrency] : currency;
     } catch (error) {
-        return currency; // Return the original currency in case of error
+        return currency;                                            // Return the original currency in case of error
     }
 };
 
@@ -29,7 +29,7 @@ const currencyConveraterToTHB = async (currency_code, currency) => {
     try {
 
         if (!currency_code || currency_code == 764) {
-            return currency; // THB conversion not needed
+            return 1; // THB conversion not needed
         }
 
         const fromCurrency = currency_code == 356 ? 'INR' : 'USD';
@@ -39,7 +39,7 @@ const currencyConveraterToTHB = async (currency_code, currency) => {
 
         return rates ? rates.THB : currency;
     } catch (error) {
-        return currency; // Return the original currency in case of error
+        return currency;                                        // Return the original currency in case of error
     }
 };
 

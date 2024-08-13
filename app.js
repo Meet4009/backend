@@ -26,11 +26,11 @@ app.use("/thailottery/api/admin/payment", userpayment);                       //
 
 app.use("/thailottery/api/admin", dashboard);                                 // OK 
 
-app.use("/thailottery/api", lotteryprice,);                                   // OK 
+app.use("/thailottery/api/admin", lotteryprice,);                             // OK 
 
-app.use("/thailottery/api/admin/lottery", lottery,);
+app.use("/thailottery/api/admin/lottery", lottery,);                           // OK
 
-app.use("/thailottery/api/user/lottery", lottery,);
+app.use("/thailottery/api/user/lottery", lottery,);                            // OK
 
 
 //Middeware for Error 

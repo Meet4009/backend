@@ -11,9 +11,10 @@ const router = express.Router();
 //--------------------- Admin side ---------------------//
 //------------------------------------------------------//
 
-// --> http://localhost:8002/thailottery/api
+// --> http://localhost:8002/thailottery/api/admin
 
 router.route("/add/lottery-price").post(isAuthenticatedUser, authorizeRoles("admin"), setlotteryPrice);    // OK
+router.route("/lottery-price").get(isAuthenticatedUser, authorizeRoles("admin"), lotteryPrice);
 
 
 
@@ -23,7 +24,7 @@ router.route("/add/lottery-price").post(isAuthenticatedUser, authorizeRoles("adm
 
 // --> http://localhost:8002/thailottery/api
 
-router.route("/user/lottery-price").get(isAuthenticatedUser, lotteryPrice);                                 // OK
+// router.route("/user/lottery-price").get(isAuthenticatedUser, lotteryPrice);                                 // OK
 
 
 module.exports = router;

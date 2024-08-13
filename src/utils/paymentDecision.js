@@ -1,7 +1,7 @@
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const User = require("../models/userModel");
 const ErrorHander = require("./errorhander");
-const { currencyConveraterToUSD } = require("../utils/currencyConverater");
+const { currencyConveraterToUSD, currencyConveraterToTHB } = require("../utils/currencyConverater");
 
 
 // -----------------------------------------------//
@@ -12,7 +12,7 @@ const paymentApprove = catchAsyncErrors(async (payment, statusCode, res) => {
 
     const amount = await currencyConveraterToUSD(payment.currency_code, payment.amount);
     console.log(amount);
-    
+
 
     const userid = payment.user_id;
 
@@ -103,7 +103,7 @@ const paymentReject = catchAsyncErrors(async (payment, statusCode, res) => {
 
         return res.status(statusCode).json({
             status: true,
-            data: {payment,user},
+            data: { payment, user },
             messaage: "withdraw rejected sucessfully"
         });
     }
@@ -113,9 +113,14 @@ const paymentReject = catchAsyncErrors(async (payment, statusCode, res) => {
 // -----------------------------------------------------//
 // --------------- Total Deposite Amount -------------- // 
 // -----------------------------------------------------//
-function calculateAmount(dipositeData) {
-    return dipositeData.reduce((total, dipositeData) => total + (dipositeData.amount || 0), 0);
+const calculateAmount = async (dipositeData) => {
+    const total = await dipositeData.reduce(async (accumulatorPromise, data) => {
+        const accumulator = await accumulatorPromise;
+        const amountInTHB = await currencyConveraterToTHB(data.currency_code, data.amount || 0);
+        return accumulator + amountInTHB;
+    }, Promise.resolve(0));
 
+    return total;
 };
 
 module.exports = { calculateAmount, paymentReject, paymentApprove };

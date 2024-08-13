@@ -6,6 +6,7 @@ const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const User = require("../models/userModel");
 const { log } = require("console");
+const { currencyConveraterToTHB } = require("../utils/currencyConverater");
 
 
 
@@ -24,7 +25,7 @@ exports.registerUser = catchAsyncErrors(async (req, res) => {
         password,
     });
 
-    const token = user.getJWTToken();
+    // const token = user.getJWTToken();
 
     sendToken(user, 200, res);
 });
@@ -171,15 +172,30 @@ exports.updateProfile = catchAsyncErrors(async (req, res, next) => {
 // ------------------------  Get all Users --  Admin  ------------------------ //
 // --------------------------------------------------------------------------- //
 
-exports.getAllUser = catchAsyncErrors(async (req, res, next) => {
+exports.getAllUser = async (req, res, next) => {
+    try {
+        const users = await User.find();
 
-    const users = await User.find();
+        let usersDetails = await Promise.all(users.map(async (currentuser) => {
+            return {
+                ...currentuser.toObject(),
+                balance: await currencyConveraterToTHB(1, currentuser.balance)
+            };
+        }));
 
-    res.status(200).json({
-        status: true,
-        users,
-    });
-});
+        res.status(200).json({
+            status: true,
+            data: usersDetails,
+            message: 'All user fatch successfully'
+        });
+    } catch (error) {
+
+        return res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error.message}`
+        });
+    }
+};
 
 
 

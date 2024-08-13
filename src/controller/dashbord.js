@@ -40,11 +40,11 @@ exports.dashboard = catchAsyncErrors(async (req, res, next) => {
         success: true,
         "totalUsers": totalUsers,
         "activeUser": activeUser,
-        "totalDeposit": totalDeposit,
+        "totalDeposit": totalDeposit,  // price
         "pendingDeposit": pendingDeposit,
         "approveDiposit": approveDiposit,
         "rejectDeposit": rejectDeposit,
-        "totalwithdraw": totalwithdraw,
+        "totalwithdraw": totalwithdraw,   // price
         "pendingWithdraw": pendingWithdraw,
         "approveWithdraw": approveWithdraw,
         "rejectWithdraw": rejectWithdraw,
