@@ -17,7 +17,7 @@ const currencyConveraterFormUSD = async (currency_code, currency) => {
     try {
         const toCurrency = currency_code == 356 ? 'INR' : 'THB';
         const endPoint = `https://api.frankfurter.app/latest?amount=${currency}&from=USD&to=${toCurrency}`;
-
+        
         const rates = await fetchCurrencyConversion(endPoint);
         return rates ? rates[toCurrency] : currency;
     } catch (error) {

@@ -6,6 +6,7 @@ const { registerUser,                       // To register the user
     updatePassword,                         // To reset the user's password    
     updateProfile,                          // To update the user's profile
     getAllUser,                             // To know the details of all users
+    getUserAddtionalInformation,            // to total dposite amount, withdraw amount and buy ticket              
     getSingleUser,                          // To know the details of the user
     updateUserData,                         // Admin to update user
     deleteUser,                             // Admin to Delete user
@@ -49,6 +50,7 @@ router.route("/change-currency").post(isAuthenticatedUser, currency);           
 router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);           // OK
 
 router.route("/user/:id")
+    .get(isAuthenticatedUser, authorizeRoles("admin"), getUserAddtionalInformation)
     .get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser)                           // OK
     .put(isAuthenticatedUser, authorizeRoles("admin"), updateUserData)                          // Ok
     .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);                          // Ok

@@ -10,44 +10,49 @@ const { calculateAmount } = require("../utils/paymentDecision");
 
 // ------------------------------------------------ Deshbord
 
-exports.dashboard = catchAsyncErrors(async (req, res, next) => {
+exports.dashboard = async (req, res, next) => {
+
+    try {
+        // User Details
+        const totalUsers = await User.countDocuments({ role: "user" });
+        const activeUser = await User.countDocuments({ role: "user", loggedIn: true });
+
+        //  Deposits 
+
+        const depositData = await userPayment.find({ payment_type: "diposit", status: "success", action_status: "approved" });
+        const totalDeposit = await calculateAmount(depositData);
+
+        const pendingDeposit = await userPayment.countDocuments({ payment_type: "diposit", status: "pending", action_status: "pending" });
+        const approveDiposit = await userPayment.countDocuments({ payment_type: "diposit", status: "success", action_status: "approved" });
+        const rejectDeposit = await userPayment.countDocuments({ payment_type: "diposit", status: "rejected", action_status: "rejected" });
 
 
-    // User Details
-    const totalUsers = await User.countDocuments({ role: "user" });
-    const activeUser = await User.countDocuments({ role: "user", loggedIn: true });
+        //  Withdraw 
+        const withdrawData = await userPayment.find({ payment_type: "withdraw", status: "success", action_status: "approved" });
+        const totalwithdraw = await calculateAmount(withdrawData);
 
-    //  Deposits 
-
-    const depositData = await userPayment.find({ payment_type: "diposit", status: "success", action_status: "approved" });
-    const totalDeposit = await calculateAmount(depositData);
-
-    const pendingDeposit = await userPayment.countDocuments({ payment_type: "diposit", status: "pending", action_status: "pending" });
-    const approveDiposit = await userPayment.countDocuments({ payment_type: "diposit", status: "success", action_status: "approved" });
-    const rejectDeposit = await userPayment.countDocuments({ payment_type: "diposit", status: "rejected", action_status: "rejected" });
+        const pendingWithdraw = await userPayment.countDocuments({ payment_type: "withdraw", status: "pending", action_status: "pending" });
+        const approveWithdraw = await userPayment.countDocuments({ payment_type: "withdraw", status: "rejected", action_status: "rejected" });
+        const rejectWithdraw = await userPayment.countDocuments({ payment_type: "withdraw", status: "rejected", action_status: "rejected" });
 
 
-    //  Withdraw 
-    const withdrawData = await userPayment.find({ payment_type: "withdraw", status: "success", action_status: "approved" });
-    const totalwithdraw = await calculateAmount(withdrawData);
+        res.status(200).json({
+            success: true,
+            "totalUsers": totalUsers,
+            "activeUser": activeUser,
+            "totalDeposit": totalDeposit,  // price
+            "pendingDeposit": pendingDeposit,
+            "approveDiposit": approveDiposit,
+            "rejectDeposit": rejectDeposit,
+            "totalwithdraw": totalwithdraw,   // price
+            "pendingWithdraw": pendingWithdraw,
+            "approveWithdraw": approveWithdraw,
+            "rejectWithdraw": rejectWithdraw,
 
-    const pendingWithdraw = await userPayment.countDocuments({ payment_type: "withdraw", status: "pending", action_status: "pending" });
-    const approveWithdraw = await userPayment.countDocuments({ payment_type: "withdraw", status: "rejected", action_status: "rejected" });
-    const rejectWithdraw = await userPayment.countDocuments({ payment_type: "withdraw", status: "rejected", action_status: "rejected" });
+        });
+    } catch (error) {
+        
+    }
 
 
-    res.status(200).json({
-        success: true,
-        "totalUsers": totalUsers,
-        "activeUser": activeUser,
-        "totalDeposit": totalDeposit,  // price
-        "pendingDeposit": pendingDeposit,
-        "approveDiposit": approveDiposit,
-        "rejectDeposit": rejectDeposit,
-        "totalwithdraw": totalwithdraw,   // price
-        "pendingWithdraw": pendingWithdraw,
-        "approveWithdraw": approveWithdraw,
-        "rejectWithdraw": rejectWithdraw,
-
-    });
-});
+};
