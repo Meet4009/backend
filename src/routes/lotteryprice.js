@@ -14,7 +14,7 @@ const router = express.Router();
 // --> http://localhost:8002/thailottery/api/admin
 
 router.route("/add/lottery-price").post(isAuthenticatedUser, authorizeRoles("admin"), setlotteryPrice);    // OK
-router.route("/lottery-price").get(isAuthenticatedUser, authorizeRoles("admin"), lotteryPrice);
+router.route("/lottery-price").get(isAuthenticatedUser, authorizeRoles("admin"), lotteryPrice);            // OK 
 
 
 

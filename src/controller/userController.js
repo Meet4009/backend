@@ -12,7 +12,7 @@ const { calculateAmount } = require("../utils/paymentDecision");
 
 
 // --------------------------------------------------------------------------- //
-// ----------------------------  Register a User ----------------------------- //
+// ----------- 1 --------------  Register a User ----------------------------- //
 // --------------------------------------------------------------------------- //
 
 exports.registerUser = async (req, res) => {
@@ -42,7 +42,7 @@ exports.registerUser = async (req, res) => {
 
 
 // --------------------------------------------------------------------------- //
-// -------------------------------  Login User  ------------------------------ //
+// -------------- 2 --------------  Login User  ------------------------------ //
 // --------------------------------------------------------------------------- //
 
 exports.loginUser = async (req, res, next) => {
@@ -85,7 +85,7 @@ exports.loginUser = async (req, res, next) => {
 
 
 // --------------------------------------------------------------------------- //
-// ------------------------------  Logout User  ------------------------------ //
+// ---------- 3 ----------------  Logout User  ------------------------------ //
 // --------------------------------------------------------------------------- //
 
 exports.logout = async (req, res, next) => {
@@ -122,7 +122,7 @@ exports.logout = async (req, res, next) => {
 
 
 // --------------------------------------------------------------------------- //
-// --------------------------  Update User Password  ------------------------- //
+// ------------ 4 -----------  Update User Password  ------------------------- //
 // --------------------------------------------------------------------------- //
 
 exports.updatePassword = async (req, res, next) => {
@@ -158,7 +158,7 @@ exports.updatePassword = async (req, res, next) => {
 
 
 // --------------------------------------------------------------------------- //
-// ------------------------------   User profile  ---------------------------- //
+// ------------- 5 --------------   User profile  ---------------------------- //
 // --------------------------------------------------------------------------- //
 
 exports.getUserDatails = async (req, res, next) => {
@@ -169,7 +169,7 @@ exports.getUserDatails = async (req, res, next) => {
         res.status(200).json({
             status: true,
             data: user,
-            message: "User dat fatch successfully"
+            message: "User data fatch successfully"
         })
 
     } catch (error) {
@@ -184,7 +184,7 @@ exports.getUserDatails = async (req, res, next) => {
 
 
 // --------------------------------------------------------------------------- //
-// -------------------------  Update Profile -- user  ------------------------ //
+// ------------ 6 ----------  Update Profile -- user  ------------------------ //
 // --------------------------------------------------------------------------- //
 
 exports.updateProfile = async (req, res, next) => {
@@ -221,7 +221,7 @@ exports.updateProfile = async (req, res, next) => {
 
 
 // --------------------------------------------------------------------------- //
-// ------------------------  Get all Users --  Admin  ------------------------ //
+// ----------- 7 ----------  Get all Users --  Admin  ------------------------ //
 // --------------------------------------------------------------------------- //
 
 exports.getAllUser = async (req, res, next) => {
@@ -254,7 +254,7 @@ exports.getAllUser = async (req, res, next) => {
 
 
 // --------------------------------------------------------------------------- //
-// ------------------------  Get single user --  Admin  ---------------------- //
+// ----------- 8 ----------  Get single user --  Admin  ---------------------- //
 // --------------------------------------------------------------------------- //
 
 exports.getSingleUser = async (req, res, next) => {
@@ -284,7 +284,7 @@ exports.getSingleUser = async (req, res, next) => {
 
 
 // --------------------------------------------------------------------------- //
-// -------------- Additional Information  User Profile -- Admin  ------------- //
+// ------ 9 ----- Additional Information  User Profile -- Admin  ------------- //
 // --------------------------------------------------------------------------- //
 
 exports.getUserAddtionalInformation = async (req, res, next) => {
@@ -292,7 +292,7 @@ exports.getUserAddtionalInformation = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
 
-        const balance = user.balance;
+        const balance = await currencyConveraterToTHB(1, user.balance);
         console.log(balance);
 
         const depositData = await userPayment.find({ user_id: user.id, payment_type: "diposit", status: "success", action_status: "approved" });
@@ -300,8 +300,6 @@ exports.getUserAddtionalInformation = async (req, res, next) => {
 
         const withdrawData = await userPayment.find({ user_id: user.id, payment_type: "withdraw", status: "success", action_status: "approved" });
         const totalwithdraw = await calculateAmount(withdrawData);
-
-        const ticket = await LotteryBu
 
         res.status(200).json({
             status: true,
@@ -320,7 +318,7 @@ exports.getUserAddtionalInformation = async (req, res, next) => {
 
 
 // --------------------------------------------------------------------------- //
-// ----------------------  Update User Profile -- Admin  --------------------- //
+// --------- 10 ----------  Update User Profile -- Admin  --------------------- //
 // --------------------------------------------------------------------------- //
 
 exports.updateUserData = async (req, res, next) => {
@@ -358,7 +356,7 @@ exports.updateUserData = async (req, res, next) => {
 
 
 // --------------------------------------------------------------------------- //
-// --------------------------- Delet User -- Admin  -------------------------- //
+// --------------------------- Delete User -- Admin  -------------------------- //
 // --------------------------------------------------------------------------- //
 
 exports.deleteUser = async (req, res, next) => {

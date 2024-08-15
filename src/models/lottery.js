@@ -16,7 +16,7 @@ const lottery = new mongoose.Schema({
     },
 
     price: {
-        type: Number,
+        type: Number,     // store as THB
         required: [true, "please Enter lottery price"],
     },
 

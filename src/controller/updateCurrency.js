@@ -1,9 +1,11 @@
 const User = require("../models/userModel");
 
-const {currencyConveraterFormUSD} = require("../utils/currencyConverater");
+const { currencyConveraterFormUSD } = require("../utils/currencyConverater");
 
 
-
+//---------------------------------------------------------//
+//----------- 27 ------- User change currency -------------//
+//---------------------------------------------------------//
 exports.currency = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
