@@ -1,4 +1,4 @@
-const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+
 const User = require("../models/userModel");
 const ErrorHander = require("./errorhander");
 const { currencyConveraterToUSD, currencyConveraterToTHB } = require("../utils/currencyConverater");
@@ -8,106 +8,120 @@ const { currencyConveraterToUSD, currencyConveraterToTHB } = require("../utils/c
 // --------------- payment Approve -------------- // 
 // -----------------------------------------------//
 
-const paymentApprove = catchAsyncErrors(async (payment, statusCode, res) => {
+const paymentApprove = async (payment, statusCode, res) => {
+    try {
+        const amount = await currencyConveraterToUSD(payment.currency_code, payment.amount);
+        console.log(amount);
 
-    const amount = await currencyConveraterToUSD(payment.currency_code, payment.amount);
-    console.log(amount);
+        const userid = payment.user_id;
 
+        const user = await User.findById(userid);
+        if (!user) {
+            return new ErrorHander(`user doen not exist Id: ${userid}`, 400);
+        }
+        const userBalance = user.balance;
 
-    const userid = payment.user_id;
+        // --------------- diposit Approve --------------- //
+        if ('diposit' == payment.payment_type) {
+            const newBalance = userBalance + amount
 
-    const user = await User.findById(userid);
-    if (!user) {
-        return new ErrorHander(`user doen not exist Id: ${userid}`, 400);
-    }
-    const userBalance = user.balance;
+            user.balance = newBalance;
 
-    // --------------- diposit Approve --------------- //
-    if ('diposit' == payment.payment_type) {
-        const newBalance = userBalance + amount
+            await user.save();
 
-        user.balance = newBalance;
+            payment.status = 'success';
+            payment.action_status = 'approved';
 
-        await user.save();
+            await payment.save();
 
-        payment.status = 'success';
-        payment.action_status = 'approved';
+            return res.status(statusCode).json({
+                status: true,
+                data: { payment, user },
+                messaage: "Diposit sucessfully",
+            });
+        }
 
-        await payment.save();
+        // --------------- withdraw Approve --------------- //
+        if ('withdraw' == payment.payment_type) {
 
-        return res.status(statusCode).json({
-            status: true,
-            data: { payment, user },
-            messaage: "Diposit sucessfully",
+            const newBalance = userBalance - amount;
+
+            user.balance = newBalance;
+
+            await user.save();
+
+            payment.status = 'success';
+            payment.action_status = 'approved';
+
+            await payment.save();
+
+            return res.status(statusCode).json({
+                status: true,
+                data: { payment, user },
+                messaage: "Withdraw sucessfully",
+            });
+        }
+
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
         });
     }
-
-    // --------------- withdraw Approve --------------- //
-    if ('withdraw' == payment.payment_type) {
-
-        const newBalance = userBalance - amount;
-
-        user.balance = newBalance;
-
-        await user.save();
-
-        payment.status = 'success';
-        payment.action_status = 'approved';
-
-        await payment.save();
-
-        return res.status(statusCode).json({
-            status: true,
-            data: { payment, user },
-            messaage: "Withdraw sucessfully",
-        });
-    }
-})
+}
 
 
 // -----------------------------------------------//
 // --------------- payment Approve -------------- // 
 // -----------------------------------------------//
 
-const paymentReject = catchAsyncErrors(async (payment, statusCode, res) => {
+const paymentReject = async (payment, statusCode, res) => {
+    try {
+        const userid = payment.user_id;
 
-    const userid = payment.user_id;
+        const user = await User.findById(userid);
+        if (!user) {
+            return next(new ErrorHander(`user doen not exist Id: ${userid}`, 400));
+        }
 
-    const user = await User.findById(userid);
-    if (!user) {
-        return next(new ErrorHander(`user doen not exist Id: ${userid}`, 400));
-    }
+        // --------------- diposit Approve --------------- //
+        if ('diposit' == payment.payment_type) {
 
-    // --------------- diposit Approve --------------- //
-    if ('diposit' == payment.payment_type) {
+            payment.status = 'rejected';
+            payment.action_status = 'rejected';
 
-        payment.status = 'rejected';
-        payment.action_status = 'rejected';
+            await payment.save();
 
-        await payment.save();
+            return res.status(statusCode).json({
+                status: true,
+                data: { payment, user },
+                messaage: "diposit rejected sucessfully"
+            });
+        }
 
-        return res.status(statusCode).json({
-            status: true,
-            data: { payment, user },
-            messaage: "diposit rejected sucessfully"
+        // --------------- withdraw Approve --------------- //
+        if ('withdraw' == payment.payment_type) {
+
+            payment.status = 'rejected';
+            payment.action_status = 'rejected';
+
+            await payment.save();
+
+            return res.status(statusCode).json({
+                status: true,
+                data: { payment, user },
+                messaage: "withdraw rejected sucessfully"
+            });
+        }
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
         });
     }
-
-    // --------------- withdraw Approve --------------- //
-    if ('withdraw' == payment.payment_type) {
-
-        payment.status = 'rejected';
-        payment.action_status = 'rejected';
-
-        await payment.save();
-
-        return res.status(statusCode).json({
-            status: true,
-            data: { payment, user },
-            messaage: "withdraw rejected sucessfully"
-        });
-    }
-});
+};
 
 
 // -----------------------------------------------------//

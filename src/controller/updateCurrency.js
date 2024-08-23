@@ -29,11 +29,11 @@ exports.currency = async (req, res) => {
             message: "currency change successfully"
         });
 
-    } catch (error) {
+    }  catch (error) {
 
-        return res.status(500).json({
+        res.status(500).json({
             status: false,
-            message: `Internal Server Error -- ${error.message}`
+            message: `Internal Server Error -- ${error}`
         });
     }
 }

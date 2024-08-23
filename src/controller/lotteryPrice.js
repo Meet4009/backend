@@ -20,9 +20,9 @@ exports.setlotteryPrice = async (req, res) => {
         });
 
     } catch (error) {
-        return res.status(500).json({
+
+        res.status(500).json({
             status: false,
-            data: {},
             message: `Internal Server Error -- ${error}`
         });
     }
@@ -45,9 +45,9 @@ exports.lotteryPrice = async (req, res) => {
 
 
     } catch (error) {
-        return res.status(500).json({
+
+        res.status(500).json({
             status: false,
-            data: {},
             message: `Internal Server Error -- ${error}`
         });
     }

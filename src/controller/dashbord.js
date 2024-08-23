@@ -1,10 +1,6 @@
-const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-const ErrorHander = require("../utils/errorhander");
-
 const User = require("../models/userModel");
 const userPayment = require("../models/userPayment");
 const { calculateAmount } = require("../utils/paymentDecision");
-
 
 
 // ------------------------------------------------------------- //
@@ -53,6 +49,10 @@ exports.dashboard = async (req, res, next) => {
         });
     } catch (error) {
 
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
     }
 
 

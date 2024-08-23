@@ -1,11 +1,8 @@
-const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHander = require("../utils/errorhander");
-const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const User = require("../models/userModel");
-const { log } = require("console");
 const { currencyConveraterToTHB } = require("../utils/currencyConverater");
 const userPayment = require("../models/userPayment");
 const { calculateAmount } = require("../utils/paymentDecision");

@@ -1,10 +1,9 @@
-const catchAsyncErrors = require("../middleware/catchAsyncErrors");
+const User = require("../models/userModel");
 const Lottery = require("../models/lottery");
 const LotteryDraw = require("../models/lotteryDraw");
-const User = require("../models/userModel");
-const { scheduleLotteryDraw } = require("../utils/lotteryCron");
 const LotteryBuyer = require("../models/lotteryBuyer");
 
+const { scheduleLotteryDraw } = require("../utils/lotteryCron");
 const { helperWinnerSpace } = require("../utils/helpWinnerSpace");
 const { generateRandom12DigitNumber } = require("../utils/genarateTicketNumber");
 
@@ -14,7 +13,7 @@ const { generateRandom12DigitNumber } = require("../utils/genarateTicketNumber")
 // ---- 31 ---------- Create new lottery by admin -------------- // 
 // ----------------------------------------------------------//
 
-exports.setlottery = catchAsyncErrors(async (req, res) => {
+exports.setlottery = async (req, res) => {
     try {
         const { name, price, totalDraw } = req.body;
 
@@ -51,7 +50,7 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
             message: `Internal Server Error -- ${error}`
         });
     }
-});
+};
 
 
 
@@ -59,7 +58,7 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
 // ------ 32 -------- Get All lottery -- admin --------------- // 
 // ----------------------------------------------------------//
 
-exports.getLotterys = catchAsyncErrors(async (req, res) => {
+exports.getLotterys = async (req, res) => {
     try {
 
         const lottery = await Lottery.find();
@@ -87,7 +86,7 @@ exports.getLotterys = catchAsyncErrors(async (req, res) => {
             message: `Internal Server Error -- ${error}`
         });
     }
-});
+};
 
 
 
@@ -140,7 +139,8 @@ exports.getLottery = async (req, res, next) => {
             message: "Lottery found successfully"
         });
     } catch (error) {
-        return res.status(500).json({
+
+        res.status(500).json({
             status: false,
             message: `Internal Server Error -- ${error}`
         });
@@ -164,7 +164,8 @@ exports.genarateTicketNumber = async (req, res, next) => {
             message: "Ticket number fetch successfully"
         });
     } catch (error) {
-        return res.status(500).json({
+
+        res.status(500).json({
             status: false,
             message: `Internal Server Error -- ${error}`
         });
@@ -250,7 +251,7 @@ exports.buylottery = async (req, res, next) => {
         });
     } catch (error) {
 
-        return res.status(500).json({
+        res.status(500).json({
             status: false,
             message: `Internal Server Error -- ${error}`
         });
@@ -272,7 +273,8 @@ exports.pendingTickets = async (req, res, next) => {
             message: "Ticket number fetch successfully"
         });
     } catch (error) {
-        return res.status(500).json({
+
+        res.status(500).json({
             status: false,
             message: `Internal Server Error -- ${error}`
         });
@@ -295,7 +297,8 @@ exports.ticketHistory = async (req, res, next) => {
         });
 
     } catch (error) {
-        return res.status(500).json({
+
+        res.status(500).json({
             status: false,
             message: `Internal Server Error -- ${error}`
         });
@@ -317,6 +320,7 @@ exports.getAllPendingTickets = async (req, res, next) => {
             message: "Pending tickets fetched successfully"
         });
     } catch (error) {
+
         res.status(500).json({
             status: false,
             message: `Internal Server Error -- ${error}`
@@ -343,6 +347,7 @@ exports.lossbuyer = async (req, res, next) => {
             message: "Ticket status change successfully"
         });
     } catch (error) {
+
         res.status(500).json({
             status: false,
             message: `Internal Server Error -- ${error}`
@@ -394,9 +399,10 @@ exports.winbuyer = async (req, res, next) => {
             });
         }
     } catch (error) {
-        return res.status(500).json({
+
+        res.status(500).json({
             status: false,
-            message: `Internal Server Error -- ${error.message}`
+            message: `Internal Server Error -- ${error}`
         });
     }
 };
@@ -441,6 +447,10 @@ exports.useralltickets = async (req, res, next) => {
         });
     } catch (error) {
 
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
     }
 }
 
