@@ -362,3 +362,61 @@ exports.setRejectwithdraw = async (req, res, next) => {
 
 };
 
+
+
+
+
+// ----------------------------------------------------------//
+// ------  44 -----User Deposits History -- Admin ---------------- // 
+// ----------------------------------------------------------//
+
+exports.userDepositsHistory = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        const History = await userPayment.find({ payment_type: "diposit", user_id: { _id: user.id } });
+
+        res.status(200).json({
+            status: true,
+            Data: History,
+            message: 'The deposit history has been loaded'
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+
+};
+
+
+
+// ----------------------------------------------------------//
+// ------ 45 ------User Withdraw History -- User --------------- // 
+// ----------------------------------------------------------//
+
+exports.userWithdrawHistory = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        const History = await userPayment.find({ payment_type: "withdraw", user_id: { _id: user.id } });
+
+        res.status(200).json({
+            status: true,
+            Data: History,
+            message: 'The withdraw history has been loaded'
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+
+};
+
+
+

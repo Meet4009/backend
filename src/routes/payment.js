@@ -12,7 +12,9 @@ const {
     setApprovewithdraw,
     setApproveDeposit,
     depositsHistory,
-    withdrawHistory
+    withdrawHistory,
+    userDepositsHistory,
+    userWithdrawHistory
 } = require("../controller/paymentController");
 
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
@@ -53,6 +55,9 @@ router.route("/deposite/reject/:id").get(isAuthenticatedUser, authorizeRoles("ad
 
 router.route("/withdraw/approve/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setApprovewithdraw);                    // Ok
 router.route("/withdraw/reject/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setRejectwithdraw);                      // OK
+
+router.route("/deposite-history/:id").get(isAuthenticatedUser,authorizeRoles("admin"),userDepositsHistory);                     // Ok
+router.route("/withdraw-history/:id").get(isAuthenticatedUser,authorizeRoles("admin"),userWithdrawHistory);                     // Ok
 
 
 
