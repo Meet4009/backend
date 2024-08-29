@@ -376,9 +376,15 @@ exports.userDepositsHistory = async (req, res) => {
 
         const History = await userPayment.find({ payment_type: "diposit", user_id: { _id: user.id } });
 
+        let data = [];
+        for (let cuttentData of History) {
+            const convertedData = await currencyConveraterToTHB(cuttentData.currency_code, cuttentData.amount);
+            data.push({ ...cuttentData.toObject(), amount: convertedData });
+        }
+
         res.status(200).json({
             status: true,
-            Data: History,
+            Data: data,
             message: 'The deposit history has been loaded'
         });
     } catch (error) {
@@ -394,7 +400,7 @@ exports.userDepositsHistory = async (req, res) => {
 
 
 // ----------------------------------------------------------//
-// ------ 45 ------User Withdraw History -- User --------------- // 
+// ------ 45 ------User Withdraw History -- Admin --------------- // 
 // ----------------------------------------------------------//
 
 exports.userWithdrawHistory = async (req, res) => {
@@ -403,11 +409,18 @@ exports.userWithdrawHistory = async (req, res) => {
 
         const History = await userPayment.find({ payment_type: "withdraw", user_id: { _id: user.id } });
 
+        let data = [];
+        for (let cuttentData of History) {
+            const convertedData = await currencyConveraterToTHB(cuttentData.currency_code, cuttentData.amount);
+            data.push({ ...cuttentData.toObject(), amount: convertedData });
+        }
+
         res.status(200).json({
             status: true,
-            Data: History,
+            Data: data,
             message: 'The withdraw history has been loaded'
         });
+        
     } catch (error) {
 
         res.status(500).json({

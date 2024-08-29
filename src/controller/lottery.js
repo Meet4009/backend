@@ -6,6 +6,7 @@ const LotteryBuyer = require("../models/lotteryBuyer");
 const { scheduleLotteryDraw } = require("../utils/lotteryCron");
 const { helperWinnerSpace } = require("../utils/helpWinnerSpace");
 const { generateRandom12DigitNumber } = require("../utils/genarateTicketNumber");
+const { currencyConveraterToTHB, currencyConveraterToUSD } = require("../utils/currencyConverater");
 
 
 
@@ -201,7 +202,10 @@ exports.buylottery = async (req, res, next) => {
         }
 
         let getUser = await User.findById(req.user.id)
-        if (!(getUser.balance >= (lottery.price * ticket_number.length))) {
+
+        let userBlance = await currencyConveraterToTHB(1, getUser.balance);
+
+        if (!(userBlance >= (lottery.price * ticket_number.length))) {
             return res.status(200).json({
                 status: false,
                 data: {},
@@ -241,7 +245,8 @@ exports.buylottery = async (req, res, next) => {
             await ticket.save();
 
         })
-        getUser.balance -= (lottery.price * ticket_number.length)
+        getUser.balance -= await currencyConveraterToUSD(764, lottery.price * ticket_number.length)
+
         await getUser.save();
 
         res.status(200).json({
