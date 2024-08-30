@@ -17,6 +17,7 @@ const { registerUser,                       // To register the user
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 const { currency } = require("../controller/updateCurrency");
 
+
 const router = express.Router();
 
 
@@ -46,6 +47,7 @@ router.route("/change-currency").post(isAuthenticatedUser, currency);           
 // -----------------------------------------------//
 
 // -->  http://localhost:8002/thailottery/api/Admin
+
 
 router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);           // OK
 

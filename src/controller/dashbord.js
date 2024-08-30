@@ -12,40 +12,50 @@ exports.dashboard = async (req, res, next) => {
     try {
         // User Details
         const totalUsers = await User.countDocuments({ role: "user" });
-        const activeUser = await User.countDocuments({ role: "user", loggedIn: true });
+        const activeUsers = await User.countDocuments({ role: "user", loggedIn: true });
+        const emailUnverified = null;
+        const mobileUnverified = null;
 
         //  Deposits 
 
         const depositData = await userPayment.find({ payment_type: "diposit", status: "success", action_status: "approved" });
-        const totalDeposit = await calculateAmount(depositData);
+        const totalDeposits = Math.round(await calculateAmount(depositData));
 
         const pendingDeposit = await userPayment.countDocuments({ payment_type: "diposit", status: "pending", action_status: "pending" });
-        const approveDiposit = await userPayment.countDocuments({ payment_type: "diposit", status: "success", action_status: "approved" });
-        const rejectDeposit = await userPayment.countDocuments({ payment_type: "diposit", status: "rejected", action_status: "rejected" });
+        const approvedDeposit = await userPayment.countDocuments({ payment_type: "diposit", status: "success", action_status: "approved" });
+        const rejectedDeposit = await userPayment.countDocuments({ payment_type: "diposit", status: "rejected", action_status: "rejected" });
 
 
         //  Withdraw 
         const withdrawData = await userPayment.find({ payment_type: "withdraw", status: "success", action_status: "approved" });
-        const totalwithdraw = await calculateAmount(withdrawData);
+        const totalWithdrawals = Math.round(await calculateAmount(withdrawData));
 
         const pendingWithdraw = await userPayment.countDocuments({ payment_type: "withdraw", status: "pending", action_status: "pending" });
-        const approveWithdraw = await userPayment.countDocuments({ payment_type: "withdraw", status: "rejected", action_status: "rejected" });
-        const rejectWithdraw = await userPayment.countDocuments({ payment_type: "withdraw", status: "rejected", action_status: "rejected" });
-
+        const approvedWithdrawal = await userPayment.countDocuments({ payment_type: "withdraw", status: "success", action_status: "approved" });
+        const rejectedWithdrawal = await userPayment.countDocuments({ payment_type: "withdraw", status: "rejected", action_status: "rejected" });
+        const soldTicket = null;
+        const soldAmount = null;
+        const winner = null;
+        const winAmmount = null;
 
         res.status(200).json({
             success: true,
-            "totalUsers": totalUsers,
-            "activeUser": activeUser,
-            "totalDeposit": totalDeposit,  // price
-            "pendingDeposit": pendingDeposit,
-            "approveDiposit": approveDiposit,
-            "rejectDeposit": rejectDeposit,
-            "totalwithdraw": totalwithdraw,   // price
-            "pendingWithdraw": pendingWithdraw,
-            "approveWithdraw": approveWithdraw,
-            "rejectWithdraw": rejectWithdraw,
-
+            "totalUsers": totalUsers,                       // Count
+            "activeUsers": activeUsers,                     // Count
+            "emailUnverified": emailUnverified,             // Count 
+            "mobileUnverified": mobileUnverified,           // Count
+            "soldTicket": soldTicket,                       // Count
+            "soldAmount": soldAmount,                       // Amount
+            "winner": winner,                               // Count
+            "winAmmount": winAmmount,                       // Amount
+            "totalDeposits": totalDeposits,                 // Amount
+            "approvedDeposit": approvedDeposit,             // Count
+            "rejectedDeposit": rejectedDeposit,             // Count
+            "pendingDeposit": pendingDeposit,               // Count
+            "totalWithdrawals": totalWithdrawals,           // Amount
+            "approvedWithdrawal": approvedWithdrawal,       // Count
+            "rejectedWithdrawal": rejectedWithdrawal,       // Count
+            "pendingWithdraw": pendingWithdraw,             // Count
         });
     } catch (error) {
 
