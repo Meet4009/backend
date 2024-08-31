@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const userPayment = require("../models/userPayment");
+const LotteryBuyer = require("../models/lotteryBuyer");
 const { calculateAmount } = require("../utils/paymentDecision");
 
 
@@ -33,7 +34,7 @@ exports.dashboard = async (req, res, next) => {
         const pendingWithdraw = await userPayment.countDocuments({ payment_type: "withdraw", status: "pending", action_status: "pending" });
         const approvedWithdrawal = await userPayment.countDocuments({ payment_type: "withdraw", status: "success", action_status: "approved" });
         const rejectedWithdrawal = await userPayment.countDocuments({ payment_type: "withdraw", status: "rejected", action_status: "rejected" });
-        const soldTicket = null;
+        const soldTicket = await LotteryBuyer.countDocuments();
         const soldAmount = null;
         const winner = null;
         const winAmmount = null;
