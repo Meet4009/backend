@@ -1,4 +1,6 @@
 const express = require("express");
+const router = express.Router();
+const userService = require("../services/render");
 const { registerUser,                       // To register the user
     loginUser,                              // To login the user
     logout,                                 // To logout the user
@@ -18,45 +20,45 @@ const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 const { currency } = require("../controller/updateCurrency");
 
 
-const router = express.Router();
+// fortend Routes
+router.get('/user', userService.userRoutes)
 
 
 // -----------------------------------------------//
 // ------------------ User side ----------------- // 
 // -----------------------------------------------//
 
-// -->  http://localhost:8002/thailottery/api/user
+// -->  http://localhost:8002/thailottery/api
 
 
-router.route("/register").post(registerUser);                                                   // OK
+router.route("/user/register").post(registerUser);                                                   // OK
 
-router.route("/login").post(loginUser);                                                         // OK
+router.route("/user/login").post(loginUser);                                                         // OK
 
-router.route("/logout").get(logout);                                                            // OK
+router.route("/user/logout").get(logout);                                                            // OK
 
-router.route("/password/update").put(isAuthenticatedUser, updatePassword);                      // OK
+router.route("/user/password/update").put(isAuthenticatedUser, updatePassword);                      // OK
 
-router.route("/profile").get(isAuthenticatedUser, getUserDatails);                              // OK
+router.route("/user/profile").get(isAuthenticatedUser, getUserDatails);                              // OK
 
-router.route("/profile/update").put(isAuthenticatedUser, updateProfile);                        // OK
+router.route("/user/profile/update").put(isAuthenticatedUser, updateProfile);                        // OK
 
-router.route("/change-currency").post(isAuthenticatedUser, currency);                             // OK
+router.route("/user/change-currency").post(isAuthenticatedUser, currency);                             // OK
 
 // -----------------------------------------------//
 // ------------------ Admin side ---------------- //
 // -----------------------------------------------//
 
-// -->  http://localhost:8002/thailottery/api/Admin
+// -->  http://localhost:8002/thailottery/api
 
 
-router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);           // OK
+router.route("/admin/users").get(getAllUser);           // OK
+// router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);           // OK
 
-router.route("/user/:id")
-    .get(isAuthenticatedUser, authorizeRoles("admin"), getUserAddtionalInformation)
-    .get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser)                           // OK
-    .put(isAuthenticatedUser, authorizeRoles("admin"), updateUserData)                          // Ok
-    .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);                          // Ok
-
+router.route("/admin/user/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getUserAddtionalInformation)
+router.route("/admin/user/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser)
+router.route("/admin/user/:id").put(isAuthenticatedUser, authorizeRoles("admin"), updateUserData)
+router.route("/admin/user/:id").delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);
 
 // router.route("/password/forgot").post(forgotPassword);
 
