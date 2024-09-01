@@ -19,6 +19,8 @@ const lotteryprice = require("./src/routes/lotteryprice");
 const userpayment = require("./src/routes/payment");
 const lottery = require("./src/routes/lottery");
 const dashboard = require("./src/routes/dashboard")
+app.set('views', path.join(__dirname, 'views'));
+
 
 app.set("view engine", "ejs")
 
