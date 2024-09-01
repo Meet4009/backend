@@ -3,7 +3,7 @@ const LotteryPrice = require("../models/lotteryPrice");
 // ----------------------------------------------------------------- //
 // ------ 28 -----------set Lottery price -- Admin ----------------- //
 // ----------------------------------------------------------------- //
-exports.setlotteryPrice = async (req, res) => {
+exports.addLotteryPrice = async (req, res) => {
     try {
         const { priceNumber, price, totalPerson } = req.body;
 

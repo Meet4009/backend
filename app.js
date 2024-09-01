@@ -32,21 +32,21 @@ app.use('/', dashboard, user)
 
 app.use("/thailottery/api", user);                                       // OK
 
-// app.use("/thailottery/api/user/payment", userpayment);                        // OK
-// app.use("/thailottery/api/admin/payment", userpayment);                       // OK
+app.use("/thailottery/api/user/payment", userpayment);                        // OK
+app.use("/thailottery/api/admin/payment", userpayment);                       // OK
 
 
 app.use("/thailottery/api/admin", dashboard);                                 // OK 
 
-// app.use("/thailottery/api/admin", lotteryprice,);                             // OK 
+app.use("/thailottery/api/admin", lotteryprice);                             // OK 
 
-// app.use("/thailottery/api/admin/lottery", lottery,);                           // OK
+app.use("/thailottery/api/admin/lottery", lottery);                           // OK
 
-// app.use("/thailottery/api/user/lottery", lottery,);                            // OK
+app.use("/thailottery/api/user/lottery", lottery);                            // OK
 
 
 //Middeware for Error 
 
-// app.use(errorMiddleware);
+app.use(errorMiddleware);
 
 module.exports = app;                                                
