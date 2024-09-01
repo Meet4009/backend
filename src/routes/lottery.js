@@ -11,7 +11,8 @@ const { setlottery,
     lossbuyer,
     winbuyer,
     getLotterys,
-    getWinnerSpace } = require("../controller/lottery");
+    getWinnerSpace, 
+    allWinners} = require("../controller/lottery");
 const router = express.Router();
 
 
@@ -29,6 +30,7 @@ router.route("/choose-winner").get(isAuthenticatedUser, authorizeRoles("admin"),
 router.route("/loss-buyer/:id").get(isAuthenticatedUser, authorizeRoles("admin"), lossbuyer);                    // OK
 router.route("/win-buyer/:id").post(isAuthenticatedUser, authorizeRoles("admin"), winbuyer);  // admin
 router.route("/winner-space/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getWinnerSpace);  // admin
+router.route("/allwinner/:id").get(isAuthenticatedUser, authorizeRoles("admin"), allWinners);  // admin
 
 
 // -----------------------------------------------//

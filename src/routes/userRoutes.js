@@ -22,7 +22,7 @@ const { currency } = require("../controller/updateCurrency");
 
 // fortend Routes
 router.get('/user', userService.userRoutes)
-router.get('/user-details', userService.userRoutes)
+router.get('/user-details/:id', userService.userDetails)
 
 
 // -----------------------------------------------//
@@ -44,7 +44,7 @@ router.route("/user/profile").get(isAuthenticatedUser, getUserDatails);         
 
 router.route("/user/profile/update").put(isAuthenticatedUser, updateProfile);                        // OK
 
-router.route("/user/change-currency").post(isAuthenticatedUser, currency);                             // OK
+router.route("/user/change-currency").post(isAuthenticatedUser, currency);                            // OK
 
 // -----------------------------------------------//
 // ------------------ Admin side ---------------- //
@@ -56,9 +56,12 @@ router.route("/user/change-currency").post(isAuthenticatedUser, currency);      
 router.route("/admin/users").get(getAllUser);           // OK
 // router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);           // OK
 
-router.route("/admin/user/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getUserAddtionalInformation)
-router.route("/admin/user/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser)
-router.route("/admin/user/:id").put(isAuthenticatedUser, authorizeRoles("admin"), updateUserData)
+router.route("/admin/user/:id").get(getUserAddtionalInformation);
+router.route("/admin/user/:id").get(getSingleUser);
+
+// router.route("/admin/user/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getUserAddtionalInformation);
+// router.route("/admin/user/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser);
+router.route("/admin/user/:id").put(isAuthenticatedUser, authorizeRoles("admin"), updateUserData);
 router.route("/admin/user/:id").delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);
 
 // router.route("/password/forgot").post(forgotPassword);

@@ -7,6 +7,7 @@ const { scheduleLotteryDraw } = require("../utils/lotteryCron");
 const { helperWinnerSpace } = require("../utils/helpWinnerSpace");
 const { generateRandom12DigitNumber } = require("../utils/genarateTicketNumber");
 const { currencyConveraterToTHB, currencyConveraterToUSD } = require("../utils/currencyConverater");
+const lotteryPrice = require("../models/lotteryPrice");
 
 
 
@@ -448,6 +449,30 @@ exports.useralltickets = async (req, res, next) => {
         res.status(200).json({
             status: true,
             data: allTicket,
+            message: "Ticket fetched successfully"
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+}
+
+// ----------------------------------------------------------//
+// -------46-----------  all winners -- Admin ------------------ //
+// ----------------------------------------------------------//
+
+exports.allWinners = async (req, res, next) => {
+    try {
+        let winner = await LotteryBuyer.find({ status: "win", lottery_draw_id: req.params.id }).populate('lottery_price_id')
+
+        let winners = winner.sort((a, b) => a.lottery_price_id.priceNumber - b.lottery_price_id.priceNumber);
+
+        res.status(200).json({
+            status: true,
+            data: winners,
             message: "Ticket fetched successfully"
         });
     } catch (error) {
