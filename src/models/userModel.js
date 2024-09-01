@@ -17,34 +17,8 @@ const userSchema = new mongoose.Schema({
         unique: true,
         validate: [validator.isEmail, "please Enter a valid Email"],
     },
-    mobile_No: {
-        type: Number,
-        required: [true, "please Enter Your mobile number"],
-        minLength: [10, "Mobile Number should be greater than 10 character"],
-    },
-
-    country: {
-        type: String,
-        required: [true, "please select Your country"],
-        enum: ['Cambodia', 'Japan', 'Malaysia', 'Vietnam', 'Singapore', 'Indonesia', 'Hong Kong', 'Thailand', 'India']
-    },
-
-    password: {
-        type: String,
-        required: [true, "please Enter Your Password"],
-        // minLength: [8, "Password should be greater than 8 character"],`
-        select: false,
-    },
-
-    language: {
-        type: String,
-        required: [true, "please Enter Your language"],
-        enum: ['english', 'thai', 'russian', 'chinese', 'hindi', 'francais'],
-        default: "english",
-    },
-
     balance: {
-        type: Number,
+        type: Number,                   // store as USD
         default: 0,
     },
 
@@ -55,11 +29,46 @@ const userSchema = new mongoose.Schema({
 
     loggedIn: {
         type: Boolean,
-        default: false
+        default: false,
     },
+
+    mobile_No: {
+        type: Number,
+        unique: true,
+        required: [true, "please Enter Your mobile number"],
+        match: [/^\d{10}$/, 'Please enter a valid 10-digit mobile number'],
+    },
+
+    country: {
+        type: String,
+        required: [true, "please select Your country"],
+        enum: ['Cambodia', 'Japan', 'Malaysia', 'Vietnam', 'Singapore', 'Indonesia', 'Hong Kong', 'Thailand', 'India'],
+    },
+
+    password: {
+        type: String,
+        required: [true, "please Enter Your Password"],
+        minLength: [8, "Password should be greater than 8 character"],
+        select: false,
+    },
+
+    language: {
+        type: String,
+        required: [true, "please Enter Your language"],
+        enum: ['english', 'thai', 'russian', 'chinese',],
+        default: 'english',
+    },
+
+    currency_code: {                          //  INR = 356 & THB = 764
+        type: Number,
+        default: 764,
+        enum: [764, 356]
+    },
+
+    
     createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
     },
 
 
@@ -110,3 +119,4 @@ userSchema.methods.getResetPasswordToken = function () {
 
 
 module.exports = mongoose.model("User", userSchema);
+

@@ -18,7 +18,7 @@ const lotteryBuyer = new mongoose.Schema({
 
     lottery_price_id: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'lottery_draw'
+        ref: 'lotteryPrice'
     },
     ticketNumber: {
         required:true,

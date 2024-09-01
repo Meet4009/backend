@@ -6,212 +6,430 @@ const userPayment = require("../models/userPayment");
 
 const jwt = require("jsonwebtoken");
 const { paymentApprove, paymentReject } = require("../utils/paymentDecision");
+const { currencyConveraterToTHB, currencyConveraterToUSD } = require("../utils/currencyConverater");
 
 
 
-exports.deposit = catchAsyncErrors(async (req, res) => {
-    const { token } = req.cookies;
+// ----------------------------------------------------------//
+// ------- 11 --------- deposit request -- User ------------ // 
+// ----------------------------------------------------------//
 
-    if (!token) {
-        return next(new ErrorHander("pleses login to access this resource", 401))
+exports.deposit = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        const { amount, UTR } = req.body;
+
+        const payment = await userPayment.create({
+            user_id: user.id,
+            amount,
+            UTR,
+            currency_code: user.currency_code,
+            payment_type: "diposit"
+        })
+
+        await payment.save();
+
+        res.status(200).json({
+            status: true,
+            data: payment,
+            message: 'Deposit request has been sent'
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+};
+
+
+
+// ----------------------------------------------------------//
+// ------ 12 ------ Withdraw request -- User --------------- // 
+// ----------------------------------------------------------//
+
+exports.withdraw = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        const userBalance = user.balance;
+
+        const { amount, upi_id } = req.body;
+
+        let usdamount = await currencyConveraterToUSD(user.currency_code, amount)
+
+        if (usdamount > userBalance) {
+            return next(new ErrorHander(`You don't have ${amount} in your account`, 401));
+        }
+
+        const payment = await userPayment.create({
+            user_id: user.id,
+            amount,
+            upi_id,
+            payment_type: "withdraw",
+            currency_code: user.currency_code,
+        })
+
+        await payment.save();
+
+        res.status(200).json({
+            status: true,
+            data: payment,
+            message: 'withdraw request has been sent'
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+};
+
+
+
+// ----------------------------------------------------------//
+// ------  13 ----- Deposits History -- User ---------------- // 
+// ----------------------------------------------------------//
+
+exports.depositsHistory = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        const History = await userPayment.find({ payment_type: "diposit", user_id: { _id: user.id } });
+
+        res.status(200).json({
+            status: true,
+            Data: History,
+            message: 'The deposit history has been loaded'
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
     }
 
-    const decodeData = jwt.verify(token, process.env.JWT_SECRET);
-
-    const user = await User.findById(decodeData.id);
-
-    const { amount, UTR } = req.body;
+};
 
 
 
-    const payment = await userPayment.create({
-        user_id: user.id,
-        amount,
-        UTR,
-        payment_type: "diposit"
-    })
+// ----------------------------------------------------------//
+// ------ 14 ------ Withdraw History -- User --------------- // 
+// ----------------------------------------------------------//
 
-    await payment.save();
+exports.withdrawHistory = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.id);
 
-    res.status(200).json({
-        success: true,
-        payment,
-    });
+        const History = await userPayment.find({ payment_type: "withdraw", user_id: { _id: user.id } });
 
-});
+        res.status(200).json({
+            status: true,
+            Data: History,
+            message: 'The withdraw history has been loaded'
+        });
+    } catch (error) {
 
-exports.withdraw = catchAsyncErrors(async (req, res, next) => {
-    const { token } = req.cookies;
-
-    if (!token) {
-        return next(new ErrorHander("pleses login to access this resource", 401));
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
     }
 
-    const decodeData = jwt.verify(token, process.env.JWT_SECRET);
+};
 
-    const user = await User.findById(decodeData.id);
 
-    const userBalance = user.balance;
+// ----------------------------------------------------------//
+// ----- 15 ------- Deposit History -- admin --------------- // 
+// ----------------------------------------------------------//
 
-    const { amount, upi_id } = req.body;
+exports.getDeposits = async (req, res) => {
+    try {
+        const payment = await userPayment.find({ payment_type: "diposit" }).populate('user_id');
 
-    if (amount > userBalance) {
-        return next(new ErrorHander(`You don't have ${amount} in your account`, 401));
+        let data = [];
+        for (let currentPayment of payment) {
+            const convertedAmount = await currencyConveraterToTHB(currentPayment.currency_code, currentPayment.amount);
+            data.push({ ...currentPayment.toObject(), amount: convertedAmount });
+        }
+
+        res.status(200).json({
+            status: true,
+            data: data,
+            message: 'All diposite data'
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
     }
 
-    const payment = await userPayment.create({
-        user_id: user.id,
-        amount,
-        upi_id,
-        payment_type: "withdraw"
-    })
-
-    await payment.save();
-
-    res.status(200).json({
-        success: true,
-        payment,
-    });
-
-});
+};
 
 
 
-exports.depositsHistory = catchAsyncErrors(async (req, res) => {
+// ------------------------------------------------------------------------------------//
+// ---- 16 - Pending, ---- 17 - Approve, ---- 18 - Reject Deposit History -- admin --- // 
+// ------------------------------------------------------------------------------------//
 
-    const { token } = req.cookies;
+exports.getRequestDeposits = async (req, res) => {
+    try {
+        const payment = await userPayment.find({ payment_type: "diposit", action_status: req.params.status }).populate('user_id');
+        const request = req.params.status;
 
-    if (!token) {
-        return next(new ErrorHander("pleses login to access this resource", 401));
+        let data = [];
+        for (let currentPayment of payment) {
+            const convertedAmount = await currencyConveraterToTHB(currentPayment.currency_code, currentPayment.amount);
+            data.push({ ...currentPayment.toObject(), amount: convertedAmount });
+        }
+
+        res.status(200).json({
+            status: true,
+            data: data,
+            message: `${request} deposite has been loaded`,
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
     }
 
-    const decodeData = jwt.verify(token, process.env.JWT_SECRET);
+};
 
-    const user = await User.findById(decodeData.id);
+// ----------------------------------------------------------//
+// ----- 19 ------ Approve Deposit -- admin ---------------- // 
+// ----------------------------------------------------------//
 
-    const History = await userPayment.find({ payment_type: "diposit", user_id: { _id: user.id } });
+exports.setApproveDeposit = async (req, res, next) => {
+    try {
+        const payment = await userPayment.findOne({ payment_type: "diposit", status: "pending", action_status: "pending", _id: req.params.id });
 
-    res.status(200).json({
-        success: true,
-        "Deposits History": History,
-    });
+        if (!payment) {
+            return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
+        }
 
-});
+        paymentApprove(payment, 200, res);
+    } catch (error) {
 
-exports.withdrawHistory = catchAsyncErrors(async (req, res) => {
-
-    const { token } = req.cookies;
-
-    if (!token) {
-        return next(new ErrorHander("pleses login to access this resource", 401));
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
     }
 
-    const decodeData = jwt.verify(token, process.env.JWT_SECRET);
-
-    const user = await User.findById(decodeData.id);
-
-    const History = await userPayment.find({ payment_type: "withdraw", user_id: { _id: user.id } });
-
-    res.status(200).json({
-        success: true,
-        "withdraw History": History,
-    });
-
-});
-
-exports.getWithdraws = catchAsyncErrors(async (req, res) => {
-
-    const payment = await userPayment.find({ payment_type: "withdraw" })
-        .populate('user_id');
-
-    res.status(200).json({
-        success: true,
-        "withdraw": payment,
-    });
-
-});
-
-exports.getRequestWithdraws = catchAsyncErrors(async (req, res) => {
-
-    const payment = await userPayment.find({ payment_type: "withdraw", action_status: req.params.status })
-        .populate('user_id');
-
-    res.status(200).json({
-        success: true,
-        "withdraw": payment,
-    });
-
-});
+};
 
 
-exports.getDeposits = catchAsyncErrors(async (req, res) => {
 
-    const payment = await userPayment.find({ payment_type: "diposit" })
-        .populate('user_id');
+// ----------------------------------------------------------//
+// ------ 20 ------ Reject Deposit -- admin ---------------- // 
+// ----------------------------------------------------------//
 
-    res.status(200).json({
-        success: true,
-        "diposit": payment,
-    });
+exports.setRejectDeposit = async (req, res, next) => {
+    try {
+        const payment = await userPayment.findOne({ payment_type: "diposit", status: "pending", action_status: "pending", _id: req.params.id });
 
-});
+        if (!payment) {
+            return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
+        }
 
-exports.getRequestDeposits = catchAsyncErrors(async (req, res) => {
+        paymentReject(payment, 200, res);
+    } catch (error) {
 
-    const payment = await userPayment.find({ payment_type: "diposit", action_status: req.params.status })
-        .populate('user_id');
-
-    res.status(200).json({
-        success: true,
-        "diposit": payment,
-    });
-
-});
-
-
-exports.setApproveDeposit = catchAsyncErrors(async (req, res) => {
-
-    const payment = await userPayment.findOne({ payment_type: "diposit", status: "pending", action_status: "pending", _id: req.params.id });
-
-    if (!payment) {
-        return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
     }
 
-    paymentApprove(payment, 200, res);
-
-});
+};
 
 
+// ----------------------------------------------------------//
+// ------- 21 ----- Withdraw History -- admin -------------- // 
+// ----------------------------------------------------------//
 
-exports.setRejectDeposit = catchAsyncErrors(async (req, res) => {
-    const payment = await userPayment.findOne({ payment_type: "diposit", status: "pending", action_status: "pending", _id: req.params.id });
+exports.getWithdraws = async (req, res) => {
+    try {
+        const payment = await userPayment.find({ payment_type: "withdraw" })
+            .populate('user_id');
 
-    if (!payment) {
-        return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
+        let data = [];
+        for (let currentPayment of payment) {
+            const convertedAmount = await currencyConveraterToTHB(currentPayment.currency_code, currentPayment.amount);
+            data.push({ ...currentPayment.toObject(), amount: convertedAmount });
+        }
+
+        res.status(200).json({
+            status: true,
+            data: data,
+            message: 'All withdraw data'
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+};
+
+
+
+// ------------------------------------------------------------------------------------//
+// ---- 22 - Pending, ---- 23 - Approve, ---- 24 - Reject withdraw History -- admin --- // 
+// ------------------------------------------------------------------------------------//
+
+exports.getRequestWithdraws = async (req, res) => {
+    try {
+        const payment = await userPayment.find({ payment_type: "withdraw", action_status: req.params.status })
+            .populate('user_id');
+        const request = req.params.status;
+
+        let data = [];
+        for (let currentPayment of payment) {
+            const convertedAmount = await currencyConveraterToTHB(currentPayment.currency_code, currentPayment.amount);
+            data.push({ ...currentPayment.toObject(), amount: convertedAmount });
+        }
+
+        res.status(200).json({
+            status: true,
+            data: data,
+            message: `${request} withdraw has been loaded`,
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+};
+
+
+// ----------------------------------------------------------//
+// ----- 25 ------ Approve Withdraw -- admin --------------- // 
+// ----------------------------------------------------------//
+
+exports.setApprovewithdraw = async (req, res, next) => {
+    try {
+        const payment = await userPayment.findOne({ payment_type: "withdraw", status: "pending", action_status: "pending", _id: req.params.id });
+
+        if (!payment) {
+            return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
+        }
+
+        paymentApprove(payment, 200, res);
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+};
+
+
+
+// ----------------------------------------------------------//
+// ------- 26 ---- Reject Withdraw -- admin ---------------- // 
+// ----------------------------------------------------------//
+
+exports.setRejectwithdraw = async (req, res, next) => {
+    try {
+        const payment = await userPayment.findOne({ payment_type: "withdraw", status: "pending", action_status: "pending", _id: req.params.id });
+
+        if (!payment) {
+            return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
+        }
+
+        paymentReject(payment, 200, res);
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
     }
 
-    paymentReject(payment, statusCode, res);
+};
 
-});
 
-exports.setApprovewithdraw = catchAsyncErrors(async (req, res) => {
-    const payment = await userPayment.findOne({ payment_type: "withdraw", status: "pending", action_status: "pending", _id: req.params.id });
 
-    if (!payment) {
-        return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
+
+
+// ----------------------------------------------------------//
+// ------  44 -----User Deposits History -- Admin ---------------- // 
+// ----------------------------------------------------------//
+
+exports.userDepositsHistory = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        const History = await userPayment.find({ payment_type: "diposit", user_id: { _id: user.id } });
+
+        let data = [];
+        for (let cuttentData of History) {
+            const convertedData = await currencyConveraterToTHB(cuttentData.currency_code, cuttentData.amount);
+            data.push({ ...cuttentData.toObject(), amount: convertedData });
+        }
+
+        res.status(200).json({
+            status: true,
+            Data: data,
+            message: 'The deposit history has been loaded'
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
     }
 
-    paymentApprove(payment, 200, res);
+};
 
-});
-exports.setRejectwithdraw = catchAsyncErrors(async (req, res) => {
-    const payment = await userPayment.findOne({ payment_type: "withdraw", status: "pending", action_status: "pending", _id: req.params.id });
 
-    if (!payment) {
-        return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
+
+// ----------------------------------------------------------//
+// ------ 45 ------User Withdraw History -- Admin --------------- // 
+// ----------------------------------------------------------//
+
+exports.userWithdrawHistory = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        const History = await userPayment.find({ payment_type: "withdraw", user_id: { _id: user.id } });
+
+        let data = [];
+        for (let cuttentData of History) {
+            const convertedData = await currencyConveraterToTHB(cuttentData.currency_code, cuttentData.amount);
+            data.push({ ...cuttentData.toObject(), amount: convertedData });
+        }
+
+        res.status(200).json({
+            status: true,
+            Data: data,
+            message: 'The withdraw history has been loaded'
+        });
+        
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
     }
 
-    paymentReject(payment, 200, res);
+};
 
-});
+
 

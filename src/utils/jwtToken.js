@@ -1,20 +1,20 @@
-const sendToken = (user, statusCode, res) => {
+const { currencyConveraterFormUSD } = require("./currencyConverater");
+
+const sendToken = async (user, statusCode, res) => {
 
 
     const token = user.getJWTToken();
 
     const options = {
-        expires: new Date(
-            Date.now() + process.env.COOKIE_EXPIRE * 24 * 60 * 60 * 1000
-        ),
+
         httpOnly: true,
     };
-    
+    let userDetails = { ...user.toObject(), balance : await currencyConveraterFormUSD(user.currency_code, user.balance) }
 
     res.status(statusCode).cookie('token', token, options).json({
-        success: true,
-        user,
-        token,
+        status: true,
+        data: userDetails,
+        "token": token,
     });
 };
 

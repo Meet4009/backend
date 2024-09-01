@@ -1,14 +1,20 @@
+const User = require("../models/userModel");
 const Lottery = require("../models/lottery");
 const LotteryDraw = require("../models/lotteryDraw");
-const User = require("../models/userModel");
-const { scheduleLotteryDraw } = require("../utils/lotteryCron");
-const ErrorHander = require("../utils/errorhander");
 const LotteryBuyer = require("../models/lotteryBuyer");
 
-const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-const lottery = require("../models/lottery");
+const { scheduleLotteryDraw } = require("../utils/lotteryCron");
+const { helperWinnerSpace } = require("../utils/helpWinnerSpace");
+const { generateRandom12DigitNumber } = require("../utils/genarateTicketNumber");
+const { currencyConveraterToTHB, currencyConveraterToUSD } = require("../utils/currencyConverater");
 
-exports.setlottery = catchAsyncErrors(async (req, res) => {
+
+
+// ----------------------------------------------------------//
+// ---- 31 ---------- Create new lottery by admin -------------- // 
+// ----------------------------------------------------------//
+
+exports.setlottery = async (req, res) => {
     try {
         const { name, price, totalDraw } = req.body;
 
@@ -16,6 +22,7 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
             user_id: req.user.id,
             name, price, totalDraw
         });
+
         await lottery.save();
 
         let startDate = new Date();
@@ -33,21 +40,66 @@ exports.setlottery = catchAsyncErrors(async (req, res) => {
         scheduleLotteryDraw(drawDate);
 
         res.status(200).json({
-            success: true,
-            "lottery": lottery,
+            status: true,
+            data: lottery,
+            message: 'Lottery create Successfully'
         });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ success: false, message: "Internal Server Error" });
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
     }
-});
+};
+
+
+
+// ----------------------------------------------------------//
+// ------ 32 -------- Get All lottery -- admin --------------- // 
+// ----------------------------------------------------------//
+
+exports.getLotterys = async (req, res) => {
+    try {
+
+        const lottery = await Lottery.find();
+
+        if (!lottery) {
+            return res.status(200).json({
+                status: false,
+                data: {},
+                message: "Lottery not found"
+            });
+        }
+
+        // let lotteryDraw = await LotteryDraw.find();
+
+        res.status(200).json({
+            status: true,
+            data: { lottery },
+            message: 'All Lottery get Successfully'
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+};
+
+
+
+// ----------------------------------------------------------//
+// ------ 33 -- 34 --------- Get Lottery ---  User ----------------- // 
+// ----------------------------------------------------------//
 
 exports.getLottery = async (req, res, next) => {
     try {
         const lottery = await Lottery.findById(req.params.id);
 
         if (!lottery) {
-
             return res.status(200).json({
                 status: false,
                 data: {},
@@ -76,7 +128,7 @@ exports.getLottery = async (req, res, next) => {
         }
 
         let lotteryObj = {
-            winning_price: 0, // Assuming you will calculate this value elsewhere
+            winning_price: 0,                   // Assuming you will calculate this value elsewhere
             total_draw: lottery.totalDraw,
             price: lottery.price,
             draw_date: lotteryDrawObj[0].drawDate
@@ -85,25 +137,52 @@ exports.getLottery = async (req, res, next) => {
         res.status(200).json({
             status: true,
             data: lotteryObj,
-            message: "Lottery found successfully "
+            message: "Lottery found successfully"
         });
     } catch (error) {
-        return res.status(500).json({
+
+        res.status(500).json({
             status: false,
-            data: {},
-            message: "Server error"
+            message: `Internal Server Error -- ${error}`
         });
     }
-
 };
 
+
+// ----------------------------------------------------------//
+// ----- 35 ------- Genarate Lottery Ticket -- User ------------ // 
+// ----------------------------------------------------------//
+
+exports.genarateTicketNumber = async (req, res, next) => {
+    try {
+
+        let ticket_number = await generateRandom12DigitNumber();
+        console.log(ticket_number);
+
+        res.status(200).json({
+            status: true,
+            data: ticket_number,
+            message: "Ticket number fetch successfully"
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+};
+
+// ----------------------------------------------------------//
+// -------- 36 ---------- Buy Lottery ---  User ----------------- // 
+// ----------------------------------------------------------//
 
 exports.buylottery = async (req, res, next) => {
     try {
 
         const { ticket_number, lottery_id } = req.body;
 
-        if (!Array.isArray(ticket_number)) {
+        if (!Array.isArray(ticket_number) || ticket_number == null) {
             return res.status(200).json({
                 status: false,
                 data: {},
@@ -123,7 +202,10 @@ exports.buylottery = async (req, res, next) => {
         }
 
         let getUser = await User.findById(req.user.id)
-        if (!(getUser.balance >= (lottery.price * ticket_number.length))) {
+
+        let userBlance = await currencyConveraterToTHB(1, getUser.balance);
+
+        if (!(userBlance >= (lottery.price * ticket_number.length))) {
             return res.status(200).json({
                 status: false,
                 data: {},
@@ -161,7 +243,11 @@ exports.buylottery = async (req, res, next) => {
             });
 
             await ticket.save();
+
         })
+        getUser.balance -= await currencyConveraterToUSD(764, lottery.price * ticket_number.length)
+
+        await getUser.save();
 
         res.status(200).json({
             status: true,
@@ -169,49 +255,207 @@ exports.buylottery = async (req, res, next) => {
             message: `You have successfully purchased ${ticket_number.length} Tickets`
         });
     } catch (error) {
-        return res.status(500).json({
+
+        res.status(500).json({
             status: false,
-            data: {},
-            message: "Server error"
+            message: `Internal Server Error -- ${error}`
         });
     }
-
 };
 
-async function generateRandom12DigitNumber() {
-    let number = '';
-    for (let i = 0; i < 12; i++) {
-        number += Math.floor(Math.random() * 10);
-    }
 
-    const ticketBuyer = await LotteryBuyer.find({ ticketNumber: number })
+// ----------------------------------------------------------//
+// -------- 37 ----- bought Lottery Ticket -- User ------------- // 
+// ----------------------------------------------------------//
 
-    if (ticketBuyer.length != 0) {
-        number = generateRandom12DigitNumber()
-    }
-
-    return number;
-}
-
-
-exports.genarateTicketNumber = async (req, res, next) => {
+exports.pendingTickets = async (req, res, next) => {
     try {
-
-        let ticket_number = await generateRandom12DigitNumber();
-        console.log(ticket_number);
+        const pendingTicket = await LotteryBuyer.find({ user_id: req.user.id, status: 'pending' }).populate('lottery_id').sort('createdAt');
 
         res.status(200).json({
             status: true,
-            data: ticket_number,
+            data: pendingTicket,
             message: "Ticket number fetch successfully"
         });
     } catch (error) {
-        return res.status(500).json({
+
+        res.status(500).json({
             status: false,
-            data: {},
-            message: "Server error"
+            message: `Internal Server Error -- ${error}`
         });
     }
+}
 
+
+// ----------------------------------------------------------//
+// ----- -38 ------  Lottery Ticket History -- User ------------ // 
+// ----------------------------------------------------------//
+
+exports.ticketHistory = async (req, res, next) => {
+    try {
+        const allTicket = await LotteryBuyer.find({ user_id: req.user.id, status: { $ne: 'pending' } }).populate('lottery_id').sort('createdAt');
+
+        res.status(200).json({
+            status: true,
+            data: allTicket,
+            message: "Ticket number fetch successfully"
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+}
+
+
+// ----------------------------------------------------------//
+// --------39 --------  choose Winner -- Admin ---------------- // 
+// ----------------------------------------------------------//
+
+exports.getAllPendingTickets = async (req, res, next) => {
+    try {
+        const allTicket = await LotteryBuyer.find({ status: 'pending' }).populate('user_id').populate('lottery_id').sort('createdAt');
+
+        res.status(200).json({
+            status: true,
+            data: allTicket,
+            message: "Pending tickets fetched successfully"
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
 };
+
+
+
+// ----------------------------------------------------------//
+// -------40----------  loss buyer --- Admin ----------------- // 
+// ----------------------------------------------------------//
+
+exports.lossbuyer = async (req, res, next) => {
+    try {
+        const ticket = await LotteryBuyer.findById(req.params.id);
+
+        ticket.status = 'loss'
+
+        await ticket.save();
+        res.status(200).json({
+            status: true,
+            data: {},
+            message: "Ticket status change successfully"
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+};
+
+
+// ----------------------------------------------------------//
+// ------- 41 -----------  win buyer -- Admin ------------------ // 
+// ----------------------------------------------------------//
+exports.winbuyer = async (req, res, next) => {
+    try {
+        const ticket = await LotteryBuyer.findById(req.params.id);
+
+        if (!ticket) {
+            return res.status(404).json({
+                status: false,
+                message: "Ticket not found"
+            });
+        }
+
+        const spaces = await helperWinnerSpace(ticket.lottery_draw_id);
+
+        const priceObj = spaces.find(currentObj => currentObj._id == req.body.lottery_price_id);
+
+        if (!priceObj) {
+            return res.status(400).json({
+                status: false,
+                message: "Invalid lottery price ID"
+            });
+        }
+
+        if (priceObj.fill_space < priceObj.totalPerson) {
+            ticket.status = 'win';
+            ticket.lottery_price_id = req.body.lottery_price_id;
+            await ticket.save();
+
+            return res.status(200).json({
+                status: true,
+                data: {},
+                message: "Ticket status changed successfully"
+            });
+        } else {
+            return res.status(400).json({
+                status: false,
+                data: {},
+                message: "Prize slot not available"
+            });
+        }
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+};
+
+
+
+// ----------------------------------------------------------//
+// ------- 42 ----------- get winner -- Admin ------------------ // 
+// ----------------------------------------------------------//
+
+exports.getWinnerSpace = async (req, res, next) => {
+    try {
+        const spaces = await helperWinnerSpace(req.params.id);
+
+        res.status(200).json({
+            status: true,
+            data: spaces,
+            message: "Ticket status fetched successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error.message}`
+        });
+    }
+};
+
+// ----------------------------------------------------------//
+// -------43-----------  single user all tickets -- Admin ------------------ // 
+// ----------------------------------------------------------//
+
+exports.useralltickets = async (req, res, next) => {
+    try {
+
+
+        let allTicket = await LotteryBuyer.find({ user_id: req.params.id }).populate('lottery_id').populate('lottery_price_id');
+
+        res.status(200).json({
+            status: true,
+            data: allTicket,
+            message: "Ticket fetched successfully"
+        });
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+}
 
