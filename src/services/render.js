@@ -20,3 +20,11 @@ exports.userRoutes = async (req, res) => {
     }
 }
 
+exports.userDetails = async (req, res) => {
+    try {
+        res.render("userdetails");
+    } catch (error) {
+        console.log(error);
+    }
+}
+

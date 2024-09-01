@@ -22,6 +22,7 @@ const { currency } = require("../controller/updateCurrency");
 
 // fortend Routes
 router.get('/user', userService.userRoutes)
+router.get('/user-details', userService.userRoutes)
 
 
 // -----------------------------------------------//
