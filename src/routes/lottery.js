@@ -1,5 +1,5 @@
 const express = require("express");
-
+const Service = require("../services/render");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 const { setlottery,
     getLottery,
@@ -11,9 +11,14 @@ const { setlottery,
     lossbuyer,
     winbuyer,
     getLotterys,
-    getWinnerSpace, 
-    allWinners} = require("../controller/lottery");
+    getWinnerSpace,
+    allWinners } = require("../controller/lottery");
 const router = express.Router();
+
+// fortend Routes
+router.get('/all-lotteries', Service.allLottries)
+router.get('/allwinner', Service.totalWinning)
+router.get('/chooseWinner', Service.chooseWinner)
 
 
 // -----------------------------------------------//
@@ -22,15 +27,19 @@ const router = express.Router();
 
 // --> http://localhost:8002/thailottery/api/admin/lottery
 
-router.route("/newlottery").post(isAuthenticatedUser, authorizeRoles("admin"), setlottery);                      // OK
-router.route("/all-lottery").get(isAuthenticatedUser, authorizeRoles("admin"), getLotterys);                     // OK
+router.route("/admin/lottery/newlottery").post(isAuthenticatedUser, authorizeRoles("admin"), setlottery);                      // OK
+router.route("/admin/lottery/all-lottery").get(getLotterys);                     // OK
+// router.route("/all-lottery").get(isAuthenticatedUser, authorizeRoles("admin"), getLotterys);                     // OK
 
-router.route("/choose-winner").get(isAuthenticatedUser, authorizeRoles("admin"), getAllPendingTickets);          // OK
+router.route("/admin/lottery/choose-winner").get(getAllPendingTickets);          // OK
+// router.route("/admin/lottery/choose-winner").get(isAuthenticatedUser, authorizeRoles("admin"), getAllPendingTickets);          // OK
 
-router.route("/loss-buyer/:id").get(isAuthenticatedUser, authorizeRoles("admin"), lossbuyer);                    // OK
-router.route("/win-buyer/:id").post(isAuthenticatedUser, authorizeRoles("admin"), winbuyer);  // admin
-router.route("/winner-space/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getWinnerSpace);  // admin
-router.route("/allwinner/:id").get(isAuthenticatedUser, authorizeRoles("admin"), allWinners);  // admin
+router.route("/admin/lottery/loss-buyer/:id").get(isAuthenticatedUser, authorizeRoles("admin"), lossbuyer);                    // OK
+router.route("/admin/lottery/win-buyer/:id").post(isAuthenticatedUser, authorizeRoles("admin"), winbuyer);  // admin
+router.route("/admin/lottery/winner-space/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getWinnerSpace);  // admin
+
+router.route("/admin/lottery/allwinner/:id").get(allWinners);  // admin
+// router.route("/admin/lottery/allwinner/:id").get(isAuthenticatedUser, authorizeRoles("admin"), allWinners);  // admin
 
 
 // -----------------------------------------------//

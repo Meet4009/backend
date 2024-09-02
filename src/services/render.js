@@ -26,13 +26,52 @@ exports.userRoutes = async (req, res) => {
 exports.userDetails = async (req, res) => {
     try {
 
-        // const response = await axios.get(`${process.env.APP_URL}/thailottery/api/admin/user/${req.params.id}`);
+        const response = await axios.get(`${process.env.APP_URL}/thailottery/api/admin/user/${req.params.id}`);
 
-        // console.log("response", response.data.data);
-        
-        res.render("userdetails");
+        console.log("response", response.data.data);
+
+        res.render("userdetails", { data: response.data.data });
     } catch (error) {
         console.log(error);
     }
 }
 
+exports.allLottries = async (req, res) => {
+    try {
+
+        const response = await axios.get(`${process.env.APP_URL}/thailottery/api/admin/lottery/all-lottery`);
+
+        console.log(response.data.data);
+
+        res.render("alllotteries", { data: response.data.data });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+exports.totalWinning = async (req, res) => {
+    try {
+
+        // const response = await axios.get(`${process.env.APP_URL}/thailottery/api/admin/lottery/all-lottery`);
+
+        // console.log(response.data.data);
+
+        res.render("totalwinning");
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+exports.chooseWinner = async (req, res) => {
+    try {
+
+        const response = await axios.get(`${process.env.APP_URL}/thailottery/api/admin/lottery/choose-winner`);
+        
+        console.log(response.data.data);
+
+        res.render("choosewinner", { data: response.data.data });
+    } catch (error) {
+        console.log(error);
+    }
+}

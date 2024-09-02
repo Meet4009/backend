@@ -29,7 +29,7 @@ app.use('/css', express.static(path.resolve(__dirname, "public/app-assets")));
 app.use('/img', express.static(path.resolve(__dirname, "public/app-assets")));
 app.use('/js', express.static(path.resolve(__dirname, "public/app-assets")));
 
-app.use('/', dashboard, user)
+app.use('/', dashboard, user, lottery)
 
 
 app.use("/thailottery/api", user);                                       // OK
@@ -42,7 +42,7 @@ app.use("/thailottery/api/admin", dashboard);                                 //
 
 app.use("/thailottery/api/admin", lotteryprice);                             // OK 
 
-app.use("/thailottery/api/admin/lottery", lottery);                           // OK
+app.use("/thailottery/api", lottery);                           // OK
 
 app.use("/thailottery/api/user/lottery", lottery);                            // OK
 
