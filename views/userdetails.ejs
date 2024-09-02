@@ -1,6 +1,20 @@
 <!--START ::  Headet Link -- HTML -> Head_part -->
 <%- include('partials/header') %>
-    <!--END ::  Headet Link -- HTML -> Head_part -->
+    <!--END ::  Headet Link -- HTML -> Head_part --> <!-- BEGIN: Page CSS-->
+    <link rel="stylesheet" type="text/css" href="../app-assets/css/core/menu/menu-types/vertical-menu.css">
+    <link rel="stylesheet" type="text/css" href="../app-assets/css/core/colors/palette-gradient.css">
+    <link rel="stylesheet" type="text/css" href="../app-assets/css/pages/dashboard-analytics.css">
+    <link rel="stylesheet" type="text/css" href="../app-assets/css/pages/card-analytics.css">
+    <link rel="stylesheet" type="text/css" href="../app-assets/css/plugins/tour/tour.css">
+    <!-- END: Page CSS-->
+
+    <!-- BEGIN: Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="../assets/css/style.css">
+    <!-- END: Custom CSS-->
+
+    </head>
+    <!-- END: Head-->
+
     <!-- BEGIN: Body-->
 
     <body class="vertical-layout vertical-menu-modern 2-columns  navbar-floating footer-static " data-open="click"
@@ -18,7 +32,7 @@
                                         class="nav-link nav-menu-main menu-toggle hidden-xs" href="#"><i
                                             class="ficon feather icon-menu"></i></a></li>
                             </ul>
-                            <h1 class="brand-text mb-0 text-bold-700"> <a href="user-details">User Profile</a></h1>
+                            <h1 class="brand-text mb-0 text-bold-700"> <a href="userdetails.html">User Profile</a></h1>
                         </div>
                         <ul class="nav navbar-nav float-right">
 
@@ -123,7 +137,7 @@
                                     class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
                                     <div class="user-nav d-sm-flex d-none"><span class="user-name text-bold-600">John
                                             Doe</span><span class="user-status">Available</span></div><span><img
-                                            class="round" src="img/images/portrait/small/avatar-s-11.jpg"
+                                            class="round" src="../app-assets/images/portrait/small/avatar-s-11.jpg"
                                             alt="avatar" height="40" width="40"></span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item"
@@ -146,7 +160,7 @@
             <li class="auto-suggestion d-flex align-items-center cursor-pointer"><a
                     class="d-flex align-items-center justify-content-between w-100" href="#">
                     <div class="d-flex">
-                        <div class="mr-50"><img src="img/images/icons/xls.png" alt="png" height="32"></div>
+                        <div class="mr-50"><img src="../app-assets/images/icons/xls.png" alt="png" height="32"></div>
                         <div class="search-data">
                             <p class="search-data-title mb-0">Two new item submitted</p><small
                                 class="text-muted">Marketing
@@ -157,7 +171,7 @@
             <li class="auto-suggestion d-flex align-items-center cursor-pointer"><a
                     class="d-flex align-items-center justify-content-between w-100" href="#">
                     <div class="d-flex">
-                        <div class="mr-50"><img src="img/images/icons/jpg.png" alt="png" height="32"></div>
+                        <div class="mr-50"><img src="../app-assets/images/icons/jpg.png" alt="png" height="32"></div>
                         <div class="search-data">
                             <p class="search-data-title mb-0">52 JPG file Generated</p><small class="text-muted">FontEnd
                                 Developer</small>
@@ -167,7 +181,7 @@
             <li class="auto-suggestion d-flex align-items-center cursor-pointer"><a
                     class="d-flex align-items-center justify-content-between w-100" href="#">
                     <div class="d-flex">
-                        <div class="mr-50"><img src="img/images/icons/pdf.png" alt="png" height="32"></div>
+                        <div class="mr-50"><img src="../app-assets/images/icons/pdf.png" alt="png" height="32"></div>
                         <div class="search-data">
                             <p class="search-data-title mb-0">25 PDF File Uploaded</p><small class="text-muted">Digital
                                 Marketing Manager</small>
@@ -177,7 +191,7 @@
             <li class="auto-suggestion d-flex align-items-center cursor-pointer"><a
                     class="d-flex align-items-center justify-content-between w-100" href="#">
                     <div class="d-flex">
-                        <div class="mr-50"><img src="img/images/icons/doc.png" alt="png" height="32"></div>
+                        <div class="mr-50"><img src="../app-assets/images/icons/doc.png" alt="png" height="32"></div>
                         <div class="search-data">
                             <p class="search-data-title mb-0">Anna_Strong.doc</p><small class="text-muted">Web
                                 Designer</small>
@@ -190,7 +204,7 @@
             <li class="auto-suggestion d-flex align-items-center cursor-pointer"><a
                     class="d-flex align-items-center justify-content-between py-50 w-100" href="#">
                     <div class="d-flex align-items-center">
-                        <div class="avatar mr-50"><img src="img/images/portrait/small/avatar-s-8.jpg"
+                        <div class="avatar mr-50"><img src="../app-assets/images/portrait/small/avatar-s-8.jpg"
                                 alt="png" height="32"></div>
                         <div class="search-data">
                             <p class="search-data-title mb-0">John Doe</p><small class="text-muted">UI designer</small>
@@ -200,7 +214,7 @@
             <li class="auto-suggestion d-flex align-items-center cursor-pointer"><a
                     class="d-flex align-items-center justify-content-between py-50 w-100" href="#">
                     <div class="d-flex align-items-center">
-                        <div class="avatar mr-50"><img src="img/images/portrait/small/avatar-s-1.jpg"
+                        <div class="avatar mr-50"><img src="../app-assets/images/portrait/small/avatar-s-1.jpg"
                                 alt="png" height="32"></div>
                         <div class="search-data">
                             <p class="search-data-title mb-0">Michal Clark</p><small class="text-muted">FontEnd
@@ -211,7 +225,7 @@
             <li class="auto-suggestion d-flex align-items-center cursor-pointer"><a
                     class="d-flex align-items-center justify-content-between py-50 w-100" href="#">
                     <div class="d-flex align-items-center">
-                        <div class="avatar mr-50"><img src="img/images/portrait/small/avatar-s-14.jpg"
+                        <div class="avatar mr-50"><img src="../app-assets/images/portrait/small/avatar-s-14.jpg"
                                 alt="png" height="32"></div>
                         <div class="search-data">
                             <p class="search-data-title mb-0">Milena Gibson</p><small class="text-muted">Digital
@@ -223,7 +237,7 @@
             <li class="auto-suggestion d-flex align-items-center cursor-pointer"><a
                     class="d-flex align-items-center justify-content-between py-50 w-100" href="#">
                     <div class="d-flex align-items-center">
-                        <div class="avatar mr-50"><img src="img/images/portrait/small/avatar-s-6.jpg"
+                        <div class="avatar mr-50"><img src="../app-assets/images/portrait/small/avatar-s-6.jpg"
                                 alt="png" height="32"></div>
                         <div class="search-data">
                             <p class="search-data-title mb-0">Anna Strong</p><small class="text-muted">Web
@@ -249,7 +263,7 @@
                 <ul class="nav navbar-nav flex-row">
                     <li class="nav-item mr-auto">
                         <a class="navbar-brand" href="index.html">
-                            <img class="pl-50" src="img/images/logo/thb_logo.svg" alt="logo">
+                            <img class="pl-50" src="../app-assets/images/logo/thb_logo.svg" alt="logo">
                             <h2 class="brand-text mb-0"> Thai Lottery</h2>
                         </a>
                     </li>
@@ -260,13 +274,13 @@
                 <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
 
                     <li class="nav-item ">
-                        <a href="/">
+                        <a href="index.html">
                             <i class="fas fa-tachometer-alt"></i>
                             <span class="menu-title" data-i18n="Email">Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item active  ">
-                        <a href="user">
+                        <a href="user.html">
                             <i class="fas fa-user"></i>
                             <span class="menu-title" data-i18n="User">User</span>
                         </a>
@@ -368,7 +382,7 @@
                                 <div class="card">
                                     <div class="card-header d-flex align-items-start pb-0">
                                         <div>
-                                            <h2 class="text-bold-700 mb-0"><%=data.balance%></h2>
+                                            <h2 class="text-bold-700 mb-0">$ 5400</h2>
                                             <p>Balance</p>
                                         </div>
                                         <div class="avatar bg-rgba-primary p-50 m-0">
@@ -383,7 +397,7 @@
                                 <div class="card">
                                     <div class="card-header d-flex align-items-start pb-0">
                                         <div>
-                                            <h2 class="text-bold-700 mb-0"><%=data.totalDeposit%></h2>
+                                            <h2 class="text-bold-700 mb-0">6300</h2>
                                             <p>Deposite</p>
                                         </div>
                                         <div class="avatar bg-rgba-success p-50">
@@ -401,7 +415,7 @@
                                 <div class="card">
                                     <div class="card-header d-flex align-items-start pb-0">
                                         <div>
-                                            <h2 class="text-bold-700 mb-0"><%=data.totalwithdraw%></h2>
+                                            <h2 class="text-bold-700 mb-0">4000</h2>
                                             <p>Wiithdraws</p>
                                         </div>
                                         <div class="avatar bg-rgba-danger p-50 m-0">
@@ -418,7 +432,7 @@
                                 <div class="card">
                                     <div class="card-header d-flex align-items-start pb-0">
                                         <div>
-                                            <h2 class="text-bold-700 mb-0"><%=data.balance%> --</h2>
+                                            <h2 class="text-bold-700 mb-0">13</h2>
                                             <p>Tickets</p>
                                         </div>
                                         <div class="avatar bg-rgba-warning p-50 m-0">

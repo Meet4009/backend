@@ -26,11 +26,11 @@ exports.userRoutes = async (req, res) => {
 exports.userDetails = async (req, res) => {
     try {
 
-        const response = await axios.get(`${process.env.APP_URL}/thailottery/api/admin/user/${req.params.id}`);
+        // const response = await axios.get(`${process.env.APP_URL}/thailottery/api/admin/user/${req.params.id}`);
 
         // console.log("response", response.data.data);
         
-        res.render("userdetails", { data: response.data.data });
+        res.render("userdetails");
     } catch (error) {
         console.log(error);
     }
