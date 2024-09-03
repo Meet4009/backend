@@ -53,14 +53,14 @@ router.route("/user/change-currency").post(isAuthenticatedUser, currency);      
 // -->  http://localhost:8002/thailottery/api
 
 
-router.route("/admin/users").get(getAllUser);           // OK
-// router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);           // OK
+// router.route("/admin/users").get(getAllUser);           // OK
+router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);           // OK
 
-router.route("/admin/user/:id").get(getUserAddtionalInformation);
-router.route("/admin/user/:id").get(getSingleUser);
+// router.route("/admin/user/:id").get(getUserAddtionalInformation);
+// router.route("/admin/user/:id").get(getSingleUser);
 
-// router.route("/admin/user/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getUserAddtionalInformation);
-// router.route("/admin/user/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser);
+router.route("/admin/user/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getUserAddtionalInformation);
+router.route("/admin/user/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser);
 router.route("/admin/user/:id").put(isAuthenticatedUser, authorizeRoles("admin"), updateUserData);
 router.route("/admin/user/:id").delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser);
 

@@ -8,8 +8,8 @@ const services = require('../services/render');
 router.get('/', services.homeRoutes);
 
 
-router.route("/dashboard").get(dashboard);                 // OK
-// router.route("/dashboard").get(isAuthenticatedUser, authorizeRoles("admin"), dashboard);                 // OK
+// router.route("/dashboard").get(dashboard);                 // OK
+router.route("/dashboard").get(isAuthenticatedUser, authorizeRoles("admin"), dashboard);                 // OK
 
 
 module.exports = router;

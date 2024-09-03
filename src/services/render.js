@@ -4,7 +4,7 @@ exports.homeRoutes = async (req, res) => {
     try {
         console.log(process.env.APP_URL);
 
-        const response = await axios.get(`${process.env.APP_URL}/thailottery/api/admin/dashboard`);
+        const response = await axios.get(`${process.env.APP_URL}/api/admin/dashboard`);
         res.render('index', { data: response.data });
     } catch (error) {
         console.error(error);

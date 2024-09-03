@@ -32,19 +32,19 @@ app.use('/js', express.static(path.resolve(__dirname, "public/app-assets")));
 app.use('/', dashboard, user, lottery)
 
 
-app.use("/thailottery/api", user);                                       // OK
+app.use("/api", user);                                       // OK
 
-app.use("/thailottery/api/user/payment", userpayment);                        // OK
-app.use("/thailottery/api/admin/payment", userpayment);                       // OK
+app.use("/api/user/payment", userpayment);                        // OK
+app.use("/api/admin/payment", userpayment);                       // OK
 
 
-app.use("/thailottery/api/admin", dashboard);                                 // OK 
+app.use("/api/admin", dashboard);                                 // OK 
 
-app.use("/thailottery/api/admin", lotteryprice);                             // OK 
+app.use("/api/admin", lotteryprice);                             // OK 
 
-app.use("/thailottery/api", lottery);                           // OK
+app.use("/api", lottery);                           // OK
 
-app.use("/thailottery/api/user/lottery", lottery);                            // OK
+app.use("/api/user/lottery", lottery);                            // OK
 
 
 //Middeware for Error 
