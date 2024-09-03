@@ -50,18 +50,6 @@ exports.allLottries = async (req, res) => {
 }
 
 
-exports.totalWinning = async (req, res) => {
-    try {
-
-        // const response = await axios.get(`${process.env.APP_URL}/thailottery/api/admin/lottery/all-lottery`);
-
-        // console.log(response.data.data);
-
-        res.render("totalwinning");
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 exports.chooseWinner = async (req, res) => {
     try {

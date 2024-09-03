@@ -192,7 +192,7 @@ exports.getRequestDeposits = async (req, res) => {
         res.status(200).json({
             status: true,
             data: data,
-            message: `${request} deposite has been loaded`,
+            message: `${request} deposit has been loaded`,
         });
     } catch (error) {
 

@@ -125,7 +125,7 @@ const paymentReject = async (payment, statusCode, res) => {
 
 
 // -----------------------------------------------------//
-// --------------- Total Deposite Amount -------------- // 
+// --------------- Total deposit Amount -------------- // 
 // -----------------------------------------------------//
 const calculateAmount = async (dipositeData) => {
     const total = await dipositeData.reduce(async (accumulatorPromise, data) => {
