@@ -13,7 +13,8 @@ const { setlottery,
     getWinnerSpace,
     allWinners,
     getallLotterys,
-    getLotteryDetails } = require("../controller/lottery");
+    getLotteryDetails, 
+    getAllLotterys} = require("../controller/lottery");
 const router = express.Router();
 
 // fortend Routes
@@ -49,7 +50,7 @@ router.route("/allwinner/:id").get(isAuthenticatedUser, authorizeRoles("admin"),
 
 // --> http://localhost:8002/thailottery/api/user/lottery
 
-router.route("/alllottery").get(isAuthenticatedUser, getallLotterys);                          // OK
+router.route("/alllottery").get(isAuthenticatedUser, getAllLotterys);                          // OK
 router.route("/details/:id").get(isAuthenticatedUser, getLotteryDetails);                          // OK
 router.route("/ticket-number").get(isAuthenticatedUser, genarateTicketNumber);              // Ok
 router.route("/buylottery").post(isAuthenticatedUser, buylottery);                          // OK 
