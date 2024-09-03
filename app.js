@@ -42,7 +42,7 @@ app.use("/api/admin", dashboard);                                 // OK
 
 app.use("/api/admin", lotteryprice);                             // OK 
 
-app.use("/api", lottery);                           // OK
+app.use("/api/admin/lottery", lottery);                           // OK
 
 app.use("/api/user/lottery", lottery);                            // OK
 

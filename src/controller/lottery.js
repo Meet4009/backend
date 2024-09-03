@@ -6,7 +6,7 @@ const LotteryBuyer = require("../models/lotteryBuyer");
 const { scheduleLotteryDraw } = require("../utils/lotteryCron");
 const { helperWinnerSpace } = require("../utils/helpWinnerSpace");
 const { generateRandom12DigitNumber } = require("../utils/genarateTicketNumber");
-const { currencyConveraterToTHB, currencyConveraterToUSD } = require("../utils/currencyConverater");
+const { currencyConveraterToTHB, currencyConveraterToUSD, currencyConveraterFormTHB } = require("../utils/currencyConverater");
 const lotteryPrice = require("../models/lotteryPrice");
 
 
@@ -90,13 +90,54 @@ exports.getLotterys = async (req, res) => {
     }
 };
 
+// ----------------------------------------------------------//
+// ------ 33 -------- Get All lottery -- user --------------- // 
+// ----------------------------------------------------------//
+
+exports.getAllLotterys = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+
+        const lottery = await Lottery.find();
+        console.log(lottery.lotteryPrice);
+        lottery.lotteryPrice = currencyConveraterFormTHB(user.currency_code , lottery.lotteryPrice);
+        console.log(lottery.lotteryPrice);
+        
+
+        if (!lottery) {
+            return res.status(200).json({
+                status: false,
+                data: {},
+                message: "Lottery not found"
+            });
+        }
+
+        // let lotteryDraw = await LotteryDraw.find();
+
+        res.status(200).json({
+            status: true,
+            data: lottery,
+            message: 'All Lottery get Successfully'
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error}`
+        });
+    }
+};
+
 
 
 // ----------------------------------------------------------//
-// ------ 33 -- 34 --------- Get Lottery ---  User ----------------- // 
+// -------- 34 --------- Get Lottery details ---  User ----------------- // 
 // ----------------------------------------------------------//
 
-exports.getLottery = async (req, res, next) => {
+exports.getLotteryDetails = async (req, res, next) => {
+
+
     try {
         const lottery = await Lottery.findById(req.params.id);
 

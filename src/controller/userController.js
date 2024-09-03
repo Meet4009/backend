@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const User = require("../models/userModel");
-const { currencyConveraterToTHB } = require("../utils/currencyConverater");
+const { currencyConveraterFormUSD } = require("../utils/currencyConverater");
 const userPayment = require("../models/userPayment");
 const { calculateAmount } = require("../utils/paymentDecision");
 
@@ -162,6 +162,7 @@ exports.getUserDatails = async (req, res, next) => {
 
     try {
         const user = await User.findById(req.user.id);
+        user.balance = await currencyConveraterFormUSD(user.currency_code, user.balance)
 
         res.status(200).json({
             status: true,
