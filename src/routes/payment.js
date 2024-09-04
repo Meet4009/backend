@@ -32,8 +32,8 @@ const router = express.Router();
 router.route("/deposit").post(isAuthenticatedUser, deposit);                                                                    // OK 
 router.route("/withdraw").post(isAuthenticatedUser, withdraw);                                                                  // OK
 
-router.route("/deposit/history").get(isAuthenticatedUser, depositsHistory);                                                    // OK 
-router.route("/withdraw/history").get(isAuthenticatedUser, withdrawHistory);                                                    // OK
+router.route("/deposit-history").get(isAuthenticatedUser, depositsHistory);                                                    // OK 
+router.route("/withdraw-history").get(isAuthenticatedUser, withdrawHistory);                                                    // OK
 
 
 
