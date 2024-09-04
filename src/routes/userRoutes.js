@@ -31,7 +31,7 @@ router.route("/login").post(loginUser);                                         
 
 router.route("/logout").get(logout);                                                            // OK
 
-router.route("/password/update").put(isAuthenticatedUser, updatePassword);                      // OK
+router.route("/password-update").put(isAuthenticatedUser, updatePassword);                      // OK
 
 router.route("/profile").get(isAuthenticatedUser, getUserDatails);                              // OK
 
@@ -51,7 +51,7 @@ router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllU
 router.route("/user/:id")
     .get(isAuthenticatedUser, authorizeRoles("admin"), getUserAddtionalInformation)
     .get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser)
-    .put(isAuthenticatedUser, authorizeRoles("admin"), updateUserData)
+    .patch(isAuthenticatedUser, authorizeRoles("admin"), updateUserData)
     .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser)
 
 // router.route("/password/forgot").post(forgotPassword);
