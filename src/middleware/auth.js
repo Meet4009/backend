@@ -4,32 +4,33 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
 
-exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
-    const { token } = req.cookies;
+exports.isAuthenticatedUser = async (req, res, next) => {
 
-    // if (!token) {
-    //     return next(new ErrorHander("pleses login to access this resource", 401))
-    // }
+    try {
+        const { token } = req.cookies;
 
-    const decodeData = jwt.verify(token, process.env.JWT_SECRET);
+        if (!token) {
+            return res.status(404).json({
+                status: false,
+                data: {},
+                message: "Token not found"
+            });
+        }
 
-    req.user = await User.findById(decodeData.id);
-    next();
-});
+        const decodedData = jwt.verify(token, process.env.JWT_SECRET);
 
+        req.user = await User.findById(decodedData.id);
+        next();
 
-exports.getAuth = catchAsyncErrors(async (req, res, next) => {
-    const { token } = req.cookies;
-
-    if (!token) {
-        return next(new ErrorHander("pleses login to access this resource", 401))
+    } catch (error) {
+        return res.status(500).json({
+            status: false,
+            message: `Internal Server Error -- ${error.message}`
+        });
     }
 
-    const decodeData = jwt.verify(token, process.env.JWT_SECRET);
+};
 
-    req.user = await User.findById(decodeData.id);
-    next();
-});
 
 exports.authorizeRoles = (...roles) => {
     return (req, res, next) => {

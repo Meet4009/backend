@@ -66,7 +66,7 @@ exports.getLotterys = async (req, res) => {
         const lottery = await Lottery.find();
 
         if (!lottery) {
-            return res.status(200).json({
+            return res.status(404).json({
                 status: false,
                 data: {},
                 message: "Lottery not found"
@@ -105,7 +105,7 @@ exports.getAllLotterys = async (req, res) => {
         
 
         if (!lottery) {
-            return res.status(200).json({
+            return res.status(404).json({
                 status: false,
                 data: {},
                 message: "Lottery not found"
@@ -142,7 +142,7 @@ exports.getLotteryDetails = async (req, res, next) => {
         const lottery = await Lottery.findById(req.params.id);
 
         if (!lottery) {
-            return res.status(200).json({
+            return res.status(404).json({
                 status: false,
                 data: {},
                 message: "Lottery not found"
@@ -162,7 +162,7 @@ exports.getLotteryDetails = async (req, res, next) => {
         });
 
         if (lotteryDrawObj.length === 0) {
-            return res.status(200).json({
+            return res.status(404).json({
                 status: false,
                 data: {},
                 message: "Lottery not found"
@@ -225,7 +225,7 @@ exports.buylottery = async (req, res, next) => {
         const { ticket_number, lottery_id } = req.body;
 
         if (!Array.isArray(ticket_number) || ticket_number == null) {
-            return res.status(200).json({
+            return res.status(400).json({
                 status: false,
                 data: {},
                 message: "pleace provide ticket number in array format"
@@ -236,7 +236,7 @@ exports.buylottery = async (req, res, next) => {
 
         if (!lottery) {
 
-            return res.status(200).json({
+            return res.status(404).json({
                 status: false,
                 data: {},
                 message: "Lottery not found"
@@ -248,7 +248,7 @@ exports.buylottery = async (req, res, next) => {
         let userBlance = await currencyConveraterToTHB(1, getUser.balance);
 
         if (!(userBlance >= (lottery.price * ticket_number.length))) {
-            return res.status(200).json({
+            return res.status(400).json({
                 status: false,
                 data: {},
                 message: "Insufficient Balance"
@@ -268,7 +268,8 @@ exports.buylottery = async (req, res, next) => {
         });
 
         if (lotteryDrawObj.length === 0) {
-            return res.status(200).json({
+            return res.status(40
+                4).json({
                 status: false,
                 data: {},
                 message: "Lottery not found"
