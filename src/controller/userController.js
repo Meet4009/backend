@@ -326,8 +326,6 @@ exports.updateUserData = async (req, res, next) => {
             name: req.body.name,
             email: req.body.email,
             mobile_No: req.body.mobile_No,
-            country: req.body.country,
-            language: req.body.language
         };
 
         const user = await User.findByIdAndUpdate(req.params.id, newUserData, {

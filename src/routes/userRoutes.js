@@ -35,7 +35,7 @@ router.route("/password-update").put(isAuthenticatedUser, updatePassword);      
 
 router.route("/profile").get(isAuthenticatedUser, getUserDatails);                              // OK
 
-router.route("/profile/update").patch(isAuthenticatedUser, updateProfile);                        // OK
+router.route("/profile/update").put(isAuthenticatedUser, updateProfile);                        // OK
 
 router.route("/change-currency").post(isAuthenticatedUser, currency);                            // OK
 
