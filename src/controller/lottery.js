@@ -268,8 +268,7 @@ exports.buylottery = async (req, res, next) => {
         });
 
         if (lotteryDrawObj.length === 0) {
-            return res.status(40
-                4).json({
+            return res.status(404).json({
                 status: false,
                 data: {},
                 message: "Lottery not found"
