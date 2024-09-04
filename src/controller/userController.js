@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const User = require("../models/userModel");
-const { currencyConveraterFormUSD } = require("../utils/currencyConverater");
+const { currencyConveraterFormUSD, currencyConveraterToTHB } = require("../utils/currencyConverater");
 const userPayment = require("../models/userPayment");
 const { calculateAmount } = require("../utils/paymentDecision");
 
