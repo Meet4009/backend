@@ -29,22 +29,19 @@ app.use('/css', express.static(path.resolve(__dirname, "public/app-assets")));
 app.use('/img', express.static(path.resolve(__dirname, "public/app-assets")));
 app.use('/js', express.static(path.resolve(__dirname, "public/app-assets")));
 
-app.use('/', dashboard, user, lottery)
 
+app.use("/api/user", user);                                       // OK
+app.use("/api/admin", user);                                       // OK
 
-app.use("/api", user);                                       // OK
-
-app.use("/api/user/payment", userpayment);                        // OK
 app.use("/api/admin/payment", userpayment);                       // OK
+app.use("/api/user/lottery", lottery);                            // OK
+app.use("/api/user/payment", userpayment);                        // OK
 
 
 app.use("/api/admin", dashboard);                                 // OK 
-
 app.use("/api/admin", lotteryprice);                             // OK 
 
 app.use("/api/admin/lottery", lottery);                           // OK
-
-app.use("/api/user/lottery", lottery);                            // OK
 
 
 //Middeware for Error 
