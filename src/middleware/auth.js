@@ -1,5 +1,4 @@
 const ErrorHander = require("../utils/errorhander");
-const catchAsyncErrors = require("./catchAsyncErrors");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
@@ -13,7 +12,7 @@ exports.isAuthenticatedUser = async (req, res, next) => {
             return res.status(404).json({
                 status: false,
                 data: {},
-                message: "Token not found"
+                message: "pleses login to access this resource"
             });
         }
 
