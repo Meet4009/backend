@@ -31,13 +31,13 @@ router.route("/login").post(loginUser);                                         
 
 router.route("/logout").get(logout);                                                            // OK
 
-router.route("/password-update").put(updatePassword);                      // OK
+router.route("/password-update").put(isAuthenticatedUser, updatePassword);                      // OK
 
-router.route("/profile").get(getUserDatails);                              // OK
+router.route("/profile").get(isAuthenticatedUser, getUserDatails);                              // OK
 
-router.route("/profile/update").put(updateProfile);                        // OK
+router.route("/profile/update").put(isAuthenticatedUser, updateProfile);                        // OK
 
-router.route("/change-currency").post(currency);                            // OK
+router.route("/change-currency").post(isAuthenticatedUser, currency);                            // OK
 
 // -----------------------------------------------//
 // ------------------ Admin side ---------------- //
