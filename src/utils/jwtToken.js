@@ -6,7 +6,7 @@ const sendToken = async (user, statusCode, res) => {
     const token = user.getJWTToken();
 
     const options = {
-        secure: process.env.NODE_ENV === 'production',
+        secure: process.env.JWT_SECRET,
         httpOnly: true,
     };
     let userDetails = { ...user.toObject(), balance : await currencyConveraterFormUSD(user.currency_code, user.balance) }
