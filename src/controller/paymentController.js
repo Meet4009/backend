@@ -95,8 +95,10 @@ exports.withdraw = async (req, res, next) => {
 // ----------------------------------------------------------//
 
 exports.depositsHistory = async (req, res, next) => {
+    const user = await User.findById(req.user.id);
+    console.log(user);
+    
     try {
-        const user = await User.findById(req.user.id);
 
         const History = await userPayment.find({ payment_type: "diposit", user_id: { _id: user.id } });
 
