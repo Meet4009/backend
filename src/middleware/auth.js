@@ -5,18 +5,16 @@ const User = require("../models/userModel");
 
 exports.isAuthenticatedUser = async (req, res, next) => {
 
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-        return res.status(404).json({
-            status: false,
-            data: {},
-            message: "pleses login to access this resource"
-        });
-    }
+
     try {
-
-
-
+        const { token } = req.cookies;
+        if (!token) {
+            return res.status(404).json({
+                status: false,
+                data: {},
+                message: "pleses login to access this resource",
+            });
+        }
         const decodedData = jwt.verify(token, process.env.JWT_SECRET);
 
         req.user = await User.findById(decodedData.id);
