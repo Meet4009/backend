@@ -39,7 +39,7 @@ router.route("/allwinner/:id").get(isAuthenticatedUser, authorizeRoles("admin"),
 
 // --> http://localhost:8002/thailottery/api/user/lottery
 
-router.route("/all-lottery").get(getAllLotterys);
+router.route("/all-lotteries").get(getAllLotterys);
 router.route("/details/:id").get(getLotteryDetails);
 router.route("/ticket-number").get(genarateTicketNumber);
 router.route("/buy-lottery").post(buylottery);
