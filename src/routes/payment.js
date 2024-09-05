@@ -29,11 +29,11 @@ const router = express.Router();
 
 // -->  http://localhost:8002/thailottery/api/user/payment
 
-router.route("/deposit").post(isAuthenticatedUser, deposit);                                                                    // OK 
-router.route("/withdraw").post(isAuthenticatedUser, withdraw);                                                                  // OK
+router.route("/deposit").post(deposit);                                                                    // OK 
+router.route("/withdraw").post(withdraw);                                                                  // OK
 
-router.route("/deposit-history").get(isAuthenticatedUser, depositsHistory);                                                    // OK 
-router.route("/withdraw-history").get(isAuthenticatedUser, withdrawHistory);                                                    // OK
+router.route("/deposit-history").get(depositsHistory);                                                    // OK 
+router.route("/withdraw-history").get(withdrawHistory);                                                    // OK
 
 
 
@@ -56,8 +56,8 @@ router.route("/deposit/reject/:id").get(isAuthenticatedUser, authorizeRoles("adm
 router.route("/withdraw/approve/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setApprovewithdraw);                    // Ok
 router.route("/withdraw/reject/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setRejectwithdraw);                      // OK
 
-router.route("/deposit-history/:id").get(isAuthenticatedUser,authorizeRoles("admin"),userDepositsHistory);                     // Ok
-router.route("/withdraw-history/:id").get(isAuthenticatedUser,authorizeRoles("admin"),userWithdrawHistory);                     // Ok
+router.route("/deposit-history/:id").get(isAuthenticatedUser, authorizeRoles("admin"), userDepositsHistory);                     // Ok
+router.route("/withdraw-history/:id").get(isAuthenticatedUser, authorizeRoles("admin"), userWithdrawHistory);                     // Ok
 
 
 
