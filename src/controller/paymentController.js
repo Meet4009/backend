@@ -95,12 +95,12 @@ exports.withdraw = async (req, res, next) => {
 // ----------------------------------------------------------//
 
 exports.depositsHistory = async (req, res, next) => {
-    const user = await User.findById(req.user.id);
-    console.log(user);
+    // const user = await User.findById(req.user.id);
+    // console.log(user);
     
     try {
 
-        const History = await userPayment.find({ payment_type: "diposit", user_id: { _id: user.id } });
+        // const History = await userPayment.find({ payment_type: "diposit", user_id: { _id: user.id } });
 
         res.status(200).json({
             status: true,
