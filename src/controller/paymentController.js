@@ -97,7 +97,7 @@ exports.depositsHistory = async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id);
 
-        const History = await userPayment.find({ payment_type: "deposit", user_id: user.id });
+        const History = await userPayment.find({ payment_type: "diposit", user_id: { _id: user.id } });
 
         res.status(200).json({
             status: true,
