@@ -98,10 +98,10 @@ exports.getAllLotterys = async (req, res) => {
     try {
         // const user = await User.findById(req.user.id);
 
-        const lottery = await Lottery.find();
-        console.log(lottery.lotteryPrice);
-        lottery.lotteryPrice = currencyConveraterFormTHB(user.currency_code , lottery.lotteryPrice);
-        console.log(lottery.lotteryPrice);
+        // const lottery = await Lottery.find();
+        // console.log(lottery.lotteryPrice);
+        // lottery.lotteryPrice = currencyConveraterFormTHB(user.currency_code , lottery.lotteryPrice);
+        // console.log(lottery.lotteryPrice);
         
 
         if (!lottery) {
