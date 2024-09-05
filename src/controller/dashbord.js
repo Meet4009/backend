@@ -41,22 +41,23 @@ exports.dashboard = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            "totalUsers": totalUsers,                       // Count
-            "activeUsers": activeUsers,                     // Count
-            "emailUnverified": emailUnverified,             // Count 
-            "mobileUnverified": mobileUnverified,           // Count
-            "soldTicket": soldTicket,                       // Count
-            "soldAmount": soldAmount,                       // Amount
-            "winner": winner,                               // Count
-            "winAmmount": winAmmount,                       // Amount
-            "totalDeposits": totalDeposits,                 // Amount
-            "approvedDeposit": approvedDeposit,             // Count
-            "rejectedDeposit": rejectedDeposit,             // Count
-            "pendingDeposit": pendingDeposit,               // Count
-            "totalWithdrawals": totalWithdrawals,           // Amount
-            "approvedWithdrawal": approvedWithdrawal,       // Count
-            "rejectedWithdrawal": rejectedWithdrawal,       // Count
-            "pendingWithdraw": pendingWithdraw,             // Count
+            // "totalUsers": totalUsers,                       // Count
+            data: { totalUsers, activeUsers, emailUnverified, mobileUnverified, soldTicket, totalDeposits, approvedDeposit, rejectedDeposit, pendingDeposit, totalWithdrawals, approvedWithdrawal, rejectedWithdrawal, pendingWithdraw },
+            // "activeUsers": activeUsers,                     // Count
+            // "emailUnverified": emailUnverified,             // Count 
+            // "mobileUnverified": mobileUnverified,           // Count
+            // "soldTicket": soldTicket,                       // Count
+            // "soldAmount": soldAmount,                       // Amount
+            // "winner": winner,                               // Count
+            // "winAmmount": winAmmount,                       // Amount
+            // "totalDeposits": totalDeposits,                 // Amount
+            // "approvedDeposit": approvedDeposit,             // Count
+            // "rejectedDeposit": rejectedDeposit,             // Count
+            // "pendingDeposit": pendingDeposit,               // Count
+            // "totalWithdrawals": totalWithdrawals,           // Amount
+            // "approvedWithdrawal": approvedWithdrawal,       // Count
+            // "rejectedWithdrawal": rejectedWithdrawal,       // Count
+            // "pendingWithdraw": pendingWithdraw,             // Count
         });
     } catch (error) {
 
