@@ -93,15 +93,11 @@ exports.withdraw = async (req, res, next) => {
 // ----------------------------------------------------------//
 // ------  13 ----- Deposits History -- User ---------------- // 
 // ----------------------------------------------------------//
-
 exports.depositsHistory = async (req, res, next) => {
-    // const user = await User.findById(req.user.id);
-    // console.log(user);
-
     try {
+        const user = await User.findById(req.user.id);
 
-        // const History = await userPayment.find({ payment_type: "diposit", user_id: { _id: user.id } });
-        const History = await userPayment.find({ payment_type: "diposit"});
+        const History = await userPayment.find({ payment_type: "deposit", user_id: user.id });
 
         res.status(200).json({
             status: true,
@@ -109,13 +105,11 @@ exports.depositsHistory = async (req, res, next) => {
             message: 'The deposit history has been loaded'
         });
     } catch (error) {
-
         res.status(500).json({
             status: false,
             message: `Internal Server Error -- ${error}`
         });
     }
-
 };
 
 
@@ -124,12 +118,12 @@ exports.depositsHistory = async (req, res, next) => {
 // ------ 14 ------ Withdraw History -- User --------------- // 
 // ----------------------------------------------------------//
 
+
 exports.withdrawHistory = async (req, res, next) => {
     try {
-        // const user = await User.findById(req.user.id);
+        const user = await User.findById(req.user.id);
 
-        // const History = await userPayment.find({ payment_type: "withdraw", user_id: { _id: user.id } });
-        const History = await userPayment.find({ payment_type: "withdraw"});
+        const History = await userPayment.find({ payment_type: "withdraw", user_id: user.id });
 
         res.status(200).json({
             status: true,
@@ -137,13 +131,11 @@ exports.withdrawHistory = async (req, res, next) => {
             message: 'The withdraw history has been loaded'
         });
     } catch (error) {
-
         res.status(500).json({
             status: false,
             message: `Internal Server Error -- ${error}`
         });
     }
-
 };
 
 
