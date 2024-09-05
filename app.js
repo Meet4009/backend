@@ -4,6 +4,13 @@ const morgan = require("morgan");
 const cookieParser = require("cookie-parser")
 const bodyparser = require("body-parser");
 const path = require('path');
+const cors = require('cors');
+
+
+ app.use(cors({
+    origin: 'http://localhost:5173'
+  }));
+  
 
 
 const errorMiddleware = require("./src/middleware/error");
