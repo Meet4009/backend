@@ -97,10 +97,11 @@ exports.withdraw = async (req, res, next) => {
 exports.depositsHistory = async (req, res, next) => {
     // const user = await User.findById(req.user.id);
     // console.log(user);
-    
+
     try {
 
         // const History = await userPayment.find({ payment_type: "diposit", user_id: { _id: user.id } });
+        const History = await userPayment.find({ payment_type: "diposit"});
 
         res.status(200).json({
             status: true,
@@ -422,7 +423,7 @@ exports.userWithdrawHistory = async (req, res) => {
             Data: data,
             message: 'The withdraw history has been loaded'
         });
-        
+
     } catch (error) {
 
         res.status(500).json({
