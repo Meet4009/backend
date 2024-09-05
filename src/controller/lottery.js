@@ -96,7 +96,7 @@ exports.getLotterys = async (req, res) => {
 
 exports.getAllLotterys = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id);
+        // const user = await User.findById(req.user.id);
 
         const lottery = await Lottery.find();
         console.log(lottery.lotteryPrice);
