@@ -128,7 +128,8 @@ exports.withdrawHistory = async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id);
 
-        const History = await userPayment.find({ payment_type: "withdraw", user_id: { _id: user.id } });
+        // const History = await userPayment.find({ payment_type: "withdraw", user_id: { _id: user.id } });
+        const History = await userPayment.find({ payment_type: "withdraw"});
 
         res.status(200).json({
             status: true,
