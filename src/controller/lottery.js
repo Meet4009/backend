@@ -340,7 +340,7 @@ exports.ticketHistory = async (req, res, next) => {
         res.status(200).json({
             status: true,
             data: allTicket,
-            message: "Ticket number fetch successfully"
+            message: "Ticket fetch successfully"
         });
 
     } catch (error) {

@@ -4,12 +4,15 @@ const lottery_price = new mongoose.Schema({
     priceNumber: {
         type: Number,
         unique: true,
+        require: true
     },
     price: {
-        type: Number
+        type: Number,
+        require: true
     },
     totalPerson: {
-        type: Number
+        type: Number,
+        require: true
     }
 });
 
