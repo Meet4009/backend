@@ -8,6 +8,7 @@ const userPayment = require("../models/userPayment");
 const { calculateAmount } = require("../utils/paymentDecision");
 const lottery = require("../models/lottery");
 const { countDocuments } = require("../models/lotteryBuyer");
+const lotteryBuyer = require("../models/lotteryBuyer");
 
 
 // --------------------------------------------------------------------------- //
