@@ -263,11 +263,18 @@ exports.getSingleUser = async (req, res, next) => {
         if (!user) {
             return next(new ErrorHander(`User doen not exist Id: ${req.params.id}`, 400));
         }
+        const balance = Math.round(await currencyConveraterToTHB(1, user.balance));
+
+        const depositData = await userPayment.find({ user_id: user.id, payment_type: "diposit", status: "success", action_status: "approved" });
+        const totalDeposit = Math.round(await calculateAmount(depositData));
+
+        const withdrawData = await userPayment.find({ user_id: user.id, payment_type: "withdraw", status: "success", action_status: "approved" });
+        const totalwithdraw = Math.round(await calculateAmount(withdrawData));
 
         res.status(200).json({
             success: true,
+            data: { user, balance, totalDeposit, totalwithdraw },
             messaage: "update sucessfully",
-            user,
         });
 
     } catch (error) {
