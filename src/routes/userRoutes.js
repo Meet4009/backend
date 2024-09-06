@@ -50,7 +50,6 @@ router.route("/change-currency").post(isAuthenticatedUser, currency);           
 router.route("/users").get(getAllUser);           // OK
 
 router.route("/user/:id")
-    .get(getUserAddtionalInformation)
     .get(getSingleUser)
     .put(updateUserData)
     .delete(deleteUser)
