@@ -307,7 +307,7 @@ exports.getUserAddtionalInformation = async (req, res, next) => {
         const withdrawData = await userPayment.find({ user_id: user.id, payment_type: "withdraw", status: "success", action_status: "approved" });
         const totalwithdraw = Math.round(await calculateAmount(withdrawData));
 
-        const ticket = await countDocuments.lotteryBuyer.find({ user_id: user.id})
+        const ticket = await lotteryBuyer.countDocuments({ user_id: user.id })
 
         res.status(200).json({
             status: true,
