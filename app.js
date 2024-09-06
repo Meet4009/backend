@@ -23,7 +23,7 @@ app.use(bodyparser.urlencoded({ extended: true }))
 
 const user = require("./src/routes/userRoutes");
 const lotteryprice = require("./src/routes/lotteryprice");
-const userpayment = require("./src/routes/payment");
+const payment = require("./src/routes/payment");
 const lottery = require("./src/routes/lottery");
 const dashboard = require("./src/routes/dashboard")
 
@@ -40,9 +40,9 @@ app.use('/js', express.static(path.resolve(__dirname, "public/app-assets")));
 app.use("/api/user", user);                                       // OK
 app.use("/api/admin", user);                                       // OK
 
-app.use("/api/admin/payment", userpayment);                       // OK
+app.use("/api/admin/payment", payment);                       // OK
 app.use("/api/user/lottery", lottery);                            // OK
-app.use("/api/user/payment", userpayment);                        // OK
+app.use("/api/user/payment", payment);                        // OK
 
 
 app.use("/api/admin", dashboard);                                 // OK 

@@ -46,8 +46,8 @@ router.route("/withdraw-history").get(isAuthenticatedUser, withdrawHistory);    
 router.route("/deposits").get(isAuthenticatedUser, authorizeRoles("admin"), getDeposits);                                      // OK
 router.route("/:status/deposits").get(isAuthenticatedUser, authorizeRoles("admin"), paymentvalidStatus, getRequestDeposits);   // OK
 
-router.route("/withdraws").get(isAuthenticatedUser, authorizeRoles("admin"), getWithdraws);                                     // OK
-router.route("/:status/withdraws").get(isAuthenticatedUser, authorizeRoles("admin"), paymentvalidStatus, getRequestWithdraws);   // OK
+router.route("/withdrawals").get(isAuthenticatedUser, authorizeRoles("admin"), getWithdraws);                                     // OK
+router.route("/:status/withdrawals").get(isAuthenticatedUser, authorizeRoles("admin"), paymentvalidStatus, getRequestWithdraws);   // OK
 
 
 router.route("/deposit/approve/:id").get(isAuthenticatedUser, authorizeRoles("admin"), setApproveDeposit);                     // Ok
