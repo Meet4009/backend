@@ -273,9 +273,11 @@ exports.getSingleUser = async (req, res, next) => {
         const withdrawData = await userPayment.find({ user_id: user.id, payment_type: "withdraw", status: "success", action_status: "approved" });
         const totalwithdraw = Math.round(await calculateAmount(withdrawData));
 
+        const ticket = await lotteryBuyer.countDocuments({ user_id: user.id })
+
         res.status(200).json({
             success: true,
-            data: { user, balance, totalDeposit, totalwithdraw },
+            data: { user, balance, totalDeposit, totalwithdraw, ticket },
             messaage: "update sucessfully",
         });
 
@@ -299,14 +301,6 @@ exports.getUserAddtionalInformation = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
 
-        if (!user) {
-            return res.status(404).json({
-                status: false,
-                data: {},
-                message: "User not found"
-            });
-        }
-
         const balance = Math.round(await currencyConveraterToTHB(1, user.balance));
 
         const depositData = await userPayment.find({ user_id: user.id, payment_type: "diposit", status: "success", action_status: "approved" });
@@ -315,13 +309,11 @@ exports.getUserAddtionalInformation = async (req, res, next) => {
         const withdrawData = await userPayment.find({ user_id: user.id, payment_type: "withdraw", status: "success", action_status: "approved" });
         const totalwithdraw = Math.round(await calculateAmount(withdrawData));
 
-        const ticket = await lotteryBuyer.find({ user_id: user.id, status: "pending" })
-        const totalTicket = ticket.length
-
+        const ticket = await lotteryBuyer.countDocuments({ user_id: user.id })
 
         res.status(200).json({
             status: true,
-            data: { balance, totalDeposit, totalwithdraw, totalTicket },
+            data: { balance, totalDeposit, totalwithdraw, ticket },
             message: 'All user fatch successfully'
         });
 
