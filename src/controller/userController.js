@@ -290,7 +290,7 @@ exports.getUserAddtionalInformation = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.id);
 
-        const balance = await currencyConveraterToTHB(1, user.balance);
+        const balance = await currencyConveraterToTHB(user.currency_code, user.balance);
         console.log(balance);
 
         const depositData = await userPayment.find({ user_id: user.id, payment_type: "diposit", status: "success", action_status: "approved" });
