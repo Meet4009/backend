@@ -6,6 +6,8 @@ const User = require("../models/userModel");
 const { currencyConveraterFormUSD, currencyConveraterToTHB } = require("../utils/currencyConverater");
 const userPayment = require("../models/userPayment");
 const { calculateAmount } = require("../utils/paymentDecision");
+const lottery = require("../models/lottery");
+const { countDocuments } = require("../models/lotteryBuyer");
 
 
 // --------------------------------------------------------------------------- //
@@ -305,9 +307,11 @@ exports.getUserAddtionalInformation = async (req, res, next) => {
         const withdrawData = await userPayment.find({ user_id: user.id, payment_type: "withdraw", status: "success", action_status: "approved" });
         const totalwithdraw = Math.round(await calculateAmount(withdrawData));
 
+        const ticket = await countDocuments.lotteryBuyer.find({ user_id: user.id, })
+
         res.status(200).json({
             status: true,
-            data: { balance, totalDeposit, totalwithdraw },
+            data: { balance, totalDeposit, totalwithdraw, ticket },
             message: 'All user fatch successfully'
         });
 
