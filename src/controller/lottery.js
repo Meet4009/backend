@@ -63,7 +63,7 @@ exports.setlottery = async (req, res) => {
 exports.getLotterys = async (req, res) => {
     try {
 
-        const lottery = await Lottery.find().populate("lottery_draw_id");
+        const lottery = await Lottery.find();
 
         if (!lottery) {
             return res.status(404).json({
