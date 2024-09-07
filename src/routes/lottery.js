@@ -44,7 +44,7 @@ router.route("/ticket-number").get(isAuthenticatedUser, genarateTicketNumber);
 router.route("/buy-lottery").post(isAuthenticatedUser, buylottery);
 router.route("/pending-ticket").get(isAuthenticatedUser, pendingTickets);
 router.route("/all-ticket").get(isAuthenticatedUser, ticketHistory);
-router.route("/allwinner/:id").get(isAuthenticatedUser, allWinners);  // admin
+router.route("/latest-winners/:id").get(isAuthenticatedUser, allWinners);  // admin
 
 
 
