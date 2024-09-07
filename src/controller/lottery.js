@@ -507,7 +507,7 @@ exports.useralltickets = async (req, res, next) => {
 
 exports.allWinners = async (req, res, next) => {
     try {
-        let winner = await LotteryBuyer.find({ status: "win", lottery_draw_id: req.params.id }).populate('lottery_price_id').populate('user_id')
+        let winner = await LotteryBuyer.find({ status: "win" }).populate('lottery_price_id').populate('user_id').populate('lottery_id').populate('lottery_draw_id');
 
         let winners = winner.sort((a, b) => a.lottery_price_id.priceNumber - b.lottery_price_id.priceNumber);
 

@@ -37,6 +37,7 @@ router.route("/choose-winner").get( getAllPendingTickets);
 router.route("/loss-buyer/:id").get( lossbuyer);
 router.route("/win-buyer/:id").post( winbuyer);  // admin
 router.route("/winner-space/:id").get( getWinnerSpace);  // admin
+router.route("/all-winner").get(allWinners);
 
 
 // -----------------------------------------------//
@@ -54,7 +55,5 @@ router.route("/all-ticket").get(isAuthenticatedUser, ticketHistory);
 router.route("/latest-winners/:id").get(isAuthenticatedUser, allWinners);  // admin
 
 
-
-
-
+0
 module.exports = router;
