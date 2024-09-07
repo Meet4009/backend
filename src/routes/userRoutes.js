@@ -46,13 +46,13 @@ router.route("/change-currency").post(isAuthenticatedUser, currency);           
 // -->  http://localhost:8002/thailottery/api/admin
 
 
-// router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);           // OK
-router.route("/users").get(getAllUser);           // OK
+router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);           // OK
+// router.route("/users").get(getAllUser);           // OK
 
 router.route("/user/:id")
-    .get(getSingleUser)
-    .put(updateUserData)
-    .delete(deleteUser)
+    .get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser)
+    .put(isAuthenticatedUser, authorizeRoles("admin"), updateUserData)
+    .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser)
 
 // router.route("/password/forgot").post(forgotPassword);
 
