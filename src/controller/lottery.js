@@ -63,21 +63,21 @@ exports.setlottery = async (req, res) => {
 exports.getLotterys = async (req, res) => {
     try {
 
-        const lottery = await Lottery.find();
+        // const lottery = await Lottery.find();
 
-        if (!lottery) {
-            return res.status(404).json({
-                status: false,
-                data: {},
-                message: "Lottery not found"
-            });
-        }
+        // if (!lottery) {
+        //     return res.status(404).json({
+        //         status: false,
+        //         data: {},
+        //         message: "Lottery not found"
+        //     });
+        // }
 
-        // let lotteryDraw = await LotteryDraw.find();
+        let lotteryDraw = await LotteryDraw.find({ status: 'active' }).populate('lottery_id');
 
         res.status(200).json({
             status: true,
-            data: { lottery },
+            data: { lotteryDraw },
             message: 'All Lottery get Successfully'
         });
 
@@ -100,9 +100,9 @@ exports.getAllLotterys = async (req, res) => {
 
         const lottery = await Lottery.find();
         console.log(lottery.lotteryPrice);
-        lottery.lotteryPrice = currencyConveraterFormTHB(user.currency_code , lottery.lotteryPrice);
+        lottery.lotteryPrice = currencyConveraterFormTHB(user.currency_code, lottery.lotteryPrice);
         console.log(lottery.lotteryPrice);
-        
+
 
         if (!lottery) {
             return res.status(404).json({
