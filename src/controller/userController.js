@@ -91,8 +91,12 @@ exports.loginUser = async (req, res, next) => {
 exports.logout = async (req, res, next) => {
 
     try {
-        const { token } = req.cookies;
-        const decodeData = jwt.verify(token, process.env.JWT_SECRET);
+        const authHeader = req.headers['authorization'];
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            req.token = authHeader.substring(7);
+        }
+        // const { token } = req.cookies;
+        const decodeData = jwt.verify(req.token, process.env.JWT_SECRET);
 
         const user = await User.findById(decodeData.id);
 

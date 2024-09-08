@@ -24,21 +24,21 @@ const router = express.Router();
 
 // --> https://thailottery.onrender.com/api/admin/lottery
 
-// router.route("/newlottery").post(isAuthenticatedUser, authorizeRoles("admin"), setlottery);
-// router.route("/all-lottery").get(isAuthenticatedUser, authorizeRoles("admin"), getLotterys);
-// router.route("/choose-winner").get(isAuthenticatedUser, authorizeRoles("admin"), getAllPendingTickets);
-// router.route("/loss-buyer/:id").get(isAuthenticatedUser, authorizeRoles("admin"), lossbuyer);
-// router.route("/win-buyer/:id").post(isAuthenticatedUser, authorizeRoles("admin"), winbuyer);  // admin
-// router.route("/winner-space/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getWinnerSpace);  // admin
-// router.route("/all-winner").get(isAuthenticatedUser, authorizeRoles("admin"), allWinners);
+router.route("/newlottery").post(isAuthenticatedUser, authorizeRoles("admin"), setlottery);
+router.route("/all-lottery").get(isAuthenticatedUser, authorizeRoles("admin"), getLotterys);
+router.route("/choose-winner").get(isAuthenticatedUser, authorizeRoles("admin"), getAllPendingTickets);
+router.route("/loss-buyer/:id").get(isAuthenticatedUser, authorizeRoles("admin"), lossbuyer);
+router.route("/win-buyer/:id").post(isAuthenticatedUser, authorizeRoles("admin"), winbuyer);  // admin
+router.route("/winner-space/:id").get(isAuthenticatedUser, authorizeRoles("admin"), getWinnerSpace);  // admin
+router.route("/all-winner").get(isAuthenticatedUser, authorizeRoles("admin"), allWinners);
 
-router.route("/newlottery").post(setlottery);
-router.route("/all-lottery").get(getLotterys);
-router.route("/choose-winner").get(getAllPendingTickets);
-router.route("/loss-buyer/:id").get(lossbuyer);
-router.route("/win-buyer/:id").post(winbuyer);  // admin
-router.route("/winner-space/:id").get(getWinnerSpace);  // admin
-router.route("/all-winner").get(allWinners);
+// router.route("/newlottery").post(setlottery);
+// router.route("/all-lottery").get(getLotterys);
+// router.route("/choose-winner").get(getAllPendingTickets);
+// router.route("/loss-buyer/:id").get(lossbuyer);
+// router.route("/win-buyer/:id").post(winbuyer);  // admin
+// router.route("/winner-space/:id").get(getWinnerSpace);  // admin
+// router.route("/all-winner").get(allWinners);
 
 
 // -----------------------------------------------//
