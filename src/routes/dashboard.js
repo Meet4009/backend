@@ -4,8 +4,8 @@ const { dashboard } = require("../controller/dashbord");
 
 const router = express.Router();
 
-router.route("/dashboard").get(isAuthenticatedUser, authorizeRoles("admin"), dashboard);                 
-// router.route("/dashboard").get(dashboard);                 
+// router.route("/dashboard").get(isAuthenticatedUser, authorizeRoles("admin"), dashboard);                 
+router.route("/dashboard").get(dashboard);                 
 
 
 module.exports = router;

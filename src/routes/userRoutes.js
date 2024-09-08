@@ -49,18 +49,18 @@ router.route("/change-currency").post(isAuthenticatedUser, currency);           
 router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);           // OK
 
 
-router.route("/user/:id")
-    .get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser)
-    .put(isAuthenticatedUser, authorizeRoles("admin"), updateUserData)
-    .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser)
+// router.route("/user/:id")
+//     .get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser)
+//     .put(isAuthenticatedUser, authorizeRoles("admin"), updateUserData)
+//     .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser)
 
 // router.route("/users").get(getAllUser);           // OK
 
 
-// router.route("/user/:id")
-//     .get(getSingleUser)
-//         .put(updateUserData)
-        // .delete(deleteUser)
+router.route("/user/:id")
+    .get(getSingleUser)
+        .put(updateUserData)
+        .delete(deleteUser)
 
 // router.route("/password/forgot").post(forgotPassword);
 
