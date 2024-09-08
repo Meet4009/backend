@@ -335,7 +335,10 @@ exports.pendingTickets = async (req, res, next) => {
 
 exports.ticketHistory = async (req, res, next) => {
     try {
-        const allTicket = await LotteryBuyer.find({ user_id: req.user.id, status: { $ne: 'pending' } }).populate('lottery_id').sort('createdAt');
+        const allTicket = await LotteryBuyer.find({ user_id: req.user.id, status: { $ne: 'pending' } }).populate('lottery_id').populate({
+                path: 'lottery_draw_id',
+                match: { status: { $ne: 'active' } }
+            }).sort('createdAt');
 
         res.status(200).json({
             status: true,
