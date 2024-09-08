@@ -14,7 +14,8 @@ const { setlottery,
     allWinners,
     getallLotterys,
     getLotteryDetails,
-    getAllLotterys } = require("../controller/lottery");
+    getAllLotterys,
+    latestDraw } = require("../controller/lottery");
 const router = express.Router();
 
 
@@ -53,7 +54,7 @@ router.route("/ticket-number").get(isAuthenticatedUser, genarateTicketNumber);
 router.route("/buy-lottery").post(isAuthenticatedUser, buylottery);
 router.route("/pending-ticket").get(isAuthenticatedUser, pendingTickets);
 router.route("/all-ticket").get(isAuthenticatedUser, ticketHistory);
-router.route("/latest-winners/:id").get(isAuthenticatedUser, allWinners);  // admin
+// router.route("/latest-winners/:id").get(isAuthenticatedUser, latestDraw);
 
 
 module.exports = router;
