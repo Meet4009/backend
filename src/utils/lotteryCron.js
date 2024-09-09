@@ -2,6 +2,9 @@ const cron = require('node-cron');
 const LotteryDraw = require('../models/lotteryDraw');
 const LotteryBuyer = require('../models/lotteryBuyer')
 const ErrorHander = require('../utils/errorhander');
+const lotteryBuyer = require('../models/lotteryBuyer');
+const userModel = require('../models/userModel');
+const { currencyConveraterToUSD } = require('./currencyConverater');
 
 const scheduleLotteryDraw = async (drawDate) => {
     try {
@@ -36,6 +39,20 @@ const scheduleLotteryDraw = async (drawDate) => {
                         currentloteryDraw.status = 'done';
                         await currentloteryDraw.save();
 
+                        const buyers = await lotteryBuyer.find({
+                            lottery_draw_id: curr.id,
+                            status: 'win'
+                        }).populate('lottery_price_id');
+                        
+                        await Promise.all(buyers.map(async (currentBuyer) => {
+                            const currentUser = await userModel.findById(currentBuyer.user_id);
+                            const convertedPrice = await currencyConveraterToUSD(764, currentBuyer.lottery_price_id.price);
+                            
+                            currentUser.balance += convertedPrice;
+                            
+                            await currentUser.save();
+                        }));
+  
                         let allPendingLotteryBuyers = await LotteryBuyer.find({ status: 'pending', lottery_draw_id: curr.id })
 
                         allPendingLotteryBuyers.map(async (currentData) => {

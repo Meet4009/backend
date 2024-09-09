@@ -51,7 +51,7 @@ router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllU
 router.route("/user/:id")
     .get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser)
     .put(isAuthenticatedUser, authorizeRoles("admin"), updateUserData)
-    .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser)
+    // .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser)
 
 
 // router.route("/password/forgot").post(forgotPassword);
