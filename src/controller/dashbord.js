@@ -40,18 +40,16 @@ exports.dashboard = async (req, res, next) => {
         .populate('lottery_id')
         .populate('lottery_price_id');
 
-        // Initialize variables for total sold amount and total win amount
         let soldAmount = 0;
         let winAmount = 0;
 
-        // Iterate over buyers and calculate both soldAmount and winAmount
         lotteryBuyers.forEach(currentBuyer => {
-        // Calculate sold amount from lottery_id price
+     
         if (currentBuyer.lottery_id && currentBuyer.lottery_id.price) {
         soldAmount += currentBuyer.lottery_id.price;
         }
 
-        // Calculate win amount if the buyer has a win status and lottery_price_id
+     
         if (currentBuyer.status === 'win' && currentBuyer.lottery_price_id && currentBuyer.lottery_price_id.price) {
         winAmount += currentBuyer.lottery_price_id.price;
         }
