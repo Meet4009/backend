@@ -22,43 +22,37 @@ const { currency } = require("../controller/updateCurrency");
 // ------------------ User side ----------------- // 
 // -----------------------------------------------//
 
-// -->  http://localhost:8002/thailottery/api/user
+// -->  http://localhost:8002/api/user
 
 
-router.route("/register").post(registerUser);                                                   // OK
+router.route("/register").post(registerUser);
 
-router.route("/login").post(loginUser);                                                         // OK
+router.route("/login").post(loginUser);
 
-router.route("/logout").get(logout);                                                            // OK
+router.route("/logout").get(logout);
 
-router.route("/password-update").put(isAuthenticatedUser, updatePassword);                      // OK
+router.route("/password-update").put(isAuthenticatedUser, updatePassword);
 
-router.route("/profile").get(isAuthenticatedUser, getUserDatails);                              // OK
+router.route("/profile").get(isAuthenticatedUser, getUserDatails);
 
-router.route("/profile/update").put(isAuthenticatedUser, updateProfile);                        // OK
+router.route("/profile/update").put(isAuthenticatedUser, updateProfile);
 
-router.route("/change-currency").post(isAuthenticatedUser, currency);                            // OK
+router.route("/change-currency").post(isAuthenticatedUser, currency);
 
 // -----------------------------------------------//
 // ------------------ Admin side ---------------- //
 // -----------------------------------------------//
 
-// -->  http://localhost:8002/thailottery/api/admin
+// -->  http://localhost:8002/api/admin
 
 
-router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);           // OK
+router.route("/users").get(isAuthenticatedUser, authorizeRoles("admin"), getAllUser);
 
 router.route("/user/:id")
     .get(isAuthenticatedUser, authorizeRoles("admin"), getSingleUser)
     .put(isAuthenticatedUser, authorizeRoles("admin"), updateUserData)
     .delete(isAuthenticatedUser, authorizeRoles("admin"), deleteUser)
 
-// router.route("/users").get(getAllUser);           // OK
-
-// router.route("/user/:id")
-//     .get(getSingleUser)
-//         .put(updateUserData)
-//         .delete(deleteUser)
 
 // router.route("/password/forgot").post(forgotPassword);
 

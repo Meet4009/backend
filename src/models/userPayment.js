@@ -11,7 +11,7 @@ const userPayment = new mongoose.Schema({
     },
     UTR: {
         type: Number,
-        default: null
+        default:null
     },
     upi_id: {
         type: String,

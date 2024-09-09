@@ -57,8 +57,6 @@ exports.dashboard = async (req, res, next) => {
                 rejectedWithdrawal,
                 pendingWithdraw,
                 winner
-
-
             },
 
 

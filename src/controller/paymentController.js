@@ -1,6 +1,3 @@
-const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-const ErrorHander = require("../utils/errorhander");
-
 const User = require("../models/userModel");
 const userPayment = require("../models/userPayment");
 
@@ -11,7 +8,7 @@ const { currencyConveraterToTHB, currencyConveraterToUSD } = require("../utils/c
 
 
 // ----------------------------------------------------------//
-// ------- 11 --------- deposit request -- User ------------ // 
+// ------- 11 --------- Deposit request -- User ------------ // 
 // ----------------------------------------------------------//
 
 exports.deposit = async (req, res, next) => {
@@ -45,7 +42,6 @@ exports.deposit = async (req, res, next) => {
 };
 
 
-
 // ----------------------------------------------------------//
 // ------ 12 ------ Withdraw request -- User --------------- // 
 // ----------------------------------------------------------//
@@ -61,7 +57,12 @@ exports.withdraw = async (req, res, next) => {
         let usdamount = await currencyConveraterToUSD(user.currency_code, amount)
 
         if (usdamount > userBalance) {
-            return next(new ErrorHander(`You don't have ${amount} in your account`, 401));
+            return res.status(401).json({
+                status: false,
+                data: {},
+                message: `You don't have ${amount} in your account`
+            });
+
         }
 
         const payment = await userPayment.create({
@@ -89,9 +90,8 @@ exports.withdraw = async (req, res, next) => {
 };
 
 
-
 // ----------------------------------------------------------//
-// ------  13 ----- Deposits History -- User ---------------- // 
+// ------  13 ----- Deposits History -- User --------------- // 
 // ----------------------------------------------------------//
 exports.depositsHistory = async (req, res, next) => {
     try {
@@ -111,7 +111,6 @@ exports.depositsHistory = async (req, res, next) => {
         });
     }
 };
-
 
 
 // ----------------------------------------------------------//
@@ -209,7 +208,11 @@ exports.setApproveDeposit = async (req, res, next) => {
         const payment = await userPayment.findOne({ payment_type: "diposit", status: "pending", action_status: "pending", _id: req.params.id });
 
         if (!payment) {
-            return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
+            return res.status(400).json({
+                status: false,
+                data: {},
+                message: `payment doen not exist Id: ${req.params.id}`
+            });
         }
 
         paymentApprove(payment, 200, res);
@@ -234,7 +237,12 @@ exports.setRejectDeposit = async (req, res, next) => {
         const payment = await userPayment.findOne({ payment_type: "diposit", status: "pending", action_status: "pending", _id: req.params.id });
 
         if (!payment) {
-            return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
+            return res.status(400).json({
+                status: false,
+                data: {},
+                message: `payment doen not exist Id: ${req.params.id}`
+            });
+
         }
 
         paymentReject(payment, 200, res);
@@ -255,8 +263,7 @@ exports.setRejectDeposit = async (req, res, next) => {
 
 exports.getWithdraws = async (req, res) => {
     try {
-        const payment = await userPayment.find({ payment_type: "withdraw" })
-            .populate('user_id');
+        const payment = await userPayment.find({ payment_type: "withdraw" }).populate('user_id');
 
         let data = [];
         for (let currentPayment of payment) {
@@ -279,15 +286,13 @@ exports.getWithdraws = async (req, res) => {
 };
 
 
-
-// ------------------------------------------------------------------------------------//
+// -------------------------------------------------------------------------------------//
 // ---- 22 - Pending, ---- 23 - Approve, ---- 24 - Reject withdraw History -- admin --- // 
-// ------------------------------------------------------------------------------------//
+// -------------------------------------------------------------------------------------//
 
 exports.getRequestWithdraws = async (req, res) => {
     try {
-        const payment = await userPayment.find({ payment_type: "withdraw", action_status: req.params.status })
-            .populate('user_id');
+        const payment = await userPayment.find({ payment_type: "withdraw", action_status: req.params.status }).populate('user_id');
         const request = req.params.status;
 
         let data = [];
@@ -320,7 +325,11 @@ exports.setApprovewithdraw = async (req, res, next) => {
         const payment = await userPayment.findOne({ payment_type: "withdraw", status: "pending", action_status: "pending", _id: req.params.id });
 
         if (!payment) {
-            return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
+            return res.status(400).json({
+                status: false,
+                data: {},
+                message: `payment doen not exist Id: ${req.params.id}`
+            });
         }
 
         paymentApprove(payment, 200, res);
@@ -344,7 +353,11 @@ exports.setRejectwithdraw = async (req, res, next) => {
         const payment = await userPayment.findOne({ payment_type: "withdraw", status: "pending", action_status: "pending", _id: req.params.id });
 
         if (!payment) {
-            return next(new ErrorHander(`payment doen not exist Id: ${req.params.id}`, 400));
+            return res.status(400).json({
+                status: false,
+                data: {},
+                message: `payment doen not exist Id: ${req.params.id}`
+            });
         }
 
         paymentReject(payment, 200, res);
@@ -359,12 +372,9 @@ exports.setRejectwithdraw = async (req, res, next) => {
 };
 
 
-
-
-
-// ----------------------------------------------------------//
+// ----------------------------------------------------------------//
 // ------  44 -----User Deposits History -- Admin ---------------- // 
-// ----------------------------------------------------------//
+// ----------------------------------------------------------------//
 
 exports.userDepositsHistory = async (req, res) => {
     try {
@@ -395,9 +405,9 @@ exports.userDepositsHistory = async (req, res) => {
 
 
 
-// ----------------------------------------------------------//
+// ---------------------------------------------------------------//
 // ------ 45 ------User Withdraw History -- Admin --------------- // 
-// ----------------------------------------------------------//
+// ---------------------------------------------------------------//
 
 exports.userWithdrawHistory = async (req, res) => {
     try {

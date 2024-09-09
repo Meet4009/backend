@@ -1,14 +1,15 @@
-const ErrorHander = require("../utils/errorhander");
 const jwt = require("jsonwebtoken");
+
+const User = require("../models/userModel");
+const lottery = require("../models/lottery");
+const userPayment = require("../models/userPayment");
+const lotteryBuyer = require("../models/lotteryBuyer");
+const { countDocuments } = require("../models/lotteryBuyer");
+
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
-const User = require("../models/userModel");
-const { currencyConveraterFormUSD, currencyConveraterToTHB } = require("../utils/currencyConverater");
-const userPayment = require("../models/userPayment");
 const { calculateAmount } = require("../utils/paymentDecision");
-const lottery = require("../models/lottery");
-const { countDocuments } = require("../models/lotteryBuyer");
-const lotteryBuyer = require("../models/lotteryBuyer");
+const { currencyConveraterFormUSD, currencyConveraterToTHB } = require("../utils/currencyConverater");
 
 
 // --------------------------------------------------------------------------- //
@@ -53,20 +54,31 @@ exports.loginUser = async (req, res, next) => {
         // cheaking if user has given password  and email both 
 
         if (!email || !password) {
-            return next(new ErrorHander("please Enter Email and password ", 400))
+            return res.status(400).json({
+                status: false,
+                data: {},
+                message: "please Enter Email and password"
+            });
         }
 
         const user = await User.findOne({ email }).select("+password");
 
         if (!user) {
-            return next(new ErrorHander("Invalid Email and password", 401));
+            return res.status(401).json({
+                status: false,
+                data: {},
+                message: "Invalid Email and password"
+            });
         }
 
         const isPasswordMatched = await user.comparePassword(password);
 
         if (!isPasswordMatched) {
-            return next(new ErrorHander("Invalid Email and password", 401));
-
+            return res.status(401).json({
+                status: false,
+                data: {},
+                message: "Invalid Email and password"
+            });
         }
 
         user.loggedIn = true;           // Set loggedIn to true
@@ -137,11 +149,19 @@ exports.updatePassword = async (req, res, next) => {
         // const isPasswordMatched = await user.comparePassword(req.body.oldpassword);     // If old password is required while updating password
 
         // if (!isPasswordMatched) {
-        //     return next(new ErrorHander("old password is incorrect", 400));
-        // }
+        // return res.status(400).json({
+        //     status: false,
+        //     data: {},
+        //     message: "old password is incorrect"
+        // });
+
 
         if (req.body.newPassword !== req.body.confirmPassword) {
-            return next(new ErrorHander("password does not match", 400));
+            return res.status(400).json({
+                status: false,
+                data: {},
+                message: "password does not match"
+            });
         }
 
         user.password = req.body.newPassword;
@@ -257,7 +277,6 @@ exports.getAllUser = async (req, res, next) => {
 };
 
 
-
 // --------------------------------------------------------------------------- //
 // ----------- 8 ----------  Get single user --  Admin  ---------------------- //
 // --------------------------------------------------------------------------- //
@@ -268,7 +287,11 @@ exports.getSingleUser = async (req, res, next) => {
         const user = await User.findById(req.params.id);
 
         if (!user) {
-            return next(new ErrorHander(`User doen not exist Id: ${req.params.id}`, 400));
+            return res.status(400).json({
+                status: false,
+                data: {},
+                message: `User doen not exist Id: ${req.params.id}`
+            });
         }
         const balance = Math.round(await currencyConveraterToTHB(1, user.balance));
 
@@ -301,34 +324,34 @@ exports.getSingleUser = async (req, res, next) => {
 // ------ 9 ----- Additional Information  User Profile -- Admin  ------------- //
 // --------------------------------------------------------------------------- //
 
-exports.getUserAddtionalInformation = async (req, res, next) => {
+// exports.getUserAddtionalInformation = async (req, res, next) => {
 
-    try {
-        const user = await User.findById(req.params.id);
+//     try {
+//         const user = await User.findById(req.params.id);
 
-        const balance = Math.round(await currencyConveraterToTHB(1, user.balance));
+//         const balance = Math.round(await currencyConveraterToTHB(1, user.balance));
 
-        const depositData = await userPayment.find({ user_id: user.id, payment_type: "diposit", status: "success", action_status: "approved" });
-        const totalDeposit = Math.round(await calculateAmount(depositData));
+//         const depositData = await userPayment.find({ user_id: user.id, payment_type: "diposit", status: "success", action_status: "approved" });
+//         const totalDeposit = Math.round(await calculateAmount(depositData));
 
-        const withdrawData = await userPayment.find({ user_id: user.id, payment_type: "withdraw", status: "success", action_status: "approved" });
-        const totalwithdraw = Math.round(await calculateAmount(withdrawData));
+//         const withdrawData = await userPayment.find({ user_id: user.id, payment_type: "withdraw", status: "success", action_status: "approved" });
+//         const totalwithdraw = Math.round(await calculateAmount(withdrawData));
 
-        const ticket = await lotteryBuyer.countDocuments({ user_id: user.id })
+//         const ticket = await lotteryBuyer.countDocuments({ user_id: user.id })
 
-        res.status(200).json({
-            status: true,
-            data: { balance, totalDeposit, totalwithdraw, ticket },
-            message: 'All user fatch successfully'
-        });
+//         res.status(200).json({
+//             status: true,
+//             data: { balance, totalDeposit, totalwithdraw, ticket },
+//             message: 'All user fatch successfully'
+//         });
 
-    } catch (error) {
-        return res.status(500).json({
-            status: false,
-            message: `Internal Server Error -- ${error.message}`
-        });
-    }
-}
+//     } catch (error) {
+//         return res.status(500).json({
+//             status: false,
+//             message: `Internal Server Error -- ${error.message}`
+//         });
+//     }
+// }
 
 
 
@@ -371,33 +394,33 @@ exports.updateUserData = async (req, res, next) => {
 // --------------------------------------------------------------------------- //
 // --------------------------- Delete User -- Admin  -------------------------- //
 // --------------------------------------------------------------------------- //
+// const ErrorHander = require("../utils/errorhander");
+// exports.deleteUser = async (req, res, next) => {
 
-exports.deleteUser = async (req, res, next) => {
+//     try {
+//         const user = await User.findById(req.params.id);
 
-    try {
-        const user = await User.findById(req.params.id);
+//         // we will  remove cloudnary later
 
-        // we will  remove cloudnary later
+//         if (!user) {
+//             return next(
+//                 new ErrorHander(`User does not exist  with Id ${req.params.id}`, 400)
+//             );
+//         }
+//         await User.findByIdAndDelete(req.params.id);
 
-        if (!user) {
-            return next(
-                new ErrorHander(`User does not exist  with Id ${req.params.id}`, 400)
-            );
-        }
-        await User.findByIdAndDelete(req.params.id);
+//         res.status(200).json({
+//             success: true,
+//             message: "Delete sucessfully"
+//         });
 
-        res.status(200).json({
-            success: true,
-            message: "Delete sucessfully"
-        });
-
-    } catch (error) {
-        return res.status(500).json({
-            status: false,
-            message: `Internal Server Error -- ${error.message}`
-        });
-    };
-}
+//     } catch (error) {
+//         return res.status(500).json({
+//             status: false,
+//             message: `Internal Server Error -- ${error.message}`
+//         });
+//     };
+// }
 
 
 

@@ -1,16 +1,15 @@
 const express = require("express");
 const app = express();
-const morgan = require("morgan"); 
+const morgan = require("morgan");
 const cookieParser = require("cookie-parser")
 const bodyparser = require("body-parser");
-const path = require('path');
 const cors = require('cors');
 
 
- app.use(cors({
-    origin: '*'
-  }));
-  
+app.use(cors({
+  origin: '*'
+}));
+
 
 
 const errorMiddleware = require("./src/middleware/error");
@@ -27,28 +26,19 @@ const payment = require("./src/routes/payment");
 const lottery = require("./src/routes/lottery");
 const dashboard = require("./src/routes/dashboard")
 
-app.set("view engine", "ejs")
-app.set('views', path.join(__dirname, 'views'));
+
+app.use("/api/admin", user);
+app.use("/api/user", user);
+
+app.use("/api/admin/payment", payment);
+app.use("/api/user/payment", payment);
 
 
-// app.use(morgan('tiny'))
-app.use('/css', express.static(path.resolve(__dirname, "public/app-assets")));
-app.use('/img', express.static(path.resolve(__dirname, "public/app-assets")));
-app.use('/js', express.static(path.resolve(__dirname, "public/app-assets")));
+app.use("/api/admin", dashboard);
+app.use("/api/admin", lotteryprice);
 
-
-app.use("/api/user", user);                                       // OK
-app.use("/api/admin", user);                                       // OK
-
-app.use("/api/admin/payment", payment);                       // OK
-app.use("/api/user/lottery", lottery);                            // OK
-app.use("/api/user/payment", payment);                        // OK
-
-
-app.use("/api/admin", dashboard);                                 // OK 
-app.use("/api/admin", lotteryprice);                             // OK 
-
-app.use("/api/admin/lottery", lottery);                           // OK
+app.use("/api/admin/lottery", lottery);
+app.use("/api/user/lottery", lottery);
 
 
 //Middeware for Error 

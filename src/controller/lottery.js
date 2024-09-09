@@ -7,12 +7,11 @@ const { scheduleLotteryDraw } = require("../utils/lotteryCron");
 const { helperWinnerSpace } = require("../utils/helpWinnerSpace");
 const { generateRandom12DigitNumber } = require("../utils/genarateTicketNumber");
 const { currencyConveraterToTHB, currencyConveraterToUSD, currencyConveraterFormTHB } = require("../utils/currencyConverater");
-const lotteryPrice = require("../models/lotteryPrice");
 
 
 
 // ----------------------------------------------------------//
-// ---- 31 ---------- Create new lottery by admin -------------- // 
+// ---- 31 ---------- Create new lottery by admin ---------- // 
 // ----------------------------------------------------------//
 
 exports.setlottery = async (req, res) => {
@@ -57,21 +56,11 @@ exports.setlottery = async (req, res) => {
 
 
 // ----------------------------------------------------------//
-// ------ 32 -------- Get All lottery -- admin --------------- // 
+// ------ 32 -------- Get All lottery -- admin ------------- // 
 // ----------------------------------------------------------//
 
 exports.getLotterys = async (req, res) => {
     try {
-
-        // const lottery = await Lottery.find();
-
-        // if (!lottery) {
-        //     return res.status(404).json({
-        //         status: false,
-        //         data: {},
-        //         message: "Lottery not found"
-        //     });
-        // }
 
         let lotteryDraw = await LotteryDraw.find({ status: 'active' }).populate('lottery_id');
 
@@ -91,7 +80,7 @@ exports.getLotterys = async (req, res) => {
 };
 
 // ----------------------------------------------------------//
-// ------ 33 -------- Get All lottery -- user --------------- // 
+// ------ 33 -------- Get All lottery -- user -------------- // 
 // ----------------------------------------------------------//
 
 exports.getAllLotterys = async (req, res) => {
@@ -100,8 +89,6 @@ exports.getAllLotterys = async (req, res) => {
 
         const lottery = await Lottery.find();
 
-        
-        
         if (!lottery) {
             return res.status(404).json({
                 status: false,
@@ -109,8 +96,8 @@ exports.getAllLotterys = async (req, res) => {
                 message: "Lottery not found"
             });
         }
-        
-        
+
+
         let lotteryData = await Promise.all(
             lottery.map(async (currentLottery) => {
                 let price = await currencyConveraterFormTHB(user.currency_code, currentLottery.price);
@@ -118,11 +105,11 @@ exports.getAllLotterys = async (req, res) => {
 
                 let activeLottryStartDate = new Date(activeLotteryDraw.startDate)
 
-                let prevLottryDrawDate = new Date(activeLottryStartDate.setDate(activeLottryStartDate.getDate() - 1)) 
+                let prevLottryDrawDate = new Date(activeLottryStartDate.setDate(activeLottryStartDate.getDate() - 1))
 
                 let prevLotteryDraw = await LotteryDraw.findOne({ drawDate: prevLottryDrawDate.toISOString().split('T')[0] });
 
-                return {...currentLottery.toObject(), lottery_draw : prevLotteryDraw || {}, price}; 
+                return { ...currentLottery.toObject(), lottery_draw: prevLotteryDraw || {}, price };
             })
         );
 
@@ -147,12 +134,11 @@ exports.getAllLotterys = async (req, res) => {
 
 
 
-// ----------------------------------------------------------//
+// ----------------------------------------------------------------------//
 // -------- 34 --------- Get Lottery details ---  User ----------------- // 
-// ----------------------------------------------------------//
+// ----------------------------------------------------------------------//
 
 exports.getLotteryDetails = async (req, res, next) => {
-
 
     try {
         const lottery = await Lottery.findById(req.params.id);
@@ -207,9 +193,9 @@ exports.getLotteryDetails = async (req, res, next) => {
 };
 
 
-// ----------------------------------------------------------//
+// --------------------------------------------------------------//
 // ----- 35 ------- Genarate Lottery Ticket -- User ------------ // 
-// ----------------------------------------------------------//
+// --------------------------------------------------------------//
 
 exports.genarateTicketNumber = async (req, res, next) => {
     try {
@@ -231,9 +217,9 @@ exports.genarateTicketNumber = async (req, res, next) => {
     }
 };
 
-// ----------------------------------------------------------//
+// ---------------------------------------------------------------//
 // -------- 36 ---------- Buy Lottery ---  User ----------------- // 
-// ----------------------------------------------------------//
+// ---------------------------------------------------------------//
 
 exports.buylottery = async (req, res, next) => {
     try {
@@ -322,9 +308,9 @@ exports.buylottery = async (req, res, next) => {
 };
 
 
-// ----------------------------------------------------------//
-// -------- 37 ----- bought Lottery Ticket -- User ------------- // 
-// ----------------------------------------------------------//
+// ---------------------------------------------------------------//
+// -------- 37 ----- pending Lottery Ticket -- User ------------- // 
+// ---------------------------------------------------------------//
 
 exports.pendingTickets = async (req, res, next) => {
     try {
@@ -345,9 +331,9 @@ exports.pendingTickets = async (req, res, next) => {
 }
 
 
-// ----------------------------------------------------------//
+// --------------------------------------------------------------//
 // ----- -38 ------  Lottery Ticket History -- User ------------ // 
-// ----------------------------------------------------------//
+// --------------------------------------------------------------//
 
 exports.ticketHistory = async (req, res, next) => {
     try {
@@ -372,9 +358,9 @@ exports.ticketHistory = async (req, res, next) => {
 }
 
 
-// ----------------------------------------------------------//
+// -------------------------------------------------------------//
 // --------39 --------  choose Winner -- Admin ---------------- // 
-// ----------------------------------------------------------//
+// -------------------------------------------------------------//
 
 exports.getAllPendingTickets = async (req, res, next) => {
     try {
@@ -396,9 +382,9 @@ exports.getAllPendingTickets = async (req, res, next) => {
 
 
 
-// ----------------------------------------------------------//
+// ------------------------------------------------------------//
 // -------40----------  loss buyer --- Admin ----------------- // 
-// ----------------------------------------------------------//
+// ------------------------------------------------------------//
 
 exports.lossbuyer = async (req, res, next) => {
     try {
@@ -422,9 +408,10 @@ exports.lossbuyer = async (req, res, next) => {
 };
 
 
-// ----------------------------------------------------------//
+// --------------------------------------------------------------//
 // ------- 41 -----------  win buyer -- Admin ------------------ // 
-// ----------------------------------------------------------//
+// --------------------------------------------------------------//
+
 exports.winbuyer = async (req, res, next) => {
     try {
         const ticket = await LotteryBuyer.findById(req.params.id);
@@ -475,9 +462,9 @@ exports.winbuyer = async (req, res, next) => {
 
 
 
-// ----------------------------------------------------------//
+// --------------------------------------------------------------//
 // ------- 42 ----------- get winner -- Admin ------------------ // 
-// ----------------------------------------------------------//
+// --------------------------------------------------------------//
 
 exports.getWinnerSpace = async (req, res, next) => {
     try {
@@ -496,9 +483,9 @@ exports.getWinnerSpace = async (req, res, next) => {
     }
 };
 
-// ----------------------------------------------------------//
-// -------43-----------  single user all tickets -- Admin ------------------ // 
-// ----------------------------------------------------------//
+// ---------------------------------------------------------------------------//
+// ------- 43 -----------  single user all tickets -- Admin ----------------- // 
+// ---------------------------------------------------------------------------//
 
 exports.useralltickets = async (req, res, next) => {
     try {
@@ -520,9 +507,9 @@ exports.useralltickets = async (req, res, next) => {
     }
 }
 
-// ----------------------------------------------------------//
-// -------46-----------  all winners -- Admin ------------------ //
-// ----------------------------------------------------------//
+// --------------------------------------------------------------//
+// ------- 46 -----------  all winners -- Admin ------------------ //
+// --------------------------------------------------------------//
 
 exports.allWinners = async (req, res, next) => {
     try {
@@ -546,29 +533,6 @@ exports.allWinners = async (req, res, next) => {
 
 
 
-// // ----------------------------------------------------------//
-// // -------47-----------  latestDraw winners -- user ------------------ //
-// // ----------------------------------------------------------//
-
-// exports.latestDraw = async (req, res, next) => {
-//     try {
-//         let winner = await LotteryBuyer.find({ status: "win" }).populate('lottery_price_id').populate('user_id').populate('lottery_id').populate('lottery_draw_id');
-
-//         let winners = winner.sort((a, b) => a.lottery_price_id.priceNumber - b.lottery_price_id.priceNumber);
-
-//         res.status(200).json({
-//             status: true,
-//             data: winners,
-//             message: "Ticket fetched successfully"
-//         });
-//     } catch (error) {
-
-//         res.status(500).json({
-//             status: false,
-//             message: `Internal Server Error -- ${error}`
-//         });
-//     }
-// }
 
 
 

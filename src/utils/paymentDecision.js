@@ -1,6 +1,4 @@
-
 const User = require("../models/userModel");
-const ErrorHander = require("./errorhander");
 const { currencyConveraterToUSD, currencyConveraterToTHB } = require("../utils/currencyConverater");
 
 
@@ -17,7 +15,11 @@ const paymentApprove = async (payment, statusCode, res) => {
 
         const user = await User.findById(userid);
         if (!user) {
-            return new ErrorHander(`user doen not exist Id: ${userid}`, 400);
+            return res.status(400).json({
+                status: false,
+                data: {},
+                message: `user doen not exist Id: ${userid}`
+            });
         }
         const userBalance = user.balance;
 
@@ -82,7 +84,11 @@ const paymentReject = async (payment, statusCode, res) => {
 
         const user = await User.findById(userid);
         if (!user) {
-            return next(new ErrorHander(`user doen not exist Id: ${userid}`, 400));
+            return res.status(400).json({
+                status: false,
+                data: {},
+                message: `user doen not exist Id: ${userid}`
+            });
         }
 
         // --------------- diposit Approve --------------- //
