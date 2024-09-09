@@ -35,9 +35,30 @@ exports.dashboard = async (req, res, next) => {
         const approvedWithdrawal = await userPayment.countDocuments({ payment_type: "withdraw", status: "success", action_status: "approved" });
         const rejectedWithdrawal = await userPayment.countDocuments({ payment_type: "withdraw", status: "rejected", action_status: "rejected" });
         const soldTicket = await LotteryBuyer.countDocuments();
-        const soldAmount = null;
+
+        const lotteryBuyers = await LotteryBuyer.find()
+        .populate('lottery_id')
+        .populate('lottery_price_id');
+
+        // Initialize variables for total sold amount and total win amount
+        let soldAmount = 0;
+        let winAmount = 0;
+
+        // Iterate over buyers and calculate both soldAmount and winAmount
+        lotteryBuyers.forEach(currentBuyer => {
+        // Calculate sold amount from lottery_id price
+        if (currentBuyer.lottery_id && currentBuyer.lottery_id.price) {
+        soldAmount += currentBuyer.lottery_id.price;
+        }
+
+        // Calculate win amount if the buyer has a win status and lottery_price_id
+        if (currentBuyer.status === 'win' && currentBuyer.lottery_price_id && currentBuyer.lottery_price_id.price) {
+        winAmount += currentBuyer.lottery_price_id.price;
+        }
+        });
+
+
         const winner = await LotteryBuyer.countDocuments({ status: 'win' });
-        const winAmmount = null;
 
         res.status(200).json({
             success: true,
@@ -56,7 +77,9 @@ exports.dashboard = async (req, res, next) => {
                 approvedWithdrawal,
                 rejectedWithdrawal,
                 pendingWithdraw,
-                winner
+                winner,
+                winAmount,
+                soldAmount
             },
 
 
