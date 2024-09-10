@@ -12,7 +12,7 @@ const helperWinnerSpace = async (id) => {
         }).lean();
 
         // Get all lottery prices
-        const prices = await lotteryPrice.find().lean();
+        const prices = await lotteryPrice.find().sort({priceNumber : 1}).lean();
 
         // Count occurrences of each lottery_price_id in winning tickets
         const ticketCounts = winningTickets.reduce((acc, ticket) => {
