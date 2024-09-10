@@ -62,11 +62,33 @@ exports.setlottery = async (req, res) => {
 exports.getLotterys = async (req, res) => {
     try {
 
-        let lotteryDraw = await LotteryDraw.find({ status: 'active' }).populate('lottery_id');
+        const lottery = await Lottery.find();
+
+        if (!lottery) {
+            return res.status(404).json({
+                status: false,
+                data: {},
+                message: "Lottery not found"
+            });
+        }
+
+        let lotteryData = await Promise.all(
+            lottery.map(async (currentLottery) => {
+                let activeLotteryDraw = await LotteryDraw.findOne({ lottery_id: currentLottery.id, status: 'active' });
+
+                // let activeLottryStartDate = new Date(activeLotteryDraw.startDate)
+
+                // let prevLottryDrawDate = new Date(activeLottryStartDate.setDate(activeLottryStartDate.getDate() - 1))
+
+                // let prevLotteryDraw = await LotteryDraw.findOne({ drawDate: prevLottryDrawDate.toISOString().split('T')[0] });
+
+                return {activeLotteryDraw };
+            })
+        )
 
         res.status(200).json({
             status: true,
-            data: { lotteryDraw },
+            data: { lotteryData },
             message: 'All Lottery get Successfully'
         });
 
