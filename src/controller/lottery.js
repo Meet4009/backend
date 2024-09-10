@@ -75,20 +75,14 @@ exports.getLotterys = async (req, res) => {
         let lotteryData = await Promise.all(
             lottery.map(async (currentLottery) => {
                 let activeLotteryDraw = await LotteryDraw.findOne({ lottery_id: currentLottery.id, status: 'active' });
-
-                // let activeLottryStartDate = new Date(activeLotteryDraw.startDate)
-
-                // let prevLottryDrawDate = new Date(activeLottryStartDate.setDate(activeLottryStartDate.getDate() - 1))
-
-                // let prevLotteryDraw = await LotteryDraw.findOne({ drawDate: prevLottryDrawDate.toISOString().split('T')[0] });
-
-                return {activeLotteryDraw };
+                console.log(activeLotteryDraw);
+                return { ...currentLottery.toObject(), activeLotteryDraw };
             })
         )
 
         res.status(200).json({
             status: true,
-            data: { lotteryData },
+            data: lotteryData,
             message: 'All Lottery get Successfully'
         });
 
@@ -536,12 +530,13 @@ exports.useralltickets = async (req, res, next) => {
 exports.allWinners = async (req, res, next) => {
     try {
         let winner = await LotteryBuyer.find({ status: "win" }).populate('lottery_price_id').populate('user_id').populate('lottery_id').populate('lottery_draw_id');
-
+        console.log(winner);
+        
         let winners = winner.sort((a, b) => a.lottery_price_id.priceNumber - b.lottery_price_id.priceNumber);
 
         res.status(200).json({
             status: true,
-            data: winners,
+            data: { winners, winner },
             message: "Ticket fetched successfully"
         });
     } catch (error) {
