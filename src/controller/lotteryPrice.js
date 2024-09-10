@@ -35,7 +35,7 @@ exports.addLotteryPrice = async (req, res) => {
 
 exports.lotteryPrice = async (req, res) => {
     try {
-        const lortteryPrice = await LotteryPrice.find().sort();
+        const lortteryPrice = await LotteryPrice.find().sort({ priceNumber: 1 });
 
         res.status(200).json({
             status: true,
