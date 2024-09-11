@@ -124,6 +124,7 @@ exports.getAllLotterys = async (req, res) => {
                 // let prevLottryDrawDate = new Date(activeLottryStartDate.setDate(activeLottryStartDate.getDate() - 1))
 
                 // let prevLotteryDraw = await LotteryDraw.findOne({ drawDate: prevLottryDrawDate.toISOString().split('T')[0] });
+
                 let prevLotteryDraw = await LotteryDraw.findOne({ lottery_id: currentLottery.id, status: 'active' });
 
                 let winnerperson = await LotteryBuyer.find({ lottery_draw_id: prevLotteryDraw.id, status: 'win' })
@@ -534,13 +535,12 @@ exports.useralltickets = async (req, res, next) => {
 exports.allWinners = async (req, res, next) => {
     try {
         let winner = await LotteryBuyer.find({ status: "win" }).populate('lottery_price_id').populate('user_id').populate('lottery_id').populate('lottery_draw_id');
-        console.log(winner);
 
         let winners = winner.sort((a, b) => a.lottery_price_id.priceNumber - b.lottery_price_id.priceNumber);
 
         res.status(200).json({
             status: true,
-            data: { winners, winner },
+            data: winner,
             message: "Ticket fetched successfully"
         });
     } catch (error) {
