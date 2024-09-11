@@ -127,7 +127,7 @@ exports.getAllLotterys = async (req, res) => {
 
                 let prevLotteryDraw = await LotteryDraw.findOne({ lottery_id: currentLottery.id, status: 'active' });
 
-                let winnerperson = await LotteryBuyer.find({ lottery_draw_id: prevLotteryDraw.id, status: 'win' })
+                let winnerperson = await LotteryBuyer.find({ lottery_draw_id: prevLotteryDraw.id, status: 'win' }).populate('user_id')
 
 
                 return { ...currentLottery.toObject(), lottery_draw: prevLotteryDraw || {}, winner: winnerperson || {}, price };
