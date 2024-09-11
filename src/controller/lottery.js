@@ -119,13 +119,17 @@ exports.getAllLotterys = async (req, res) => {
                 let price = await currencyConveraterFormTHB(user.currency_code, currentLottery.price);
                 let activeLotteryDraw = await LotteryDraw.findOne({ lottery_id: currentLottery.id, status: 'active' });
 
-                let activeLottryStartDate = new Date(activeLotteryDraw.startDate)
+                // let activeLottryStartDate = new Date(activeLotteryDraw.startDate)
 
-                let prevLottryDrawDate = new Date(activeLottryStartDate.setDate(activeLottryStartDate.getDate() - 1))
+                // let prevLottryDrawDate = new Date(activeLottryStartDate.setDate(activeLottryStartDate.getDate() - 1))
 
-                let prevLotteryDraw = await LotteryDraw.findOne({ drawDate: prevLottryDrawDate.toISOString().split('T')[0] });
+                // let prevLotteryDraw = await LotteryDraw.findOne({ drawDate: prevLottryDrawDate.toISOString().split('T')[0] });
+                let prevLotteryDraw = await LotteryDraw.findOne({ lottery_id: currentLottery.id, status: 'active' });
 
-                return { ...currentLottery.toObject(), lottery_draw: prevLotteryDraw || {}, price };
+                let winnerperson = await LotteryBuyer.find({ lottery_draw_id: prevLotteryDraw.id, status: 'win' })
+
+
+                return { ...currentLottery.toObject(), lottery_draw: prevLotteryDraw || {}, winner: winnerperson || {}, price };
             })
         );
 
@@ -531,7 +535,7 @@ exports.allWinners = async (req, res, next) => {
     try {
         let winner = await LotteryBuyer.find({ status: "win" }).populate('lottery_price_id').populate('user_id').populate('lottery_id').populate('lottery_draw_id');
         console.log(winner);
-        
+
         let winners = winner.sort((a, b) => a.lottery_price_id.priceNumber - b.lottery_price_id.priceNumber);
 
         res.status(200).json({
