@@ -46,12 +46,6 @@ const paymentApprove = async (payment, statusCode, res) => {
         // --------------- withdraw Approve --------------- //
         if ('withdraw' == payment.payment_type) {
 
-            const newBalance = userBalance - amount;
-
-            user.balance = newBalance;
-
-            await user.save();
-
             payment.status = 'success';
             payment.action_status = 'approved';
 

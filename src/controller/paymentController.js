@@ -51,6 +51,8 @@ exports.withdraw = async (req, res, next) => {
         const user = await User.findById(req.user.id);
 
         const userBalance = user.balance;
+        console.log(userBalance);       // 10000$
+
 
         const { amount, upi_id } = req.body;
 
@@ -64,6 +66,11 @@ exports.withdraw = async (req, res, next) => {
             });
 
         }
+        const newBalance = userBalance - usdamount;
+
+        user.balance = newBalance;
+
+        await user.save();
 
         const payment = await userPayment.create({
             user_id: user.id,
