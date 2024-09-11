@@ -65,12 +65,6 @@ exports.withdraw = async (req, res, next) => {
 
         }
 
-        const newBalance = userBalance - amount;
-
-        user.balance = newBalance;
-
-        await user.save();
-
         const payment = await userPayment.create({
             user_id: user.id,
             amount,
