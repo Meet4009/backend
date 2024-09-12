@@ -69,7 +69,7 @@ const paymentApprove = async (payment, statusCode, res) => {
 
 
 // -----------------------------------------------//
-// --------------- payment Approve -------------- // 
+// --------------- payment reject -------------- // 
 // -----------------------------------------------//
 
 const paymentReject = async (payment, statusCode, res) => {
@@ -85,7 +85,7 @@ const paymentReject = async (payment, statusCode, res) => {
             });
         }
 
-        // --------------- diposit Approve --------------- //
+        // --------------- diposit reject --------------- //
         if ('diposit' == payment.payment_type) {
 
             payment.status = 'rejected';
@@ -100,7 +100,7 @@ const paymentReject = async (payment, statusCode, res) => {
             });
         }
 
-        // --------------- withdraw Approve --------------- //
+        // --------------- withdraw reject --------------- //
         if ('withdraw' == payment.payment_type) {
 
             payment.status = 'rejected';

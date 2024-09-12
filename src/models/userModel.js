@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "please Enter Your Name"],
         maxLength: [30, "Name cannot exceed 30 charecters"],
-        minLength: [4, "name should ave more than 4 characters"],
+        minLength: [3, "name should ave more than 3 characters"],
     },
     email: {
         type: String,
@@ -36,7 +36,13 @@ const userSchema = new mongoose.Schema({
         type: Number,
         unique: true,
         required: [true, "please Enter Your mobile number"],
-        match: [/^\d{10}$/, 'Please enter a valid 10-digit mobile number'],
+        validate: {
+            validator: function (v) {
+                return /^\d{10}$/.test(v);
+            },
+            message: props => `${props.value} is not a valid 10-digit phone number!`
+        }
+        // match: [/^\d{10}$/, 'Please enter a valid 10-digit mobile number'],
     },
 
     country: {
@@ -65,7 +71,7 @@ const userSchema = new mongoose.Schema({
         enum: [764, 356]
     },
 
-    
+
     createdAt: {
         type: Date,
         default: Date.now,
