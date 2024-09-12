@@ -107,13 +107,14 @@ const paymentReject = async (payment, statusCode, res) => {
             console.log("payment.amount", payment.amount);
 
             user.balance = currencyConveraterFormUSD(user.currency_code, user.balance)
+            payment.amount = currencyConveraterFormUSD(user.currency_code, payment.amount)
 
             user.balance = user.balance + payment.amount
 
             console.log("user.balance ", user.balance);
 
             await user.save();
-            
+
             payment.status = 'rejected';
             payment.action_status = 'rejected';
 
