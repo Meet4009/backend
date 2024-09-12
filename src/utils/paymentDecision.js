@@ -102,7 +102,14 @@ const paymentReject = async (payment, statusCode, res) => {
 
         // --------------- withdraw reject --------------- //
         if ('withdraw' == payment.payment_type) {
+        
+            console.log(user.balance);
+            console.log(payment.amount);
 
+            user.balance = user.balance + payment.amount
+            
+            console.log(user.balance);
+            
             payment.status = 'rejected';
             payment.action_status = 'rejected';
 
