@@ -109,12 +109,10 @@ const paymentReject = async (payment, statusCode, res) => {
             await payment.save();
 
 
-            console.log("user.balance ", user.balance);
-            console.log("payment.amount", payment.amount);
+            // const balance = await currencyConveraterFormUSD(user.currency_code, user.balance)
+           
 
-            const balance = currencyConveraterFormUSD(user.currency_code, user.balance)
-
-            user.balance = balance + payment.amount
+            user.balance = user.balance + payment.amount
             console.log("user.balance ", user.balance);
 
             await user.save();
