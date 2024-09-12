@@ -1,5 +1,5 @@
 const User = require("../models/userModel");
-const { currencyConveraterToUSD, currencyConveraterToTHB } = require("../utils/currencyConverater");
+const { currencyConveraterToUSD, currencyConveraterToTHB, currencyConveraterFormUSD } = require("../utils/currencyConverater");
 
 
 // -----------------------------------------------//
@@ -102,13 +102,17 @@ const paymentReject = async (payment, statusCode, res) => {
 
         // --------------- withdraw reject --------------- //
         if ('withdraw' == payment.payment_type) {
-        
-            console.log(user.balance);
-            console.log(payment.amount);
+
+            console.log("user.balance ", user.balance);
+            console.log("payment.amount", payment.amount);
+
+            user.balance = currencyConveraterFormUSD(user.currency_code, user.balance)
 
             user.balance = user.balance + payment.amount
-            
-            console.log(user.balance);
+
+            console.log("user.balance ", user.balance);
+
+            await user.save();
             
             payment.status = 'rejected';
             payment.action_status = 'rejected';

@@ -358,6 +358,7 @@ exports.setApprovewithdraw = async (req, res, next) => {
 exports.setRejectwithdraw = async (req, res, next) => {
     try {
         const payment = await userPayment.findOne({ payment_type: "withdraw", status: "pending", action_status: "pending", _id: req.params.id });
+        console.log("payment", payment);
 
         if (!payment) {
             return res.status(400).json({
