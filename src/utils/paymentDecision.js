@@ -103,19 +103,15 @@ const paymentReject = async (payment, statusCode, res) => {
         // --------------- withdraw reject --------------- //
         if ('withdraw' == payment.payment_type) {
 
+            const amount = await currencyConveraterFormUSD(user.currency_code, payment.amount);
+            user.balance = user.balance + amount
+
             payment.status = 'rejected';
             payment.action_status = 'rejected';
 
+            await user.save();
             await payment.save();
 
-
-            // const balance = await currencyConveraterFormUSD(user.currency_code, user.balance)
-           
-
-            user.balance = user.balance + payment.amount
-            console.log("user.balance ", user.balance);
-
-            await user.save();
 
             return res.status(statusCode).json({
                 status: true,
