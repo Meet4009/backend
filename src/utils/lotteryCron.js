@@ -11,7 +11,8 @@ const scheduleLotteryDraw = async (drawDate) => {
         const date = new Date(drawDate);
 
         // Format cron string for the specific date and time
-        const cronString = `${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth() + 1} *`;
+        // const cronString = `${date.getMinutes()} ${date.getHours()} ${date.getDate()} ${date.getMonth() + 1} *`;
+        const cronString = `0 0 ${date.getDate()} ${date.getMonth() + 1} *`;
 
         cron.schedule(cronString, async () => {
             try {
@@ -24,7 +25,7 @@ const scheduleLotteryDraw = async (drawDate) => {
                 let startDate = new Date();
                 let nextDrawDate = new Date(startDate);
                 const repeatInterval = lottery[0].lottery_id.repeatDraw;
-                nextDrawDate.setDate(nextDrawDate.setDate() + repeatInterval);
+                nextDrawDate.setDate(nextDrawDate.getDate() + repeatInterval);
 
                 // change status
                 const AllActiveLottery = await LotteryDraw.find({ status: 'active' })
@@ -82,7 +83,7 @@ const scheduleLotteryDraw = async (drawDate) => {
             timezone: "Asia/Kolkata"
         });
 
-        console.log(`Next draw scheduled at ${drawDate}`);
+        console.log(`Next draw scheduled at ${cronString}`);
     } catch (error) {
         console.error("Error scheduling lottery draw:", error);
     }

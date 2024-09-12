@@ -51,8 +51,6 @@ exports.withdraw = async (req, res, next) => {
         const user = await User.findById(req.user.id);
 
         const userBalance = user.balance;
-        console.log("user blance in USD= ", userBalance);       // 10000$
-
 
         const { amount, upi_id } = req.body;
 
