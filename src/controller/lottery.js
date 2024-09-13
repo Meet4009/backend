@@ -288,7 +288,7 @@ exports.buylottery = async (req, res, next) => {
             let drawDate = new Date(curr.drawDate);
             console.log(drawDate);
 
-            let currentDate = new Date();
+            let currentDate = new Date().setHours(0,0,0,0,);
 
             return startDate <= currentDate && drawDate >= currentDate;
         });
