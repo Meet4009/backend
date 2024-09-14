@@ -93,7 +93,7 @@ const { currencyConveraterToUSD } = require('./currencyConverater');
 const scheduleLotteryDraw = async (drawDate) => {
     try {
         const date = new Date(drawDate);
-        console.log("draw Date", date.toLocaleString());
+        console.log("draw Date example", date.toLocaleString());
 
 
         // Format cron string for the specific date and time
