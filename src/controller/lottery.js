@@ -26,8 +26,8 @@ exports.setlottery = async (req, res) => {
         await lottery.save();
 
         let startDate = new Date();
-        let drawDate = new Date(startDate);
-        drawDate.setDate(drawDate.getDate() + lottery.repeatDraw);
+        let drawDate = new Date();
+        drawDate.setMinutes(drawDate.getMinutes() + lottery.repeatDraw);
 
         const lottery_draw = new LotteryDraw({
             lottery_id: lottery.id,
@@ -182,7 +182,7 @@ exports.getLotteryDetails = async (req, res, next) => {
             let drawDate = new Date(curr.drawDate);
             console.log(drawDate);
 
-            let currentDate = new Date().setHours(0,0,0,0);
+            let currentDate = new Date().setHours(0, 0, 0, 0);
 
             return startDate <= currentDate && drawDate >= currentDate;
         });
@@ -245,23 +245,112 @@ exports.genarateTicketNumber = async (req, res, next) => {
 // -------- 36 ---------- Buy Lottery ---  User ----------------- // 
 // ---------------------------------------------------------------//
 
+// exports.buylottery = async (req, res, next) => {
+//     try {
+
+//         const { ticket_number, lottery_id } = req.body;
+
+//         if (!Array.isArray(ticket_number) || ticket_number == null) {
+//             return res.status(400).json({
+//                 status: false,
+//                 data: {},
+//                 message: "pleace provide ticket number in array format"
+//             });
+//         }
+
+//         const lottery = await Lottery.findById(lottery_id);
+
+//         if (!lottery) {
+
+//             return res.status(404).json({
+//                 status: false,
+//                 data: {},
+//                 message: "Lottery not found"
+//             });
+//         }
+
+//         let getUser = await User.findById(req.user.id)
+
+//         let userBlance = await currencyConveraterToTHB(1, getUser.balance);
+
+//         if (!(userBlance >= (lottery.price * ticket_number.length))) {
+//             return res.status(400).json({
+//                 status: false,
+//                 data: {},
+//                 message: "Insufficient Balance"
+//             });
+//         }
+
+//         let lotteryDrawArr = await LotteryDraw.find({ lottery_id: lottery.id, status: "active" });
+
+//         // let lotteryDrawObj = lotteryDrawArr.filter(curr => {
+
+
+//         //     let currentDate = new Date();
+
+//         //     let startDate = new Date(curr.startDate);
+//         //     let drawDate = new Date(new Date(curr.drawDate).setMinutes(startDate.getMinutes() + 1))
+//         //     console.log("startDate", startDate.toLocaleString());
+//         //     console.log("drawDate", drawDate.toLocaleString());
+
+//         //     console.log("currentDate", currentDate.toLocaleString());
+
+//         //     return startDate <= currentDate && drawDate >= currentDate;
+//         // });
+
+//         if (lotteryDrawArr.length === 0) {
+//             return res.status(404).json({
+//                 status: false,
+//                 data: {},
+//                 message: "Lottery not found."
+//             });
+//         }
+
+//         ticket_number.map(async (curr) => {
+//             const ticket = new LotteryBuyer({
+
+//                 user_id: getUser.id,
+//                 lottery_id: lottery.id,
+//                 lottery_draw_id: lotteryDrawArr[0].id,
+//                 ticketNumber: curr,
+//             });
+
+//             await ticket.save();
+
+//         })
+//         getUser.balance -= await currencyConveraterToUSD(764, lottery.price * ticket_number.length)
+
+//         await getUser.save();
+
+//         res.status(200).json({
+//             status: true,
+//             data: {},
+//             message: `You have successfully purchased ${ticket_number.length} Tickets`
+//         });
+//     } catch (error) {
+
+//         res.status(500).json({
+//             status: false,
+//             message: `Internal Server Error -- ${error}`
+//         });
+//     }
+// };
 exports.buylottery = async (req, res, next) => {
     try {
-
         const { ticket_number, lottery_id } = req.body;
 
-        if (!Array.isArray(ticket_number) || ticket_number == null) {
+        // Validate ticket_number is an array
+        if (!Array.isArray(ticket_number) || ticket_number.length === 0) {
             return res.status(400).json({
                 status: false,
                 data: {},
-                message: "pleace provide ticket number in array format"
+                message: "Please provide ticket number(s) in array format"
             });
         }
 
+        // Fetch the lottery information
         const lottery = await Lottery.findById(lottery_id);
-
         if (!lottery) {
-
             return res.status(404).json({
                 status: false,
                 data: {},
@@ -269,64 +358,54 @@ exports.buylottery = async (req, res, next) => {
             });
         }
 
-        let getUser = await User.findById(req.user.id)
+        // Fetch user information and balance
+        const user = await User.findById(req.user.id);
+        const userBalanceTHB = await currencyConveraterToTHB(1, user.balance);
 
-        let userBlance = await currencyConveraterToTHB(1, getUser.balance);
-
-        if (!(userBlance >= (lottery.price * ticket_number.length))) {
+        // Check if the user has enough balance for all tickets
+        const totalCost = lottery.price * ticket_number.length;
+        if (userBalanceTHB < totalCost) {
             return res.status(400).json({
                 status: false,
                 data: {},
-                message: "Insufficient Balance"
+                message: "Insufficient balance"
             });
         }
 
-        let lotteryDrawArr = await LotteryDraw.find({ lottery_id: lottery.id });
-
-        let lotteryDrawObj = lotteryDrawArr.filter(curr => {
-            let startDate = new Date(curr.startDate);
-            let drawDate = new Date(curr.drawDate);
-            console.log(drawDate);
-
-            let currentDate = new Date().setHours(0,0,0,0,);
-
-            return startDate <= currentDate && drawDate >= currentDate;
-        });
-
-        if (lotteryDrawObj.length === 0) {
+        // Find active lottery draw
+        const activeLotteryDraw = await LotteryDraw.findOne({ lottery_id: lottery.id, status: "active" });
+        if (!activeLotteryDraw) {
             return res.status(404).json({
                 status: false,
                 data: {},
-                message: "Lottery not found"
+                message: "Active lottery draw not found"
             });
         }
 
-        ticket_number.map(async (curr) => {
-            const ticket = new LotteryBuyer({
+        // Save each ticket purchase
+        const tickets = ticket_number.map(curr => ({
+            user_id: user.id,
+            lottery_id: lottery.id,
+            lottery_draw_id: activeLotteryDraw.id,
+            ticketNumber: curr
+        }));
+        await LotteryBuyer.insertMany(tickets);
 
-                user_id: getUser.id,
-                lottery_id: lottery.id,
-                lottery_draw_id: lotteryDrawObj[0].id,
-                ticketNumber: curr,
-            });
+        // Deduct balance and save user
+        user.balance -= await currencyConveraterToUSD(764, totalCost);
+        await user.save();
 
-            await ticket.save();
-
-        })
-        getUser.balance -= await currencyConveraterToUSD(764, lottery.price * ticket_number.length)
-
-        await getUser.save();
-
+        // Return success response
         res.status(200).json({
             status: true,
             data: {},
-            message: `You have successfully purchased ${ticket_number.length} Tickets`
+            message: `You have successfully purchased ${ticket_number.length} ticket(s)`
         });
-    } catch (error) {
 
+    } catch (error) {
         res.status(500).json({
             status: false,
-            message: `Internal Server Error -- ${error}`
+            message: `Internal Server Error -- ${error.message}`
         });
     }
 };
