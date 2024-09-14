@@ -93,6 +93,7 @@ const { currencyConveraterToUSD } = require('./currencyConverater');
 const scheduleLotteryDraw = async (drawDate) => {
     try {
         const date = new Date(drawDate);
+        console.log("current Date", new Date().toLocaleString());
         console.log("draw Date example", date.toLocaleString());
 
 
