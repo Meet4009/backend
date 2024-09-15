@@ -206,7 +206,7 @@ const scheduleLotteryDraw = async (drawDate) => {
             }
         }, {
             scheduled: true,
-            timezone: "America/Los_Angeles"
+            timezone: "UTC"
         });
 
 
