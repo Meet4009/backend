@@ -204,8 +204,9 @@ const scheduleLotteryDraw = async (drawDate) => {
             }
         }, {
             scheduled: true,
-            timezone: "Asia/Kolkata"
+            timezone: "America/Los_Angeles"
         });
+
 
         console.log(`Next draw scheduled at ${cronString}`);
     } catch (error) {
