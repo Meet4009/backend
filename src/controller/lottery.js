@@ -136,7 +136,7 @@ exports.getAllLotterys = async (req, res) => {
 
                 let winnerperson = {}
                 if (prevLotteryDraw[0]) {
-                    winnerperson = await LotteryBuyer.find({ lottery_draw_id: prevLotteryDraw[0].id, status: 'win' }).populate('user_id')
+                    winnerperson = await LotteryBuyer.find({ lottery_draw_id: prevLotteryDraw[0].id, status: 'win' }).populate('user_id').populate('lottery_price_id')
                 }
 
 
