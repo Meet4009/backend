@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const lotteryDraw = new mongoose.Schema({
     lottery_id: {
-        type: mongoose.Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'lottery'
     },
     startDate: {
@@ -15,6 +15,10 @@ const lotteryDraw = new mongoose.Schema({
         type: String,
         default: 'active',
         enum: ['active', 'done'],
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
     },
 });
 

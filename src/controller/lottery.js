@@ -117,23 +117,30 @@ exports.getAllLotterys = async (req, res) => {
         let lotteryData = await Promise.all(
             lottery.map(async (currentLottery) => {
                 let price = await currencyConveraterFormTHB(user.currency_code, currentLottery.price);
-                let activeLotteryDraw = await LotteryDraw.findOne({ lottery_id: currentLottery.id, status: 'active' });
 
-                let activeLottryStartDate = new Date(activeLotteryDraw.startDate)
+                let prevLotteryDraw = await LotteryDraw.find({
+                    lottery_id: currentLottery.id, 
+                    status: { $ne: 'active' }
+                }).sort({ created_at: -1 });
+                
 
-                let prevLottryDrawDate = new Date(activeLottryStartDate.setDate(activeLottryStartDate.getDate() - 1))
+                // let activeLotteryDraw = await LotteryDraw.findOne({ lottery_id: currentLottery.id, status: 'active' });
 
-                let prevLotteryDraw = await LotteryDraw.findOne({ drawDate: prevLottryDrawDate.toISOString().split('T')[0] });
+                // let activeLottryStartDate = new Date(activeLotteryDraw.startDate)
+
+                // let prevLottryDrawDate = new Date(activeLottryStartDate.setDate(activeLottryStartDate.getDate() - 1))
+
+                // let prevLotteryDraw = await LotteryDraw.findOne({ drawDate: prevLottryDrawDate.toISOString().split('T')[0] });
 
                 // let prevLotteryDraw = await LotteryDraw.findOne({ lottery_id: currentLottery.id, status: 'active' });
 
                 let winnerperson = {}
-                if (prevLotteryDraw) {
-                    winnerperson = await LotteryBuyer.find({ lottery_draw_id: prevLotteryDraw.id, status: 'win' }).populate('user_id')
+                if (prevLotteryDraw[0]) {
+                    winnerperson = await LotteryBuyer.find({ lottery_draw_id: prevLotteryDraw[0].id, status: 'win' }).populate('user_id')
                 }
 
 
-                return { ...currentLottery.toObject(), lottery_draw: prevLotteryDraw || {}, winner: winnerperson, price };
+                return { ...currentLottery.toObject(), lottery_draw: prevLotteryDraw[0] || {}, winner: winnerperson, price };
             })
         );
 
