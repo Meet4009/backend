@@ -120,8 +120,8 @@ exports.getAllLotterys = async (req, res) => {
 
                 let prevLotteryDraw = await LotteryDraw.find({
                     lottery_id: currentLottery.id, 
-                    status: { $ne: 'active' }
-                }).sort({ created_at: 1 });
+                    status: 'done'
+                }).sort({ createdAt: -1 });
                 
 
                 // let activeLotteryDraw = await LotteryDraw.findOne({ lottery_id: currentLottery.id, status: 'active' });
