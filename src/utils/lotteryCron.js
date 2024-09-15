@@ -95,6 +95,8 @@ const scheduleLotteryDraw = async (drawDate) => {
         const date = new Date(drawDate);
         console.log("current Date", new Date().toLocaleString());
         console.log("draw Date example", date.toLocaleString());
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        console.log("timeZone", timeZone);
 
 
         // Format cron string for the specific date and time
