@@ -93,8 +93,6 @@ const { currencyConveraterToUSD } = require('./currencyConverater');
 const scheduleLotteryDraw = async (drawDate) => {
     try {
         const date = new Date(drawDate);
-        console.log("current Date", new Date().toLocaleString());
-        console.log("draw Date example", date.toLocaleString());
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         console.log("timeZone", timeZone);
 
@@ -206,7 +204,7 @@ const scheduleLotteryDraw = async (drawDate) => {
             }
         }, {
             scheduled: true,
-            timezone: "UTC"
+            timezone: process.env.TIME_ZONE || 'UTC'
         });
 
 
