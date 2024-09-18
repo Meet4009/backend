@@ -27,7 +27,7 @@ exports.setlottery = async (req, res) => {
 
         let startDate = new Date();
         let drawDate = new Date();
-        drawDate.setMinutes(drawDate.getMinutes() + lottery.repeatDraw);
+        drawDate.setHours(drawDate.getHours() + lottery.repeatDraw);
 
         const lottery_draw = new LotteryDraw({
             lottery_id: lottery.id,
@@ -37,7 +37,7 @@ exports.setlottery = async (req, res) => {
 
         await lottery_draw.save();
 
-        scheduleLotteryDraw(drawDate);
+        scheduleLotteryDraw(drawDate.setMinutes(0));
 
         res.status(200).json({
             status: true,
