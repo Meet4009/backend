@@ -112,7 +112,7 @@ const scheduleLotteryDraw = async (drawDate) => {
                 let startDate = new Date();
                 let nextDrawDate = new Date();
                 const repeatInterval = lottery[0].lottery_id.repeatDraw;
-                nextDrawDate.setHours(nextDrawDate.getHours() + repeatInterval);
+                nextDrawDate.setDate(nextDrawDate.getDate() + repeatInterval);
 
                 // change status
                 const AllActiveLottery = await LotteryDraw.find({ status: 'active' })
@@ -197,7 +197,9 @@ const scheduleLotteryDraw = async (drawDate) => {
                 await newLotteryDraw.save();
 
                 // Schedule the next draw recursively
-                scheduleLotteryDraw(nextDrawDate.setMinutes(0));
+                nextDrawDate.setHours(0);
+                nextDrawDate.setMinutes(0);
+                scheduleLotteryDraw(nextDrawDate);
 
             } catch (error) {
                 console.error("Error during lottery draw:", error);
