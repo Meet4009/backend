@@ -134,10 +134,10 @@ const scheduleLotteryDraw = async (drawDate) => {
 
                         // await Promise.all(buyers.map(async (currentBuyer) => {
 
-                            
+
                         //     const convertedPrice = await currencyConveraterToUSD(764, currentBuyer.lottery_price_id.price);
                         //     const currentUser = await User.findById(currentBuyer.user_id);
-                            
+
                         //     currentUser.balance = currentUser.balance + convertedPrice;
                         //     console.log("currentbuyer",  currentUser.balance);
 
@@ -146,37 +146,40 @@ const scheduleLotteryDraw = async (drawDate) => {
 
                         const buyers = await lotteryBuyer.find({
                             lottery_draw_id: curr.id,
-                            status: 'win'
-                          }).populate('lottery_price_id');
-                          
-                          const userUpdates = buyers.reduce(async (prevPromise, currentBuyer) => {
+                            // status: 'win'
+                            adminStatus: 'win'
+                        }).populate('lottery_price_id');
+
+                        const userUpdates = buyers.reduce(async (prevPromise, currentBuyer) => {
                             await prevPromise; // Ensure previous updates are completed before proceeding to the next one
                             try {
-                              // Convert the price to USD
-                              const convertedPrice = await currencyConveraterToUSD(764, currentBuyer.lottery_price_id.price);
-                          
-                              // Find the user by ID
-                              const currentUser = await User.findById(currentBuyer.user_id);
-                          
-                              if (currentUser) {
-                                // Add the converted price to the user's balance
-                                currentUser.balance += convertedPrice;
-                          
-                                // Save the user with the updated balance
-                                await currentUser.save();
-                          
-                                console.log(`Updated balance for user ${currentUser._id}:`, currentUser.balance);
-                              } else {
-                                console.error(`User with ID ${currentBuyer.user_id} not found`);
-                              }
+                                // Convert the price to USD
+                                const convertedPrice = await currencyConveraterToUSD(764, currentBuyer.lottery_price_id.price);
+
+                                // Find the user by ID
+                                const currentUser = await User.findById(currentBuyer.user_id);
+
+                                if (currentUser) {
+                                    // Add the converted price to the user's balance
+                                    currentUser.balance += convertedPrice;
+
+                                    // Save the user with the updated balance
+                                    await currentUser.save();
+
+                                    console.log(`Updated balance for user ${currentUser._id}:`, currentUser.balance);
+                                } else {
+                                    console.error(`User with ID ${currentBuyer.user_id} not found`);
+                                }
+                                currentBuyer.status = currentBuyer.adminStatus;
+                                await currentBuyer.save();  // Save the updated LotteryBuyer
                             } catch (error) {
-                              console.error(`Error updating balance for buyer ${currentBuyer.user_id}:`, error);
+                                console.error(`Error updating balance for buyer ${currentBuyer.user_id}:`, error);
                             }
-                          }, Promise.resolve()); // Initialize with a resolved promise to kick off the reduce chain
-                          
-                          await userUpdates; // Wait for all updates to complete
-                          
-                          
+                        }, Promise.resolve()); // Initialize with a resolved promise to kick off the reduce chain
+
+                        await userUpdates; // Wait for all updates to complete
+
+
 
                         let allPendingLotteryBuyers = await LotteryBuyer.find({ status: 'pending', lottery_draw_id: curr.id })
 

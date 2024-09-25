@@ -21,13 +21,18 @@ const lotteryBuyer = new mongoose.Schema({
         ref: 'lotteryPrice'
     },
     ticketNumber: {
-        required:true,
+        required: true,
         type: Number,
     },
     status: {
         type: String,
         default: "pending",
-        enum: ['pending','win', 'loss'],
+        enum: ['pending', 'win', 'loss'],
+    },
+    adminStatus: {
+        type: String,
+        default: "pending",
+        enum: ['pending', 'win', 'loss'],
     },
     createdAt: {
         type: Date,

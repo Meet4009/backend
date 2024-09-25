@@ -502,7 +502,8 @@ exports.lossbuyer = async (req, res, next) => {
     try {
         const ticket = await LotteryBuyer.findById(req.params.id);
 
-        ticket.status = 'loss'
+        // ticket.status = 'loss'
+        ticket.adminStatus = 'loss'
 
         await ticket.save();
         res.status(200).json({
@@ -547,7 +548,8 @@ exports.winbuyer = async (req, res, next) => {
         }
 
         if (priceObj.fill_space < priceObj.totalPerson) {
-            ticket.status = 'win';
+            // ticket.status = 'win';
+            ticket.adminStatus = 'win';
             ticket.lottery_price_id = req.body.lottery_price_id;
             await ticket.save();
 
@@ -625,7 +627,7 @@ exports.useralltickets = async (req, res, next) => {
 
 exports.allWinners = async (req, res, next) => {
     try {
-        let winner = await LotteryBuyer.find({ status: "win" }).populate('lottery_price_id').populate('user_id').populate('lottery_id').populate('lottery_draw_id');
+        let winner = await LotteryBuyer.find({ adminStatus: "win" }).populate('lottery_price_id').populate('user_id').populate('lottery_id').populate('lottery_draw_id');
 
         let winners = winner.sort((a, b) => a.lottery_price_id.priceNumber - b.lottery_price_id.priceNumber);
 
