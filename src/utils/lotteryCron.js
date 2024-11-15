@@ -111,8 +111,11 @@ const scheduleLotteryDraw = async (drawDate) => {
 
                 let startDate = new Date();
                 let nextDrawDate = new Date();
+
                 const repeatInterval = lottery[0].lottery_id.repeatDraw;
-                nextDrawDate.setDate(nextDrawDate.getDate() + repeatInterval);
+                // nextDrawDate.setDate(nextDrawDate.getDate() + repeatInterval);
+
+                nextDrawDate.setMinutes(nextDrawDate.getMinutes() + repeatInterval);
 
                 // change status
                 const AllActiveLottery = await LotteryDraw.find({ status: 'active' })
