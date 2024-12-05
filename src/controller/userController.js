@@ -97,7 +97,7 @@ exports.loginUser = async (req, res, next) => {
 
 
 // --------------------------------------------------------------------------- //
-// ---------- 3 ----------------  Logout User  ------------------------------ //
+// ----------- 3 ----------------  Logout User  ------------------------------ //
 // --------------------------------------------------------------------------- //
 
 exports.logout = async (req, res, next) => {
@@ -123,7 +123,7 @@ exports.logout = async (req, res, next) => {
 
         res.status(200).json({
             status: true,
-            message: "Logour successfully"
+            message: "Logout successfully"
         });
 
     } catch (error) {
