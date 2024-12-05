@@ -481,7 +481,7 @@ exports.ticketHistory = async (req, res, next) => {
 
 exports.getAllPendingTickets = async (req, res, next) => {
     try {
-        const allTicket = await LotteryBuyer.find({ adminStatus: 'pending' }).populate('user_id').populate('lottery_id').sort('createdAt');
+        const allTicket = await LotteryBuyer.find({ adminStatus: 'success' }).populate('user_id').populate('lottery_id').sort('createdAt');
 
         res.status(200).json({
             status: true,
