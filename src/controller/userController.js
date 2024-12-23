@@ -252,7 +252,7 @@ exports.updateProfile = async (req, res, next) => {
 exports.getAllUser = async (req, res, next) => {
 
     try {
-        const users = await User.find();
+        const users = await User.find({ role: "user" });
 
         let usersDetails = await Promise.all(users.map(async (currentuser) => {
             return {
