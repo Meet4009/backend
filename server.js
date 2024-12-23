@@ -22,7 +22,7 @@ const server = app.listen(process.env.PORT, () => {
     console.log(`server :  http://localhost:${process.env.PORT}`);
 });
 
-// Unhamdled Promise Pejection
+// Unhamdled Promise Rejection
 
 process.on("unhandleRejection", (err) => {
     console.log(`Error:${err.message}`);
