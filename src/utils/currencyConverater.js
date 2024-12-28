@@ -13,68 +13,68 @@ const fetchCurrencyConversion = async (endPoint) => {
     }
 };
 
-const currencyConveraterFormUSD = async (currency_code, currency) => {
+const currencyConveraterFormUSD = async (currency, amount) => {
     try {
-        const toCurrency = currency_code == 356 ? 'INR' : 'THB';
-        const endPoint = `https://api.frankfurter.app/latest?amount=${currency}&from=USD&to=${toCurrency}`;
+        const toCurrency = currency == 356 ? 'INR' : 'THB';
+        const endPoint = `https://api.frankfurter.app/latest?amount=${amount}&from=USD&to=${toCurrency}`;
 
         const rates = await fetchCurrencyConversion(endPoint);
-        return rates ? rates[toCurrency] : currency;
+        return rates ? rates[toCurrency] : amount;
     } catch (error) {
-        return currency;                                            // Return the original currency in case of error
+        return amount;                                            // Return the original amount in case of error
     }
 };
 
-const currencyConveraterToTHB = async (currency_code, currency) => {
+const currencyConveraterToTHB = async (currency, amount) => {
     try {
 
-        if (!currency_code || currency_code == 764) {
-            return currency; // THB conversion not needed
+        if (!currency || currency == 764) {
+            return amount; // THB conversion not needed
         }
 
-        const fromCurrency = currency_code == 356 ? 'INR' : 'USD';
-        const endPoint = `https://api.frankfurter.app/latest?amount=${currency}&from=${fromCurrency}&to=THB`;
+        const fromCurrency = currency == 356 ? 'INR' : 'USD';
+        const endPoint = `https://api.frankfurter.app/latest?amount=${amount}&from=${fromCurrency}&to=THB`;
 
         const rates = await fetchCurrencyConversion(endPoint);
 
-        return rates ? rates.THB : currency;
+        return rates ? rates.THB : amount;
     } catch (error) {
-        return currency;                                            // Return the original currency in case of error
+        return amount;                                            // Return the original amount in case of error
     }
 };
 
-const currencyConveraterToUSD = async (currency_code, currency) => {
+const currencyConveraterToUSD = async (currency, amount) => {
     try {
 
 
-        if (!currency_code) {
-            return currency; // THB conversion not needed
+        if (!currency) {
+            return amount; // THB conversion not needed
         }
 
-        const fromCurrency = currency_code == 356 ? 'INR' : 'THB';
-        const endPoint = `https://api.frankfurter.app/latest?amount=${currency}&from=${fromCurrency}&to=USD`;
+        const fromCurrency = currency == 356 ? 'INR' : 'THB';
+        const endPoint = `https://api.frankfurter.app/latest?amount=${amount}&from=${fromCurrency}&to=USD`;
 
         const rates = await fetchCurrencyConversion(endPoint);
 
-        return rates ? rates.USD : currency;
+        return rates ? rates.USD : amount;
     } catch (error) {
-        return currency; // Return the original currency in case of error
+        return amount; // Return the original amount in case of error
     }
 };
 
-const currencyConveraterFormTHB = async (currency_code, currency) => {
+const currencyConveraterFormTHB = async (currency, amount) => {
     try {
-        if (currency_code == 764) {
-            return currency;
+        if (currency == 764) {
+            return amount;
         }
 
-        const toCurrency = currency_code == 356 ? 'INR' : 'USD';
-        const endPoint = `https://api.frankfurter.app/latest?amount=${currency}&from=THB&to=${toCurrency}`;
+        const toCurrency = currency == 356 ? 'INR' : 'USD';
+        const endPoint = `https://api.frankfurter.app/latest?amount=${amount}&from=THB&to=${toCurrency}`;
 
         const rates = await fetchCurrencyConversion(endPoint);
-        return rates ? rates[toCurrency] : currency;
+        return rates ? rates[toCurrency] : amount;
     } catch (error) {
-        return currency;                                            // Return the original currency in case of error
+        return amount;                                            // Return the original amount in case of error
     }
 };
 
